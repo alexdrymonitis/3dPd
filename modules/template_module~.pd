@@ -1,0 +1,383 @@
+#N canvas 443 95 1243 881 10;
+#X declare -path ../generic_abstractions;
+#X declare -path ./generic_abstractions/module_data_abstractions -path
+../generic_abstractions/module_data_abstractions;
+#X obj 44 28 cnv 15 600 60 empty empty Declare_generic_abstractions_path
+0 -12 0 14 -204786 -66577 0;
+#X obj 50 64 declare -path ../generic_abstractions;
+#X obj 43 121 cnv 15 520 80 empty empty Receive_data_from_the_Arduino
+0 -12 0 14 -233017 -66577 0;
+#X obj 153 586 cnv 15 550 80 empty empty Get_switch_data 0 -12 0 14
+-232576 -66577 0;
+#X obj 43 233 cnv 15 640 210 empty empty Assemble_and_scale_analog_values
+0 -12 0 14 -262130 -66577 0;
+#X obj 43 474 cnv 15 430 80 empty empty Signal_processing 0 -12 0 14
+-203904 -66577 0;
+#N canvas 160 272 844 490 stuff1 0;
+#X obj 91 399 *~;
+#X obj 209 383 line~;
+#X obj 32 440 outlet~;
+#X obj 32 166 pack f 15;
+#X obj 32 188 line~;
+#X obj 32 260 *~;
+#X obj 50 238 +~ 1;
+#X obj 50 216 *~ -1;
+#X obj 32 144 inlet;
+#X obj 110 353 r~;
+#X obj 209 317 r \$0-inlet1;
+#X obj 110 330 r \$0-input1;
+#X text 91 228 invert 0 and 1;
+#X obj 209 339 accumulate_connections;
+#X obj 91 376 *~;
+#X text 30 75 if a signal is connected to this inlet \, then we use
+that signal for the above mentrioned process \, and we control its
+amplitude with the potentiometer.;
+#X text 30 18 what we're doing here is send the values from the second
+potentiometer of the module straight to any process we want it for
+\, if there's no signal coming in the second inlet of the module.;
+#X text 105 280 [r \$0-input1] and [r \$0-inlet1] take input from the
+[module_data] abstraction;
+#X text 375 336 <- check parent patch under "Generic_module_data" to
+see what this abstraction does;
+#X obj 209 361 pack f 15;
+#X connect 0 0 2 0;
+#X connect 1 0 0 1;
+#X connect 1 0 7 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 4 0 14 0;
+#X connect 5 0 2 0;
+#X connect 6 0 5 1;
+#X connect 7 0 6 0;
+#X connect 8 0 3 0;
+#X connect 9 0 14 1;
+#X connect 10 0 13 0;
+#X connect 11 0 9 0;
+#X connect 13 0 19 0;
+#X connect 14 0 0 0;
+#X connect 19 0 1 0;
+#X restore 131 482 pd stuff1;
+#N canvas 293 102 719 177 main_process 0;
+#X obj 83 33 inlet~;
+#X obj 156 33 inlet~;
+#X obj 23 85 outlet~;
+#X obj 96 85 outlet~;
+#X text 239 48 here's the main process of the module. it's been left
+"empty" because this process can be anything \, an oscillator \, a
+filter \, an effect \, a control signal etc.;
+#X obj 23 33 inlet~;
+#X restore 49 526 pd main_process;
+#X obj 49 131 r module\$1;
+#X obj 49 153 route 0 1;
+#X obj 214 297 map_zero 1024 100;
+#X text 289 483 <- open these subpatches;
+#X obj 131 330 map 0 1024 1 -1;
+#X obj 768 406 cnv 15 350 40 empty empty Send_data_to_the_Arduino 0
+-12 0 14 -204800 -66577 0;
+#N canvas 414 255 511 305 send_data_to_Arduino 0;
+#X obj 51 182 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 51 225 print \$2m2p\$1v;
+#X obj 51 247 s to_comport;
+#X text 47 34 if you want to send data to the Arduino (e.g. to light
+up an LED when the DSP goes on) use the "print" message of [comport]
+with the following syntax "print \$1m\$2p\$3v" \, where "m" stands
+for module \, so the first value of the message concerns the module
+(therefore the output shift register in the daisy chain) starting from
+0 \, "p" stands for pin of the chip starting from 0 \, and "v" stands
+for value for the pin. The toggle below will control the third pin
+(pin number 2) of the current module.;
+#X obj 51 203 pack f \$1;
+#X connect 0 0 4 0;
+#X connect 1 0 2 0;
+#X connect 4 0 1 0;
+#X restore 937 417 pd send_data_to_Arduino;
+#X text 776 419 open this subpatch ->;
+#X obj 43 698 cnv 15 670 150 empty empty Use_switches_and_send_output
+0 -12 0 14 -204786 -66577 0;
+#N canvas 1 82 395 296 scale-offset1 0;
+#X obj 159 95 pack f 20;
+#X obj 159 117 line~;
+#X obj 261 139 pack f 20;
+#X obj 261 161 line~;
+#N canvas 639 141 655 389 scale-offset 0;
+#X obj 36 61 change;
+#X obj 46 159 loadbang;
+#X obj 36 304 outlet;
+#X obj 102 304 outlet;
+#X obj 36 86 swap;
+#X obj 36 108 pack;
+#X obj 36 130 route 1 0;
+#X obj 36 197 f;
+#X text 65 184 when the patching update is deactivated \, store value
+and output it when it is reactivated;
+#X obj 36 39 inlet;
+#X obj 151 69 t f f;
+#X obj 183 91 sel 1;
+#X text 225 91 bang value when the patching has been reactivated;
+#X obj 36 219 t f f;
+#X obj 36 263 + 1;
+#X obj 36 241 * -0.5;
+#X obj 102 236 * 0.5;
+#X obj 151 47 r update_patching;
+#X connect 0 0 4 0;
+#X connect 1 0 7 0;
+#X connect 4 0 5 0;
+#X connect 4 1 5 1;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 6 1 7 1;
+#X connect 7 0 13 0;
+#X connect 9 0 0 0;
+#X connect 10 0 4 1;
+#X connect 10 1 11 0;
+#X connect 11 0 7 0;
+#X connect 13 0 15 0;
+#X connect 13 1 16 0;
+#X connect 14 0 2 0;
+#X connect 15 0 14 0;
+#X connect 16 0 3 0;
+#X connect 17 0 10 0;
+#X restore 159 71 pd scale-offset;
+#X obj 47 111 inlet~;
+#X obj 47 133 *~;
+#X obj 47 177 +~;
+#X obj 47 199 outlet~;
+#X obj 159 24 inlet;
+#X obj 159 46 change;
+#X connect 0 0 1 0;
+#X connect 1 0 6 1;
+#X connect 2 0 3 0;
+#X connect 3 0 7 1;
+#X connect 4 0 0 0;
+#X connect 4 1 2 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 9 0 10 0;
+#X connect 10 0 4 0;
+#X restore 49 777 pd scale-offset1;
+#X obj 49 822 throw~;
+#X obj 150 752 throw~;
+#N canvas 1 82 645 372 scale-offset2 0;
+#X obj 159 125 pack f 20;
+#X obj 159 147 line~;
+#X obj 261 169 pack f 20;
+#X obj 261 191 line~;
+#X obj 47 141 inlet~;
+#X obj 47 163 *~;
+#X obj 47 207 +~;
+#X obj 47 229 outlet~;
+#X obj 159 24 inlet;
+#X obj 159 46 change;
+#X text 213 45 use [change] cause if you have more than one switches
+on your module \, they will all be output as a list when you change
+any of them;
+#N canvas 635 137 639 393 scale-offset 0;
+#X obj 36 61 change;
+#X obj 46 159 loadbang;
+#X obj 36 304 outlet;
+#X obj 102 304 outlet;
+#X obj 36 86 swap;
+#X obj 36 108 pack;
+#X obj 36 130 route 1 0;
+#X obj 36 197 f;
+#X text 65 184 when the patching update is deactivated \, store value
+and output it when it is reactivated;
+#X obj 36 39 inlet;
+#X obj 151 69 t f f;
+#X obj 183 91 sel 1;
+#X text 225 91 bang value when the patching has been reactivated;
+#X obj 36 219 t f f;
+#X obj 36 263 + 1;
+#X obj 36 241 * -0.5;
+#X obj 102 236 * 0.5;
+#X obj 151 47 r update_patching;
+#X connect 0 0 4 0;
+#X connect 1 0 7 0;
+#X connect 4 0 5 0;
+#X connect 4 1 5 1;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 6 1 7 1;
+#X connect 7 0 13 0;
+#X connect 9 0 0 0;
+#X connect 10 0 4 1;
+#X connect 10 1 11 0;
+#X connect 11 0 7 0;
+#X connect 13 0 15 0;
+#X connect 13 1 16 0;
+#X connect 14 0 2 0;
+#X connect 15 0 14 0;
+#X connect 16 0 3 0;
+#X connect 17 0 10 0;
+#X restore 159 91 pd scale-offset;
+#X connect 0 0 1 0;
+#X connect 1 0 5 1;
+#X connect 2 0 3 0;
+#X connect 3 0 6 1;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 8 0 9 0;
+#X connect 9 0 11 0;
+#X connect 11 0 0 0;
+#X connect 11 1 2 0;
+#X restore 150 707 pd scale-offset2;
+#X obj 62 799 r \$0-output0;
+#X obj 162 729 r \$0-output1;
+#N canvas 77 136 884 435 stuff0 0;
+#X obj 61 339 *~;
+#X obj 32 370 outlet~;
+#X obj 32 146 pack f 15;
+#X obj 32 168 line~;
+#X obj 32 218 *~;
+#X obj 32 124 inlet;
+#X obj 61 275 r~;
+#X text 30 18 what we're doing here is send the values from the first
+potentiometer of the module straight to any process we want it for
+\, if there's no signal coming in the first inlet of the module.;
+#X text 30 75 if a signal is connected to this inlet \, then we use
+that signal for the above mentrioned process \, and not the potentiometer.
+;
+#X obj 249 322 t f f;
+#X obj 50 196 == 0;
+#X obj 249 278 r \$0-inlet0;
+#X obj 61 252 r \$0-input0;
+#X obj 249 300 accumulate_connections;
+#X text 57 220 [r \$0-input0] and [r \$0-inlet0] take input from the
+[module_data] abstraction;
+#X text 416 299 <- check parent patch under "Generic_module_data" to
+see what this abstraction does;
+#X connect 0 0 1 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 1 0;
+#X connect 5 0 2 0;
+#X connect 6 0 0 0;
+#X connect 9 0 0 1;
+#X connect 9 1 10 0;
+#X connect 10 0 4 1;
+#X connect 11 0 13 0;
+#X connect 12 0 6 0;
+#X connect 13 0 9 0;
+#X restore 49 482 pd stuff0;
+#X obj 49 361 map 0 1024 10 50;
+#X obj 49 249 assemble_analog_inputs 3;
+#X obj 768 28 cnv 15 450 340 empty empty Generic_module_data 0 -12
+0 14 -261682 -66577 0;
+#X obj 784 180 module_data \$0 \$1 \$2 \$3;
+#X obj 784 224 switch~;
+#X text 781 39 the [module_data] abstraction sets names for the [r~]s
+and [throw~]s and diffuses the connection states of the inlets and
+outlets of each module. Its outlet can control a [switch~] for a given
+module by outputing all inlets and outlets connection states of the
+module. Even if you don't care to control a [switch~] \, [module_data]
+should still be included \, as apart from the the names it sets \,
+it also passes the accumulated numbers of inlets and outlets of the
+given module to the next one \, which are necessary for the names creation
+of the [r~]s and [throw~]s.;
+#X obj 784 202 accumulate_connections;
+#N canvas 803 353 845 476 stuff2 0;
+#X obj 91 399 *~;
+#X obj 209 383 line~;
+#X obj 32 440 outlet~;
+#X obj 32 166 pack f 15;
+#X obj 32 188 line~;
+#X obj 32 260 *~;
+#X obj 50 238 +~ 1;
+#X obj 50 216 *~ -1;
+#X obj 32 144 inlet;
+#X obj 110 353 r~;
+#X text 91 228 invert 0 and 1;
+#X obj 209 339 accumulate_connections;
+#X obj 91 376 *~;
+#X text 30 75 if a signal is connected to this inlet \, then we use
+that signal for the above mentrioned process \, and we control its
+amplitude with the potentiometer.;
+#X obj 110 330 r \$0-input2;
+#X obj 209 317 r \$0-inlet2;
+#X text 29 18 what we're doing here is send the values from the third
+potentiometer of the module straight to any process we want it for
+\, if there's no signal coming in the third inlet of the module.;
+#X text 105 281 [r \$0-input2] and [r \$0-inlet2] take input from the
+[module_data] abstraction;
+#X text 375 336 <- check parent patch under "Generic_module_data" to
+see what this abstraction does;
+#X obj 209 361 pack f 15;
+#X connect 0 0 2 0;
+#X connect 1 0 0 1;
+#X connect 1 0 7 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 4 0 12 0;
+#X connect 5 0 2 0;
+#X connect 6 0 5 1;
+#X connect 7 0 6 0;
+#X connect 8 0 3 0;
+#X connect 9 0 12 1;
+#X connect 11 0 19 0;
+#X connect 12 0 0 0;
+#X connect 14 0 9 0;
+#X connect 15 0 11 0;
+#X connect 19 0 1 0;
+#X restore 214 482 pd stuff2;
+#X text 167 526 <- open this subpatch too;
+#X text 276 706 modules switches can do whatever you want \, but here
+an example of scaling and offset is provided. a 0 value will leave
+the output signal unaltered (this example assumes the signal is an
+oscillator \, ranging from -1 to 1) and a value of 1 will scale and
+offset that signal placing it to a range between 0 and 1 . open the
+subpatches to see the workings.;
+#X text 274 794 [r \$0-output0] and [r \$0-output1] take input from
+the [module_data] abstraction.;
+#X text 225 247 <- this abstraction takes the analog input values and
+assembles them (since they have been disassembled in the Arduino code).
+its argument is the number of potentiometers.;
+#X text 50 32 declare the path to the generic abstractions as they
+are used in all module abstractions.;
+#X text 783 248 [accumulate_connections] accummulates values by adding
+1 when it receives a 1 \, and subtracting 1 when it receives a zero.
+This way you can keep track of all the connections that are currenlty
+active in a module and helps control various aspects. Here it controls
+[switch~] which will go off when there are no more connections in this
+module. The output of the abstraction is being delayed by the same
+amount of the [mtx_*~] ramp time.;
+#X text 252 328 <- these abstractions map value ranges. [map_zero]
+maps a range from 0 to some number to a range from 0 to another number.
+its arguments are the maximum value of the input range and the maximum
+value of the output range. [map] maps arbitrary ranges. its arguments
+are from low value \, from high value \, to low value \, and to high
+value (ranges can be inverted \, meaning that the input range can be
+incrementing while the output range can be decremening).;
+#X text 273 594 <- this abstraction breaks the bits of the module's
+byte where the switches are wired to. its argument is the number of
+switches and it creates as many outlets. note that when a switch changes
+\, it causes all switches to output their values.;
+#X obj 164 592 get_switches 2;
+#X text 128 127 data comes in with the send name "module" and the index
+of the module which is the frist argument of the module abstraction.
+a leading 0 in the data list means that the data is potentiometer values
+and a 1 means it's switch values.;
+#X connect 6 0 7 1;
+#X connect 7 0 17 0;
+#X connect 7 1 20 0;
+#X connect 8 0 9 0;
+#X connect 9 0 25 0;
+#X connect 9 1 40 0;
+#X connect 10 0 31 0;
+#X connect 12 0 6 0;
+#X connect 17 0 18 0;
+#X connect 20 0 19 0;
+#X connect 21 0 18 0;
+#X connect 22 0 19 0;
+#X connect 23 0 7 0;
+#X connect 24 0 23 0;
+#X connect 25 0 24 0;
+#X connect 25 1 12 0;
+#X connect 25 2 10 0;
+#X connect 27 0 30 0;
+#X connect 30 0 28 0;
+#X connect 31 0 7 2;
+#X connect 40 0 17 1;
+#X connect 40 1 20 1;

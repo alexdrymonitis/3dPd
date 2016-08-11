@@ -1,0 +1,78 @@
+#N canvas 574 87 724 465 10;
+#X declare -path ../generic_abstractions;
+#X declare -path ./generic_abstractions/module_data_abstractions -path
+../generic_abstractions/module_data_abstractions;
+#X declare -path ../generic_abstractions;
+#X declare -path ./generic_abstractions/module_data_abstractions -path
+../generic_abstractions/module_data_abstractions;
+#X declare -lib iemmatrix -lib zexy -path ./modules -path ./generic_abstractions
+;
+#X text 82 182 close serial port;
+#X text 44 82 check serial devices;
+#X floatatom 57 132 5 0 0 0 - - -, f 5;
+#X text 55 117 open serial port;
+#X text 68 146 open device by name;
+#X symbolatom 70 163 0 0 0 0 - - -;
+#X msg 45 99 devices;
+#X msg 83 199 close;
+#X obj 90 275 r to_comport;
+#N canvas 744 82 485 465 modules 0;
+#X text 41 18 Module abstraction arguments:;
+#X text 40 53 2nd: number of inlets;
+#X obj 42 388 template_module~ 0 3 2;
+#X obj 42 203 loadbang;
+#X obj 42 411 template_module~ 1 3 2;
+#X obj 42 225 del 100;
+#X obj 42 247 s module_data0;
+#X text 40 72 3rd: number of outlets;
+#X text 40 35 1st: module index \, starting from 0;
+#X text 41 103 Send a bang on load slightly delayed to [r module_data0]
+to initialize the process of naming [r~]s and [throw~]s. The delay
+is necessary in order to give time to all [module_data] abstractions
+(which are included in each module abstraction) to set the name for
+their [s module_data] of the next module in the chain. Check the abstraction
+inside the [template_module~] abstraction below.;
+#X text 38 296 Here the [template_module~] abstraction is used twice
+to show how the first argument of these absrtactions works. This abstraction
+is supposed to have three inlets and two outlets. It is included only
+to show how a module should be patched in order for the whole interface
+to work properly. Check the abstraction for details.;
+#X connect 3 0 5 0;
+#X connect 5 0 6 0;
+#X restore 45 376 pd modules;
+#X floatatom 91 226 5 0 0 0 - - -, f 5;
+#X msg 91 245 baud \$1;
+#X text 190 274 various messages for the Arduino;
+#X text 226 337 arguments of this abstraction is total number of inlets
+and outlets;
+#N canvas 363 357 450 300 print_connections 0;
+#X obj 48 31 r to_mtx_mul;
+#X obj 48 119 list prepend matrix;
+#X obj 48 141 list trim;
+#X obj 48 98 route matrix;
+#X obj 194 115 print connection;
+#X obj 48 76 spigot;
+#X obj 87 56 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 48 163 mtx_print matrix;
+#X connect 0 0 5 0;
+#X connect 1 0 2 0;
+#X connect 2 0 7 0;
+#X connect 3 0 1 0;
+#X connect 3 1 4 0;
+#X connect 5 0 3 0;
+#X connect 6 0 5 1;
+#X restore 45 409 pd print_connections;
+#X obj 45 342 matrix_connections 12 11;
+#X obj 45 27 declare -lib iemmatrix -lib zexy -path ./modules -path
+./generic_abstractions;
+#X obj 45 309 arduino_data 1 57600 3;
+#X text 210 298 arguments of this abstraction are serial port \, baud
+rate \, and number of modules;
+#X connect 2 0 17 0;
+#X connect 5 0 17 0;
+#X connect 6 0 17 0;
+#X connect 7 0 17 0;
+#X connect 8 0 17 0;
+#X connect 10 0 11 0;
+#X connect 11 0 17 0;
