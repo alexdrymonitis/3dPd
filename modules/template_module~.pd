@@ -1,17 +1,15 @@
-#N canvas 443 95 1243 881 10;
+#N canvas 256 105 1243 937 10;
 #X declare -path ../generic_abstractions;
-#X declare -path ./generic_abstractions/module_data_abstractions -path
-../generic_abstractions/module_data_abstractions;
 #X obj 44 28 cnv 15 600 60 empty empty Declare_generic_abstractions_path
 0 -12 0 14 -204786 -66577 0;
 #X obj 50 64 declare -path ../generic_abstractions;
 #X obj 43 121 cnv 15 520 80 empty empty Receive_data_from_the_Arduino
 0 -12 0 14 -233017 -66577 0;
-#X obj 153 586 cnv 15 550 80 empty empty Get_switch_data 0 -12 0 14
+#X obj 153 632 cnv 15 550 80 empty empty Get_switch_data 0 -12 0 14
 -232576 -66577 0;
-#X obj 43 233 cnv 15 640 210 empty empty Assemble_and_scale_analog_values
+#X obj 43 233 cnv 15 640 250 empty empty Assemble_and_scale_analog_values
 0 -12 0 14 -262130 -66577 0;
-#X obj 43 474 cnv 15 430 80 empty empty Signal_processing 0 -12 0 14
+#X obj 43 520 cnv 15 430 80 empty empty Signal_processing 0 -12 0 14
 -203904 -66577 0;
 #N canvas 160 272 844 490 stuff1 0;
 #X obj 91 399 *~;
@@ -56,7 +54,7 @@ see what this abstraction does;
 #X connect 13 0 19 0;
 #X connect 14 0 0 0;
 #X connect 19 0 1 0;
-#X restore 131 482 pd stuff1;
+#X restore 131 528 pd stuff1;
 #N canvas 293 102 719 177 main_process 0;
 #X obj 83 33 inlet~;
 #X obj 156 33 inlet~;
@@ -66,15 +64,13 @@ see what this abstraction does;
 "empty" because this process can be anything \, an oscillator \, a
 filter \, an effect \, a control signal etc.;
 #X obj 23 33 inlet~;
-#X restore 49 526 pd main_process;
+#X restore 49 572 pd main_process;
 #X obj 49 131 r module\$1;
 #X obj 49 153 route 0 1;
-#X obj 214 297 map_zero 1024 100;
-#X text 289 483 <- open these subpatches;
-#X obj 131 330 map 0 1024 1 -1;
+#X text 289 529 <- open these subpatches;
 #X obj 768 406 cnv 15 350 40 empty empty Send_data_to_the_Arduino 0
 -12 0 14 -204800 -66577 0;
-#N canvas 414 255 511 305 send_data_to_Arduino 0;
+#N canvas 412 253 511 305 send_data_to_Arduino 0;
 #X obj 51 182 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 51 225 print \$2m2p\$1v;
@@ -93,7 +89,7 @@ for value for the pin. The toggle below will control the third pin
 #X connect 4 0 1 0;
 #X restore 937 417 pd send_data_to_Arduino;
 #X text 776 419 open this subpatch ->;
-#X obj 43 698 cnv 15 670 150 empty empty Use_switches_and_send_output
+#X obj 43 744 cnv 15 670 150 empty empty Use_switches_and_send_output
 0 -12 0 14 -204786 -66577 0;
 #N canvas 1 82 395 296 scale-offset1 0;
 #X obj 159 95 pack f 20;
@@ -156,9 +152,9 @@ and output it when it is reactivated;
 #X connect 7 0 8 0;
 #X connect 9 0 10 0;
 #X connect 10 0 4 0;
-#X restore 49 777 pd scale-offset1;
-#X obj 49 822 throw~;
-#X obj 150 752 throw~;
+#X restore 49 823 pd scale-offset1;
+#X obj 49 868 throw~;
+#X obj 150 798 throw~;
 #N canvas 1 82 645 372 scale-offset2 0;
 #X obj 159 125 pack f 20;
 #X obj 159 147 line~;
@@ -223,9 +219,9 @@ and output it when it is reactivated;
 #X connect 9 0 11 0;
 #X connect 11 0 0 0;
 #X connect 11 1 2 0;
-#X restore 150 707 pd scale-offset2;
-#X obj 62 799 r \$0-output0;
-#X obj 162 729 r \$0-output1;
+#X restore 150 753 pd scale-offset2;
+#X obj 62 845 r \$0-output0;
+#X obj 162 775 r \$0-output1;
 #N canvas 77 136 884 435 stuff0 0;
 #X obj 61 339 *~;
 #X obj 32 370 outlet~;
@@ -261,9 +257,8 @@ see what this abstraction does;
 #X connect 11 0 13 0;
 #X connect 12 0 6 0;
 #X connect 13 0 9 0;
-#X restore 49 482 pd stuff0;
-#X obj 49 361 map 0 1024 10 50;
-#X obj 49 249 assemble_analog_inputs 3;
+#X restore 49 528 pd stuff0;
+#X obj 49 246 assemble_analog_inputs 3;
 #X obj 768 28 cnv 15 450 340 empty empty Generic_module_data 0 -12
 0 14 -261682 -66577 0;
 #X obj 784 180 module_data \$0 \$1 \$2 \$3;
@@ -321,17 +316,17 @@ see what this abstraction does;
 #X connect 14 0 9 0;
 #X connect 15 0 11 0;
 #X connect 19 0 1 0;
-#X restore 214 482 pd stuff2;
-#X text 167 526 <- open this subpatch too;
-#X text 276 706 modules switches can do whatever you want \, but here
+#X restore 214 528 pd stuff2;
+#X text 167 572 <- open this subpatch too;
+#X text 276 752 modules switches can do whatever you want \, but here
 an example of scaling and offset is provided. a 0 value will leave
 the output signal unaltered (this example assumes the signal is an
 oscillator \, ranging from -1 to 1) and a value of 1 will scale and
 offset that signal placing it to a range between 0 and 1 . open the
 subpatches to see the workings.;
-#X text 274 794 [r \$0-output0] and [r \$0-output1] take input from
+#X text 274 840 [r \$0-output0] and [r \$0-output1] take input from
 the [module_data] abstraction.;
-#X text 225 247 <- this abstraction takes the analog input values and
+#X text 225 244 <- this abstraction takes the analog input values and
 assembles them (since they have been disassembled in the Arduino code).
 its argument is the number of potentiometers.;
 #X text 50 32 declare the path to the generic abstractions as they
@@ -343,41 +338,54 @@ active in a module and helps control various aspects. Here it controls
 [switch~] which will go off when there are no more connections in this
 module. The output of the abstraction is being delayed by the same
 amount of the [mtx_*~] ramp time.;
-#X text 252 328 <- these abstractions map value ranges. [map_zero]
+#X text 252 372 <- these abstractions map value ranges. [map_zero]
 maps a range from 0 to some number to a range from 0 to another number.
 its arguments are the maximum value of the input range and the maximum
 value of the output range. [map] maps arbitrary ranges. its arguments
 are from low value \, from high value \, to low value \, and to high
 value (ranges can be inverted \, meaning that the input range can be
 incrementing while the output range can be decremening).;
-#X text 273 594 <- this abstraction breaks the bits of the module's
+#X text 273 640 <- this abstraction breaks the bits of the module's
 byte where the switches are wired to. its argument is the number of
 switches and it creates as many outlets. note that when a switch changes
 \, it causes all switches to output their values.;
-#X obj 164 592 get_switches 2;
+#X obj 164 638 get_switches 2;
 #X text 128 127 data comes in with the send name "module" and the index
 of the module which is the frist argument of the module abstraction.
 a leading 0 in the data list means that the data is potentiometer values
 and a 1 means it's switch values.;
+#X obj 49 435 map 0 1023 10 50;
+#X obj 131 374 map 0 1023 1 -1;
+#X obj 214 320 map_zero 1023 100;
+#X obj 103 411 r analog_res;
+#X obj 182 351 r analog_res;
+#X obj 272 297 r analog_res;
+#X text 370 294 <- this [receive] takes input from [pd init];
+#X text 375 308 in the parent patch of this abstraction;
+#X text 375 324 in case a resolution other than 10-bit is;
+#X text 375 339 used in the micro-controller;
 #X connect 6 0 7 1;
-#X connect 7 0 17 0;
-#X connect 7 1 20 0;
+#X connect 7 0 15 0;
+#X connect 7 1 18 0;
 #X connect 8 0 9 0;
-#X connect 9 0 25 0;
-#X connect 9 1 40 0;
-#X connect 10 0 31 0;
-#X connect 12 0 6 0;
-#X connect 17 0 18 0;
-#X connect 20 0 19 0;
-#X connect 21 0 18 0;
-#X connect 22 0 19 0;
-#X connect 23 0 7 0;
-#X connect 24 0 23 0;
-#X connect 25 0 24 0;
-#X connect 25 1 12 0;
-#X connect 25 2 10 0;
-#X connect 27 0 30 0;
-#X connect 30 0 28 0;
-#X connect 31 0 7 2;
-#X connect 40 0 17 1;
-#X connect 40 1 20 1;
+#X connect 9 0 22 0;
+#X connect 9 1 37 0;
+#X connect 15 0 16 0;
+#X connect 18 0 17 0;
+#X connect 19 0 16 0;
+#X connect 20 0 17 0;
+#X connect 21 0 7 0;
+#X connect 22 0 39 0;
+#X connect 22 1 40 0;
+#X connect 22 2 41 0;
+#X connect 24 0 27 0;
+#X connect 27 0 25 0;
+#X connect 28 0 7 2;
+#X connect 37 0 15 1;
+#X connect 37 1 18 1;
+#X connect 39 0 21 0;
+#X connect 40 0 6 0;
+#X connect 41 0 28 0;
+#X connect 42 0 39 2;
+#X connect 43 0 40 2;
+#X connect 44 0 41 1;
