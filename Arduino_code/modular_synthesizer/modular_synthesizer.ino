@@ -43,8 +43,8 @@ byte switch_pins[NUM_OF_MODULES] = { B00011000, B00011000 };
 byte num_of_switches[NUM_OF_MODULES] = { 0, 0 };
 // this byte represents the pin the patch update switch is attached to
 // and it's used in the check_switches() function
-byte patch_update_switch = B00010000;
-// this is the index of the ADC/DAC module, where the patch update switch is attached to
+byte patch_update_switch = B01000000;
+// this is the index of the module where the patch update switch is attached to
 int patch_update_switch_module = 0;
 
 // multiplexers
