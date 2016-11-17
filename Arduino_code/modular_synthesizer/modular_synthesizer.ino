@@ -7,6 +7,9 @@
 #define NUM_OF_MODULES 2
 #define SMOOTH 20
 #define BAUDRATE 57600
+// define a speed for the SPI library, as a cable that's too long might give strange results with a high speed
+// with a 2 meter ribbon cable 8000000 seems to work fine, trial and error might help here...
+#define SPISPEED 8000000
 // if using a board with an analog pin resolution greater than 10-bits, uncomment the line below
 // and set the correct resolution
 // #define ANALOG_RESOLUTION 12
@@ -171,10 +174,13 @@ void check_connections(int pin, int module)
     // mask the input byte to exclude any possible switches on the module and check if changed
     byte masked_banana = input_data[i] & banana_pins[i];
     if(masked_banana != banana_states[pin][i]){
-      // store connection data index, number of expected bytes, input chip byte (split in two)
-      // number of input pins of current chip, number of output pin, and total number of input pins
+      // store other_data index, number of expected bytes, index within the other_data (check Pd patch)
+      // input chip byte (split in two), number of input pins of current chip
+      // number of output pin, and total number of input pins
       transfer_data[local_index++] = NUM_OF_MODULES;
-      transfer_data[local_index++] = 5;
+      transfer_data[local_index++] = 6;
+      // data that are not diffused to modules need an extra index where 1 is the index for the connections data
+      transfer_data[local_index++] = 1;
       transfer_data[local_index++] = masked_banana & 0x7f;
       transfer_data[local_index++] = masked_banana >> 7;
       transfer_data[local_index++] = total_input_bananas[i];
@@ -407,6 +413,8 @@ void setup()
 {
   // initialize the SPI library
   SPI.begin();
+  // and set the speed, according to cable length
+  SPI.beginTransaction(SPISettings(SPISPEED, MSBFIRST, SPI_MODE0));
 
   // allocate memory for all arrays that don't have their sizes calculated yet
 
@@ -442,14 +450,14 @@ void setup()
 
   // set multiplexers control pins and values
   for(int i = 0; i < num_master_ctl_pins; i++){
-    master_ctl_values[i] = pow(2, (i + 1)) - 1;
+    master_ctl_values[i] = (1 << (i + 1)) - 1;
     // master multiplexers have their control pins wired to digital pins 2 to 5
     master_ctl_pins[i] = (num_master_ctl_pins - i) + 1;
     pinMode(master_ctl_pins[i], OUTPUT);
   }
 
   for(int i = 0; i < num_slave_ctl_pins; i++){
-    slave_ctl_values[i] = pow(2, (i + 1)) - 1;
+    slave_ctl_values[i] = (1 << (i + 1)) - 1;
     // slave multiplexers have their control pins wired to digital pins 6 to 8
     slave_ctl_pins[i] = (num_slave_ctl_pins - i) + 5;
     pinMode(slave_ctl_pins[i], OUTPUT);
@@ -492,13 +500,20 @@ void setup()
 
   // open the serial port
   Serial.begin(BAUDRATE);
+  // the Teensy needs the line below in order to write the analog pins resolution to the serial line
+  // this was suggested by el_supremo (Pete) in Teensy's forum
+  while(!Serial);
 
   // if analog resolution is other than 10 set it and send it to Pd
   #ifdef ANALOG_RESOLUTION
     analogReadResolution(ANALOG_RESOLUTION);
     int local_index = 1;
-    transfer_data[local_index++] = NUM_OF_MODULES + 1; // index for the analog pin resolution
-    transfer_data[local_index++] = 1; // after this, we should expect one byte only in Pd
+    // data that don't route to modules get the number of modules as their first index
+    transfer_data[local_index++] = NUM_OF_MODULES;
+    // after this, we should expect the other_data index and one byte only in Pd
+    transfer_data[local_index++] = 2;
+    // as a second index a 0 denotes the analog resolution data
+    transfer_data[local_index++] = 0;
     transfer_data[local_index++] = ANALOG_RESOLUTION;
     Serial.write(transfer_data, local_index);
   #endif
