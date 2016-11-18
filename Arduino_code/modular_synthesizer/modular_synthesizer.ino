@@ -309,9 +309,9 @@ void read_pots(){
   // set local index to global index's current value
   int local_index = ndx;
   // set row index for 2D array multiple pots
-  int row_index = 0;
+  int pot_index = 0;
   static int module_index = 0;
-  static int tail = 0;
+  static int smooth_index = 0;
   // run througn all master multiplexers
   for(int master_mux = 0; master_mux < num_of_master_mux; master_mux++){
     // run through all slave multiplexers
@@ -340,22 +340,22 @@ void read_pots(){
           for(int i = 0; i < num_slave_ctl_pins; i++)
             digitalWrite(slave_ctl_pins[i], (pot & slave_ctl_values[i]) >> i);
           // smooth out the analog reading
-          sums[row_index] -= multiple_pots[row_index][tail];
-          sums[row_index] += multiple_pots[row_index][tail] = analogRead(master_mux);
-          unsigned int smoothed = sums[row_index] / SMOOTH;
+          sums[pot_index] -= multiple_pots[pot_index][smooth_index];
+          sums[pot_index] += multiple_pots[pot_index][smooth_index] = analogRead(master_mux);
+          unsigned int smoothed = sums[pot_index] / SMOOTH;
           // and store the smoothed value to the transfer_data array
           transfer_data[local_index++] = smoothed & 0x007f;
           transfer_data[local_index++] = smoothed >> 7;
         }
-        row_index++; // update the 2D array row index anyway
+        pot_index++; // update the 2D array row index anyway
       }
       // the module index is independent of activity as well, it should always increment
       module_index++;
       if(module_index >= NUM_OF_MODULES) module_index = 0;
     }
   }
-  tail++;
-  if(tail >= SMOOTH) tail = 0;
+  smooth_index++;
+  if(smooth_index >= SMOOTH) smooth_index = 0;
 
   ndx = local_index;
 }
