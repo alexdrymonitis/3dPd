@@ -17,6 +17,13 @@ Note: I know that using [declare] inside abstractions is not a good idea, since 
 
 In the [pd print_connections] subpatch you can enable the printing of the connections you make in your synthesizer, for debugging. The way this project is coded, it lets you use a switch (in a module of your choice, I put it in the ADC/DAC module) in order to control whether the patching will be updated instantly or whether it will be stored in a matrix. In the second case, when you change the position of the switch, the matrix will be sent to [mtx_*~] (which is the heart of the audio of the synth). This is why [pd print_connections] destinguishes between an "element" message and a whole matrix. Check the Arudino code and the [pd update_patching] sub-patch (which is in the [matrix_connections] abstraction) to see how this works.
 
+### External libraries used
+
+This project uses the following external libraries:
+zexy
+comport
+iemmatrix
+
 
 ## Note about the circuits
 
