@@ -5,14 +5,14 @@
 #include <SPI.h>
 
 #define NUM_OF_MODULES 2
-#define SMOOTH 20
+//#define SMOOTH 20
 #define BAUDRATE 57600
 // define a speed for the SPI library, as a cable that's too long might give strange results with a high speed
 // with a 2 meter ribbon cable 8000000 seems to work fine, trial and error might help here...
 #define SPISPEED 8000000
-// if using a board with an analog pin resolution greater than 10-bits, uncomment the line below
-// and set the correct resolution
-// #define ANALOG_RESOLUTION 12
+// if using a board wih an analog pin resolution greater than 10-bits
+// uncomment the line below and set the correct resolution
+#define ANALOG_RESOLUTION 12
 
 
 // global variables
@@ -43,7 +43,7 @@ byte switch_pins[NUM_OF_MODULES] = { B00011000, B00011000 };
 byte num_of_switches[NUM_OF_MODULES] = { 0, 0 };
 // this byte represents the pin the patch update switch is attached to
 // and it's used in the check_switches() function
-byte patch_update_switch = B01000000;
+byte patch_update_switch = B00010000;
 // this is the index of the module where the patch update switch is attached to
 int patch_update_switch_module = 0;
 
@@ -133,13 +133,7 @@ int slave_ctl_pins[num_slave_ctl_pins];
 int slave_ctl_values[num_slave_ctl_pins];
 // variable to hold the total number of potentiometers which will be calculated in the setup function
 int total_pots = 0;
-// two-dimensional array to store multiple readings of each knob for smoothing
-// rows = total_pots, columns = SMOOTH
-// it's size will be allocated in the setup function because the total_pots variable hasn't been calculated yet
-int **multiple_pots;
-// array to sum up readings for smoothing
-// it's size will be allocated in the setup function because the total_pots variable hasn't been calculated yet
-unsigned long *sums;
+float *smoothedVals;
 // arrays to store and back up activity of modules (back up if we're not updating the patching)
 // the potentiometers of each module will be either read or not read according to their activity
 byte active_modules[NUM_OF_MODULES] = { 0 };
@@ -152,8 +146,10 @@ byte back_up_modules[NUM_OF_MODULES] = { 0 };
 void refresh_output()
 {
   digitalWrite(output_latch, LOW);
-  for(int i = NUM_OF_MODULES - 1; i >= 0; i--)
+  for(int i = NUM_OF_MODULES - 1; i >= 0; i--){
+    // send a byte to the next register
     SPI.transfer(output_data[i]);
+  }
   digitalWrite(output_latch, HIGH);
 }
 
@@ -162,8 +158,10 @@ void refresh_input()
 {
   digitalWrite(input_latch, LOW);
   digitalWrite(input_latch, HIGH);
-  for(int i = 0; i < NUM_OF_MODULES; i++)
+  for(int i = 0; i < NUM_OF_MODULES; i++){
+    // send a value of 0 to read the first byte returned
     input_data[i] = SPI.transfer(0);
+  }
 }
 
 void check_connections(int pin, int module)
@@ -310,39 +308,37 @@ void read_pots(){
   int local_index = ndx;
   // set row index for 2D array multiple pots
   int pot_index = 0;
-  static int module_index = 0;
-  static int smooth_index = 0;
+  int module_index = 0;
+  //static byte smooth_index = 0;
   // run througn all master multiplexers
   for(int master_mux = 0; master_mux < num_of_master_mux; master_mux++){
     // run through all slave multiplexers
     for(int slave_mux = 0; slave_mux < num_of_slave_mux[master_mux]; slave_mux++){
-      // if this module is active, store its index and the number of potentiometers (time 2) to the transfer array
+      // if this module is active, store its index, the number of bytes to expect
+      // and a 0 to denote that the following values are potentiometer values
       // and route its output to its master multiplexer
       // activity of modules is being stored in the check_connections function
       if(active_modules[module_index]){
         transfer_data[local_index++] = module_index;
-        // if the current module includes switches we need one extra byte for the potentiometer data index of the module
-        if(switch_pins[module_index]){
-          transfer_data[local_index++] = (num_of_pots[master_mux][slave_mux] * 2) + 1;
-          // 0 indicates that the data received in a module abstraction concern its potentiometers
-          transfer_data[local_index++] = 0;
-        }
-        else transfer_data[local_index++] = num_of_pots[master_mux][slave_mux] * 2;
+        transfer_data[local_index++] = (num_of_pots[master_mux][slave_mux] * 2) + 1;
+        transfer_data[local_index++] = 0;
         // set the control pins of the current master multiplexer
         for(int i = 0; i < num_master_ctl_pins; i++)
           digitalWrite(master_ctl_pins[i], (slave_mux & master_ctl_values[i]) >> i);
       }
       // run through the pins used on each slave multiplexer
+      // the active module test needs to be separate here in order to be able
+      // to increment the row_index variable at every iteration of the loop below
       for(int pot = 0; pot < num_of_pots[master_mux][slave_mux]; pot++){
         // if this module is active store the values of its potentiometers
         if(active_modules[module_index]){
           // set the control pins of the current slave multiplexer
           for(int i = 0; i < num_slave_ctl_pins; i++)
             digitalWrite(slave_ctl_pins[i], (pot & slave_ctl_values[i]) >> i);
+          // read the corresponding analog pin of the Teensy
+          int pot_val = analogRead(master_mux);
           // smooth out the analog reading
-          sums[pot_index] -= multiple_pots[pot_index][smooth_index];
-          sums[pot_index] += multiple_pots[pot_index][smooth_index] = analogRead(master_mux);
-          unsigned int smoothed = sums[pot_index] / SMOOTH;
+          int smoothed = smooth(pot_val, pot_index);
           // and store the smoothed value to the transfer_data array
           transfer_data[local_index++] = smoothed & 0x007f;
           transfer_data[local_index++] = smoothed >> 7;
@@ -351,13 +347,17 @@ void read_pots(){
       }
       // the module index is independent of activity as well, it should always increment
       module_index++;
-      if(module_index >= NUM_OF_MODULES) module_index = 0;
     }
   }
-  smooth_index++;
-  if(smooth_index >= SMOOTH) smooth_index = 0;
 
   ndx = local_index;
+}
+
+int smooth(int val_to_smooth, int index){
+  float filterVal = 0.95;
+  smoothedVals[index] = (val_to_smooth * (1 - filterVal)) + (smoothedVals[index]  *  filterVal);
+
+  return (int)smoothedVals[index];
 }
 
 void reset_connections()
@@ -423,17 +423,12 @@ void setup()
   banana_states = new byte* [sum_of_output_pins];
   for(int i = 0; i < sum_of_output_pins; i++) banana_states[i] = new byte[NUM_OF_MODULES];
 
-  // multiple_pots 2D array
+  // total_pots and smoothVals array
   for(int i = 0; i < num_of_master_mux; i++){
     for(int j = 0; j < greatest_num_of_slave_mux; j++)
       total_pots += num_of_pots[i][j];
   }
-  multiple_pots = new int* [total_pots];
-  for(int i = 0; i < total_pots; i++) multiple_pots[i] = new int[SMOOTH];
-
-
-  // sums array
-  sums = new unsigned long [total_pots];
+  smoothedVals = new float [total_pots];
 
   // transfer_data array
   // its size is totalPots * 2
@@ -450,14 +445,14 @@ void setup()
 
   // set multiplexers control pins and values
   for(int i = 0; i < num_master_ctl_pins; i++){
-    master_ctl_values[i] = (1 << (i + 1)) - 1;
+    master_ctl_values[i] = pow(2, (i + 1)) - 1;
     // master multiplexers have their control pins wired to digital pins 2 to 5
     master_ctl_pins[i] = (num_master_ctl_pins - i) + 1;
     pinMode(master_ctl_pins[i], OUTPUT);
   }
 
   for(int i = 0; i < num_slave_ctl_pins; i++){
-    slave_ctl_values[i] = (1 << (i + 1)) - 1;
+    slave_ctl_values[i] = pow(2, (i + 1)) - 1;
     // slave multiplexers have their control pins wired to digital pins 6 to 8
     slave_ctl_pins[i] = (num_slave_ctl_pins - i) + 5;
     pinMode(slave_ctl_pins[i], OUTPUT);
