@@ -423,7 +423,7 @@ void setup()
   banana_states = new byte* [sum_of_output_pins];
   for(int i = 0; i < sum_of_output_pins; i++) banana_states[i] = new byte[NUM_OF_MODULES];
 
-  // total_pots and smoothVals array
+  // total_pots and smoothedVals array
   for(int i = 0; i < num_of_master_mux; i++){
     for(int j = 0; j < greatest_num_of_slave_mux; j++)
       total_pots += num_of_pots[i][j];
