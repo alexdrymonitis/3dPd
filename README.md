@@ -23,6 +23,7 @@ This project uses the following external libraries:
 zexy
 comport
 iemmatrix
+iemguts
 
 
 ## Note about the circuits
