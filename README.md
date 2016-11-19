@@ -19,7 +19,7 @@ In the [pd print_connections] subpatch you can enable the printing of the connec
 
 ### External libraries used
 
-This project uses the following external libraries:
+This project uses the following external libraries:  
 zexy  
 comport  
 iemmatrix  
