@@ -1,6 +1,6 @@
 # modular_synthesizer
 
-This repository hosts the code (schematics, and circuit board designs (made in Kicad) will be uploaded shortly) for a hardware digital modular synthesizer. The audio is programmed in Pure Data and the hardware control in the Arduino language. A Teensy is used as a micro-controller, but it is generally referred to as an Arduino.
+This repository hosts the code (schematics, and circuit board designs (made in Kicad) will be uploaded shortly) for a hardware digital modular synthesizer. The audio is programmed in Pure Data and the hardware control in the Arduino language.
 This synthesizer is supposed to run on a Raspberry Pi 3 and a Teensy3.2. You're welcome to use any other hardware you like, but this specific hardware is supported and explained here.
 
 
