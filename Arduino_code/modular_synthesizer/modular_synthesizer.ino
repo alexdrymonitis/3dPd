@@ -1,12 +1,12 @@
-/*****************************************************************************
- * This Arduino sketch is written for a physical digital modular synthesizer *
- * The control part of this synthesizer runs on a Teensy3.2 (or 3.5, 3.6)    *
- * which is programmed in the Arduino language using Teensyduino             *
- * the audio part of the synthesizer runs on an embedded computer (Odroid-U3 *
- * or a Raspberry Pi 3), which is programmed in Pure Data. In order for this *
- * code to run, you'll need to combine it with the Pd patch that comes with  *
- * this sketch.                                                              *
- *****************************************************************************/
+/***********************************************************************************
+ * This Arduino sketch is written for a physical digital modular synthesizer       *
+ * The control part of this synthesizer runs on a Teensy3.2 (or 3.5, 3.6)          *
+ * which is programmed in the Arduino language using Teensyduino                   *
+ * the audio part of the synthesizer runs on an embedded computer (Raspberry Pi 3) *
+ * which is programmed in Pure Data. In order for this                             *
+ * code to run, you'll need to combine it with the Pd patch that comes with        *
+ * this sketch.                                                                    *
+ ***********************************************************************************/
 
 // inculde the SPI library to control the shift registers
 #include <SPI.h>
@@ -20,7 +20,7 @@
 // by the SPI pins. a 8000000 speed worked for me for 12 modules, after that
 // I needed to drop it to 4000000. trial and error will probably work here
 // if you get funny results, you'll probably need to lower the speed
-#define SPISPEED 4000000
+#define SPISPEED 8000000
 // if using a board wih an analog pin resolution greater than 10-bits
 // uncomment the line below and set the correct resolution
 #define ANALOG_RESOLUTION 13
