@@ -1,0 +1,22 @@
+#N canvas 482 362 518 412 10;
+#X obj 38 374 print;
+#X obj 38 352 comport 0 57600;
+#X msg 64 311 close;
+#X msg 38 231 device;
+#X floatatom 52 266 5 0 0 0 - - -, f 5;
+#X msg 52 285 open \$1;
+#X text 29 111 If neither sketch is able to print 13 and instead you
+get a 10 \, you must change the [arduino_data] and [matrix_connections]
+abstractions in the modular_synthesizer.pd patch \, with the [arduino_data13]
+and [matrix_connections13] abstractions \, plus use the modular_synthesizer13.ino
+Arduino sketch. The rest should work as expected.;
+#X text 29 24 This very simple patch is for testing whether you can
+print the number 13 from the Teensy to Pd. If you get 13 printed in
+Pd's console either with the write13.ino or the print13.ino sketch
+\, you're good to go with the modular_synthesizer.pd patch. Read the
+README that comes with the Arduino sketches for more information;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X connect 4 0 5 0;
+#X connect 5 0 1 0;

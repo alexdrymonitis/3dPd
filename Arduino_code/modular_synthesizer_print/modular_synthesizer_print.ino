@@ -8,6 +8,9 @@
  * this sketch.                                                              *
  *****************************************************************************/
 
+// this sketch uses the Serial.print() function to send data to Pd, in case the number 13 can only be written like this
+// Serial.print((char)13)
+
 // inculde the SPI library to control the shift registers
 #include <SPI.h>
 
@@ -166,8 +169,6 @@ byte backUpModules[NUM_OF_MODULES] = { 0 };
 // and this boolean to set whether this switch has just changed its position
 // both this information will come from reading serial data from Pd
 boolean patchUpdateChanged = false;
-// lastly a boolean to set whether a CLIP macro has been defined or not, which is used in the readPots() function
-boolean clip = false;
 
 
 /********************************* Custom functions **********************************/
@@ -241,7 +242,9 @@ void checkConnections(int pin, int module) {
       break;
     }
   }
-  if(localIndex > 1) Serial.write(transferData, localIndex);
+  if(localIndex > 1) {
+    for(int i = 0; i < localIndex; i++) Serial.print((char)transferData[i]);
+  }
   // update the activeModules array if the patch update switch has changed to on
   if(patchUpdate && patchUpdateChanged){
     for(int i = 0; i < NUM_OF_MODULES; i++) activeModules[i] = backUpModules[i];
@@ -321,7 +324,9 @@ void checkSwitches() {
       break;
     }
   }
-  if(localIndex > 1) Serial.write(transferData, localIndex);
+  if(localIndex > 1) {
+    for(int i = 0; i < localIndex; i++) Serial.print((char)transferData[i]);
+  }
 }
 
 // function to read potentiometers of active modules
@@ -367,8 +372,7 @@ void readPots() {
           int smoothed = smooth(potVal, potIndex);
           // clip the values for a more unified result if a CLIP macro has been defined
           // clip to CLIP - 1 for correct table reading in Pd
-          if(clip) if(smoothed >= CLIP) smoothed = CLIP - 1;
-
+          if(clip) if(smoothed > CLIP) smoothed = CLIP - 1;
           // and store the smoothed value split in two to the transferData array
           transferData[localIndex++] = smoothed & 0x007f;
           transferData[localIndex++] = smoothed >> 7;
@@ -379,7 +383,9 @@ void readPots() {
       moduleIndex++;
     }
   }
-  if(localIndex > 1) Serial.write(transferData, localIndex);
+  if(localIndex > 1) {
+    for(int i = 0; i < localIndex; i++) Serial.print((char)transferData[i]);
+  }
 }
 
 int smooth(int valToSmooth, int index) {
@@ -419,7 +425,7 @@ void sendNumInputsOutputs() {
   transferData[localIndex++] = totalNumInputs;
   transferData[localIndex++] = totalNumOutputs;
 
-  Serial.write(transferData, localIndex);
+  for(int i = 0; i < localIndex; i++) Serial.print((char)transferData[i]);
 }
 
 void sendAnalogReadResolution() {
@@ -436,7 +442,7 @@ void sendAnalogReadResolution() {
   transferData[localIndex++] = analogueReadResolution & 0x7f;
   transferData[localIndex++] = analogueReadResolution >> 7;
 
-  Serial.write(transferData, localIndex);
+  for(int i = 0; i < localIndex; i++) Serial.print((char)transferData[i]);
 }
 
 // interrupt and shut-down functions
@@ -458,7 +464,7 @@ void sendShutDown() {
   transferData[localIndex++] = 3;
   sendShutDownSignal = false;
 
-  Serial.write(transferData, localIndex);
+  for(int i = 0; i < localIndex; i++) Serial.print((char)transferData[i]);
 }
 
 void readSerialData() {

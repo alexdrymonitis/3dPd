@@ -1,12 +1,15 @@
 /*****************************************************************************
  * This Arduino sketch is written for a physical digital modular synthesizer *
- * The control part of this synthesizer runs on a Teensy3.2 (or 3.5, 3.6)    *
+ * The control part of this synthesizer runs on a Teensy3.2 (or 3.5, or 3.6) *
  * which is programmed in the Arduino language using Teensyduino             *
  * the audio part of the synthesizer runs on an embedded computer (Odroid-U3 *
  * or a Raspberry Pi 3), which is programmed in Pure Data. In order for this *
  * code to run, you'll need to combine it with the Pd patch that comes with  *
  * this sketch.                                                              *
  *****************************************************************************/
+
+// This sketch uses a technique to work around the bug with not being able to print the value 13
+// from the Teensy to Pd, even with Serial.print((char)13)
 
 // inculde the SPI library to control the shift registers
 #include <SPI.h>
@@ -95,9 +98,9 @@ int numOfTotalData;
 byte *transferData;
 // variable to hold analog pin resolution which will be set in the setup() function
 // depending on whether the ANALOG_RESOLUTION macro has been declared or not
-// defaults to 10, written analogue here to avoid name collision with Arduino's
+// defaults to 1023, written analogue here to avoid name collision with Arduino's
 // Built-in function analogReadResolution()
-byte analogueReadResolution = 10;
+int analogueReadResolution = 1023;
 
 
 /***************************** output shift registers *******************************/
@@ -173,7 +176,7 @@ boolean clip = false;
 /********************************* Custom functions **********************************/
 
 // function to transfer data to the output shift registers via SPI
-void refreshOutput() {
+void updateOutputBananas() {
   digitalWrite(outputLatch, LOW);
   for(int i = NUM_OF_MODULES - 1; i >= 0; i--){
     // send a byte to the next register
@@ -183,7 +186,7 @@ void refreshOutput() {
 }
 
 // function to receive data from the input shift registers via SPI
-void refreshInput() {
+void updateInputBananas() {
   digitalWrite(inputLatch, LOW);
   digitalWrite(inputLatch, HIGH);
   for(int i = 0; i < NUM_OF_MODULES; i++){
@@ -192,6 +195,7 @@ void refreshInput() {
   }
 }
 
+// function to detect connections between modules (or even within the same module)
 void checkConnections(int pin, int module) {
   int localIndex = 1;
 
@@ -199,44 +203,70 @@ void checkConnections(int pin, int module) {
   for(int i = 0; i < NUM_OF_MODULES; i++){
     // mask the input byte to exclude any possible switches on the module and check if changed
     byte maskedBanana = inputData[i] & bananaPins[i];
+    // the byte below will hold the value of only one bit change, untill all bits have changed to the current state of the module's inputs
+    // if not initialized, the compiler throws a warning that it may be used uninitialized
+    // further down in the line that reads: byte firstPart = temporaryByte & 0x7f;
+    byte temporaryByte = maskedBanana;
     // check if the input byte has changed and only then send the corresponding data to Pd
     if(maskedBanana != bananaStates[pin][i]){
-      // store generic data index (0) and number of expected bytes beyond that which are
-      // secondary index for generic data (check Pd patch)
-      // input chip byte (split in two), number of input pins of current chip
-      // number of output pin, and total number of input pins
+      // store generic data index (0), extra byte for bug with number 13
+      // number of expected bytes beyond that, secondary index for generic data (check Pd patch)
+      // input module byte (split in two), number of input pins of current module
+      // number of connecting (or disconnecting) output pin, and total number of input pins of previous modules
       transferData[localIndex++] = 0;
-      transferData[localIndex++] = 6;
+      transferData[localIndex++] = 1;
+
+      // send number of bytes to expect including the 13_bug fix, because of the potentiometers function
+      transferData[localIndex++] = 11;
+      transferData[localIndex++] = 1;
 
       // data that are not diffused to modules need a secondary index where 1 is the index for the connections data
       transferData[localIndex++] = 1;
 
-      // then we split the input byte
-      transferData[localIndex++] = maskedBanana & 0x7f;
-      transferData[localIndex++] = maskedBanana >> 7;
+      // then we split the input byte and set the 13_bug bytes as well
+      byte firstPart = temporaryByte & 0x7f;
+      transferData[localIndex++] = firstPart;
+      if(firstPart == 13) transferData[localIndex++] = 0;
+      else transferData[localIndex++] = 1;
+
+      byte secondPart = temporaryByte >> 7;
+      transferData[localIndex++] = secondPart;
+      if(secondPart == 13) transferData[localIndex++] = 0;
+      else transferData[localIndex++] = 1;
 
       transferData[localIndex++] = totalInputBananas[i];
+      if(totalInputBananas[i] == 13) transferData[localIndex++] = 0;
+      else transferData[localIndex++] = 1;
 
       // [mtx_*~] in Pd starts counting from 1
       transferData[localIndex++] = pin + 1;
+      if((pin + 1) == 13) transferData[localIndex++] = 0;
+      else transferData[localIndex++] = 1;
 
       // zero last byte of this group first
       transferData[localIndex] = 0;
       // and then check if we're not in the first module
       if(i){
         // if we're not in the first module accumulate the number of previous modules' input pins
-        // and increment localIndex
         for(int j = 0; j < i; j++) transferData[localIndex] += totalInputBananas[j];
-        localIndex++;
+        if(transferData[localIndex] == 13) {
+          localIndex++;
+          transferData[localIndex++] = 0;
+        }
+        else {
+          localIndex++;
+          transferData[localIndex++] = 1;
+        }
       }
       else{
-        // otherwise just increment localIndex
         localIndex++;
+        // otherwise just write the 13_bug fix
+        transferData[localIndex++] = 1;
       }
-      updateModules(maskedBanana, pin, module, i);
+      updateModules(temporaryByte, pin, module, i);
       // update the bananaStates array
-      bananaStates[pin][i] = maskedBanana;
-      // set the loop termination boolean to true, update the global index and exit loop
+      bananaStates[pin][i] = temporaryByte;
+      // set the loop termination boolean to true and exit loop
       terminateBananas = true;
       break;
     }
@@ -249,11 +279,12 @@ void checkConnections(int pin, int module) {
   }
 }
 
-void updateModules(byte maskedBanana, int pin, int module, int i) {
+// function to update the activity of each module, according to its connectivity and the patch update switch state
+void updateModules(byte temporaryByte, int pin, int module, int i) {
   // check if the current module is being activated or not
   // whenever a patch cord is plugged in, the input byte will increase no matter which bit reads HIGH
   // whenever a patch cord is plugged out, the input byte will decrease
-  if(maskedBanana > bananaStates[pin][i]){
+  if(temporaryByte > bananaStates[pin][i]){
     if(module == i){
       backUpModules[i] += 1;
       if(patchUpdate) activeModules[i] += 1;
@@ -291,6 +322,7 @@ void updateModules(byte maskedBanana, int pin, int module, int i) {
   }
 }
 
+// function to get bytes with the switches values of each module
 void checkSwitches() {
   int localIndex = 1;
 
@@ -298,23 +330,35 @@ void checkSwitches() {
     // mask the input byte according to the position of the switches and check if changed
     byte maskedSwitch = inputData[i] & switchPins[i];
     if(maskedSwitch != switchStates[i]){
-      // if changed, store module index (starting from 1) and num of bytes Pd should expect beyond that which are
+      // if changed, store module index (starting from 1), the extra byte for the 13_bug, num of bytes Pd should expect beyond that
       // module data index (1 for switches, 0 for potentiometers)
-      // input chip byte split in two, number of switches of current module
-      // and pin number of the first switch of the current module
+      // input chip byte split in two, and pin number of the first switch of the current module
+      // plus a byte for the 13_bug whereven a value can possible get the value 13
       transferData[localIndex++] = i + 1;
+      // check if we're at module 13 (index 12), cause this value just won't go throug the serial connection
+      // instead the Teensy prints 10
+      // a 0 means that the value received in Pd is not the real one
+      if(i == 12) transferData[localIndex++] = 0;
+      // while a 1 means it's the real value
+      else transferData[localIndex++] = 1;
+
+      // send number of bytes to expect including the 13_bug fix, because of the potentiometers function
       transferData[localIndex++] = 5;
+      transferData[localIndex++] = 1;
 
       // 1 indicates that the data received in a module abstraction concern its switches
       transferData[localIndex++] = 1;
 
       // split the input byte
+      // no need for the 13_bug byte cause the number 13 requires the first bit to be high
+      // but all modules have at least one input, which is the first bit, so no switch will ever be attached to that
       transferData[localIndex++] = maskedSwitch & 0x7f;
+      // the second byte won't ever be 13 cause the value split is one byte only
       transferData[localIndex++] = maskedSwitch >> 7;
-      // write the number of switches of this module
+      // switches can't be more than 8, so they'll never reach 13
       transferData[localIndex++] = totalNumSwitches[i];
 
-      // write the pin number of the first switch of the current module
+      // the first switch cannot be on pin 13, cause there are only 8 pins
       transferData[localIndex++] = firstSwitch[i];
       // update the switchStates array and the global index and exit loop
       switchStates[i] = maskedSwitch;
@@ -336,15 +380,26 @@ void readPots() {
   for(int masterMux = 0; masterMux < numOfMasterMux; masterMux++){
     // run through all slave multiplexers
     for(int slaveMux = 0; slaveMux < numOfSlaveMux[masterMux]; slaveMux++){
-      // if this module is active, store its index (starting from 1) and the number of bytes to expect which are
-      // the extra index 0 to denote that the following values are potentiometer values
-      // Note: activity of modules is being stored in the checkConnections function
+      // if this module is active, store its index (starting from 1), the extra byte for the bug with 13, the number of bytes to expect
+      // and a 0 to denote that the following values are potentiometer values
+      // and route its output to its master multiplexer
+      // activity of modules is being stored in the checkConnections function
       if(activeModules[moduleIndex]){
         transferData[localIndex++] = moduleIndex + 1;
-        // pot values are being split in two, and we need an extra byte for the pot index
-        transferData[localIndex++] = (numOfPots[masterMux][slaveMux] * 2) + 1;
+        // check if we're at module 13 (index 12), cause this value just won't go throug the serial connection
+        // instead the Teensy prints 10
+        // a 0 means that the value received in Pd is not the real one
+        if(moduleIndex == 12) transferData[localIndex++] = 0;
+        // while a 1 means it's the real value
+        else transferData[localIndex++] = 1;
 
-        // then send the pot index
+        // if a module has three potentiometer, the pot values along with the 13_bug bytes, and the module value index
+        // will be 13 in total, so we need to print the 13_bug fix
+        transferData[localIndex++] = (numOfPots[masterMux][slaveMux] * 4) + 1;
+        if(((numOfPots[masterMux][slaveMux] * 4) + 1) == 13) transferData[localIndex++] = 0;
+        else transferData[localIndex++] = 1;
+
+        // then send the index for the pots in the module data
         transferData[localIndex++] = 0;
         // set the control pins of the current master multiplexer
         for(int i = 0; i < numMasterCtlPins; i++)
@@ -369,9 +424,17 @@ void readPots() {
           // clip to CLIP - 1 for correct table reading in Pd
           if(clip) if(smoothed >= CLIP) smoothed = CLIP - 1;
 
-          // and store the smoothed value split in two to the transferData array
-          transferData[localIndex++] = smoothed & 0x007f;
-          transferData[localIndex++] = smoothed >> 7;
+          // and store the smoothed value to the transferData array
+          // with the extra index for the bug with 13
+          byte firstPart = smoothed & 0x007f;
+          transferData[localIndex++] = firstPart;
+          if(firstPart == 13) transferData[localIndex++] = 0;
+          else transferData[localIndex++] = 1;
+
+          byte secondPart = smoothed >> 7;
+          transferData[localIndex++] = secondPart;
+          if(secondPart == 13) transferData[localIndex++] = 0;
+          else transferData[localIndex++] = 1;
         }
         potIndex++; // update the 2D array row index anyway
       }
@@ -408,16 +471,26 @@ void sendNumInputsOutputs() {
 
   // store generic data index
   transferData[localIndex++] = 0;
+  // store extra byte for the 13_bug
+  transferData[localIndex++] = 1;
 
   // tell Pd how many more bytes to expect beyond the first index
   // one for the extra data index, one for the number of inputs and one for the number of outputs
-  transferData[localIndex++] = 3;
+  // plus two for the 13_bug
+  // include the 13_bug fix in this value as well, because of the potentiometers function
+  transferData[localIndex++] = 5;
+  transferData[localIndex++] = 1;
 
   // secondary index 2 indicates number of inputs and outputs data
   transferData[localIndex++] = 2;
 
   transferData[localIndex++] = totalNumInputs;
+  if(totalNumInputs == 13) transferData[localIndex++] = 0;
+  else transferData[localIndex++] = 1;
+
   transferData[localIndex++] = totalNumOutputs;
+  if(totalNumOutputs == 13) transferData[localIndex++] = 0;
+  else transferData[localIndex++] = 1;
 
   Serial.write(transferData, localIndex);
 }
@@ -427,14 +500,23 @@ void sendAnalogReadResolution() {
 
   // store generic data index
   transferData[localIndex++] = 0;
+  // store extra byte for bug with number 13
+  transferData[localIndex++] = 1;
 
-  // after this, we should expect the generic data secondary index and the analogRead resolution split in two
-  transferData[localIndex++] = 3;
+  // after this, we should expect the generic data secondary index the analogRead resolution, and the 13_bug byte
+  // include the 13_bug fix in this value as well, because of the potentiometers function
+  transferData[localIndex++] = 5;
+  transferData[localIndex++] = 1;
 
   // as a secondary index a 0 denotes the analog resolution data
   transferData[localIndex++] = 0;
+
   transferData[localIndex++] = analogueReadResolution & 0x7f;
+  if((analogueReadResolution & 0x7f) == 13) transferData[localIndex++] = 0;
+  else transferData[localIndex++] = 1;
   transferData[localIndex++] = analogueReadResolution >> 7;
+  if((analogueReadResolution >> 7) == 13) transferData[localIndex++] = 0;
+  else transferData[localIndex++] = 1;
 
   Serial.write(transferData, localIndex);
 }
@@ -450,8 +532,12 @@ void sendShutDown() {
 
   // store the generic data index
   transferData[localIndex++] = 0;
+  // store extra byte for bug with number 13
+  transferData[localIndex++] = 1;
 
   // let Pd know how many more bytes to expect; one byte is the extra index which will result in a bang after [route]
+  // include the 13_bug fix in this value as well, because of the potentiometers function
+  transferData[localIndex++] = 1;
   transferData[localIndex++] = 1;
 
   // secondary index denotes shut down data
@@ -529,10 +615,11 @@ void setup() {
   smoothedVals = new float [totalPots];
 
   // transferData array
-  // since each function writes separately, the maximum size is totalPots * 2 (the pot values split in two)
-  // plus total number of modules * 2
+  // since each function writes separately, the size is totalPots * 4 (two bytes for the actual value, and two for the 13_bug byte)
+  // plus total number of modules * 4
   // one for sending the module index, one for sending the nr of pots of each module
-  numOfTotalData = (totalPots * 2) + (NUM_OF_MODULES * 2);
+  // and one 13_bug fix for each of these two values
+  numOfTotalData = (totalPots * 4) + (NUM_OF_MODULES * 4);
   transferData = new byte [numOfTotalData];
   // write the start character to the transfer_data array
   transferData[0] = 0xff;
@@ -607,12 +694,12 @@ void setup() {
   // if analog resolution is other than 10 set it
   #ifdef ANALOG_RESOLUTION
     analogReadResolution(ANALOG_RESOLUTION);
-    analogueReadResolution = pow(2, ANALOG_RESOLUTION) - 1;
+    analogueReadResolution = (pow(2, ANALOG_RESOLUTION)) - 1;
   #endif
 
-  // if a CLIP value has been defined, use that for the analogueReadResolution
+  // if a clipping value is set for the potentiometers, use that for the analogueReadResolution
   #ifdef CLIP
-    // use CLIP - 1 since 0 is included (this results in better table reading in Pd)
+    // send CLIP - 1 as the analogueReadResolution for a better table reading in Pd
     analogueReadResolution = CLIP - 1;
     clip = true;
   #endif
@@ -635,10 +722,10 @@ void loop() {
       int localPin = pin;
       // set the current pin HIGH
       bitSet(outputData[i], j);
-      refreshOutput();
+      updateOutputBananas();
       // give some time to the shift registers to do their job
       delayMicroseconds(1);
-      refreshInput();
+      updateInputBananas();
       // give some time to the shift registers to do their job
       delayMicroseconds(1);
       // add current and previous pins of current chip

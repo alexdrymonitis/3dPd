@@ -1,0 +1,8 @@
+Before uploading code to the Teensy you must make a small test. I had problems sending the value 13 from the Teensy to Pd. Arduino's Serial.write() function didn't work, and instead of 13 I was receiving a 10.
+Searching I found that Serial.print((char)13) might do the job. On my laptop with an Arduino Uno, this does work indeed (while Serial.write(13) doesn't even work on my laptop), but on my Teensy3.6 and my Odroid-U3 even this didn't work, and again I was receiving a 10 in Pd.
+I don't know why this is happening. I sent a mail to Pd's mailing list, but Matrin Peach, the developer of [comport] reported that he can print 13 with Serial.write() without any issues. It can be because of 13 being ASCII carriage return and 10 being the line feed, which in some cases (like Arduino's Serial.println() funciton) these two ASCII values are combined.
+I found a work around this problem by adding some extra data to the data sent from the Teensy to Pd. You should do the following test:
+
+Upload the write.ino Arduino sketch to the Teensy and open the test13.pd patch. If you get 13 printed in Pd's console, you're good to go. Upload the modular_synthesizer.ino sketch and open the modular_synthesizer.pd patch.
+If instead of 13 you get 10 printed to Pd's console, open the print13.ino sketch and the test13.pd patch. If you get 13 printed in Pd's console, you're good to go. Upload the modular_synthesizer_print.ino sketch and open the modular_synthesizer.pd patch.
+If you still get 10 printed to Pd's console, upload the modular_synthesizer13.ino sketch to the Teensy. In modular_synthesizer.pd patch, change the [arduino_data] and [matrix_connections] abstractions with [arduino_data13] and [matrix_connections13] abstractions. The rest should work as expected.
