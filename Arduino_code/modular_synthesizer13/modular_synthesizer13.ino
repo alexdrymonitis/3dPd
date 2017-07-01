@@ -23,7 +23,7 @@
 // by the SPI pins. a 8000000 speed worked for me for 12 modules, after that
 // I needed to drop it to 4000000. trial and error will probably work here
 // if you get funny results, you'll probably need to lower the speed
-#define SPISPEED 4000000
+#define SPISPEED 8000000
 // if using a board wih an analog pin resolution greater than 10-bits
 // uncomment the line below and set the correct resolution
 #define ANALOG_RESOLUTION 13
