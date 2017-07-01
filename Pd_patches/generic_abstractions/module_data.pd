@@ -1,4 +1,44 @@
-#N canvas 1 82 317 253 10;
+#N canvas 649 529 682 571 10;
+#X declare -path ./generic_abstractions/module_data_abstractions -path
+../generic_abstractions/module_data_abstractions;
+#X obj 27 295 unpack;
+#X obj 27 327 t f f;
+#X obj 121 312 t f f;
+#X obj 461 329 outlet_connections \$1 \$2 \$4;
+#X obj 257 344 inlet_connections \$1 \$2 \$3;
+#X obj 191 458 pack;
+#X obj 461 479 outlet;
+#X obj 121 354 set_outputs \$4;
+#X obj 27 464 route_inputs \$1 \$3;
+#X obj 121 377 route_outputs \$1 \$4;
+#X obj 27 441 set_inputs \$3;
+#X obj 27 160 declare -path ./generic_abstractions/module_data_abstractions
+-path ../generic_abstractions/module_data_abstractions;
+#X text 27 10 since this abstraction is included in a module abstraction
+(which will eventually be called from the main "modular_synth.pd" pathc)
+which is in the "modules" directory \, while this abstraction is in
+the "generic_abstractions" \, which is in the same directory as the
+"modules_abstractions" directory and all the abstractions included
+here are in the "module_data_abstractions" directory \, which is in
+the "generic_absrtactions" directory \, the "modules_data_abstractions"
+directory must be included the way it's included in [declare] below
+;
+#N canvas 1048 590 307 185 pass_to_next_module 0;
+#X obj 94 31 loadbang;
+#X obj 94 53 \$2;
+#X obj 94 75 + 1;
+#X msg 94 97 symbol module_data\$1;
+#X obj 27 92 inlet;
+#X obj 27 114 s;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 1;
+#X connect 4 0 5 0;
+#X restore 191 480 pd pass_to_next_module;
+#X obj 27 223 r module_data\$2;
+#X msg 27 267 0 0;
+#X obj 27 245 route bang list;
 #N canvas 1 82 608 586 accumulate_connections 0;
 #X obj 26 234 swap;
 #X obj 26 256 pack;
@@ -90,18 +130,24 @@ the module \, depending on its activity;
 #X connect 25 0 17 1;
 #X connect 26 0 16 1;
 #X connect 26 1 25 0;
-#X restore 74 148 pd accumulate_connections;
-#X obj 74 170 change;
-#X obj 74 192 outlet;
-#X obj 74 18 loadbang;
-#X msg 74 83 symbol \$1-inlet\$2;
-#X obj 74 62 pack s \$1;
-#X obj 74 40 canvasdollarzero 1;
-#X obj 74 126 oreceive;
+#X restore 461 435 pd accumulate_connections;
+#X obj 461 457 change;
 #X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 3 0 6 0;
-#X connect 4 0 7 0;
-#X connect 5 0 4 0;
-#X connect 6 0 5 0;
-#X connect 7 0 0 0;
+#X connect 0 1 2 0;
+#X connect 1 0 10 0;
+#X connect 1 1 4 0;
+#X connect 2 0 7 0;
+#X connect 2 1 3 0;
+#X connect 3 0 17 0;
+#X connect 4 0 17 0;
+#X connect 5 0 13 0;
+#X connect 7 0 9 0;
+#X connect 7 1 5 1;
+#X connect 10 0 8 0;
+#X connect 10 1 5 0;
+#X connect 14 0 16 0;
+#X connect 15 0 0 0;
+#X connect 16 0 15 0;
+#X connect 16 1 0 0;
+#X connect 17 0 18 0;
+#X connect 18 0 6 0;

@@ -1,4 +1,4 @@
-#N canvas 175 106 653 387 10;
+#N canvas 177 108 653 387 10;
 #X obj 20 188 until;
 #X obj 20 213 f;
 #X obj 20 238 &;
@@ -10,6 +10,8 @@
 #X obj 20 163 f;
 #X obj 20 260 != 0;
 #X obj 20 140 t b b f;
+#X text 134 124 start spliting bits from the pin number the first switch
+is attached to;
 #X obj 20 35 inlet;
 #X obj 20 59 unpack f f f f;
 #X text 135 55 incoming bytes are input chip byte (split in two) \,
@@ -98,11 +100,6 @@ switch is wired to;
 #X connect 34 0 10 0;
 #X restore 413 207 pd guts;
 #X obj 20 283 repack \$1;
-#X obj 20 320 unpack f f;
-#X obj 20 350 outlet;
-#X obj 87 350 outlet;
-#X text 134 124 start spliting bits from the pin number the first switch
-is wired to;
 #X connect 0 0 1 0;
 #X connect 1 0 7 0;
 #X connect 1 0 2 0;
@@ -114,14 +111,12 @@ is wired to;
 #X connect 6 0 1 1;
 #X connect 7 0 1 1;
 #X connect 8 0 0 0;
-#X connect 9 0 16 0;
+#X connect 9 0 17 0;
 #X connect 10 0 8 0;
 #X connect 10 2 2 1;
-#X connect 11 0 12 0;
-#X connect 12 0 3 0;
-#X connect 12 1 4 0;
-#X connect 12 2 8 1;
-#X connect 12 3 5 0;
-#X connect 16 0 17 0;
-#X connect 17 0 18 0;
-#X connect 17 1 19 0;
+#X connect 12 0 13 0;
+#X connect 13 0 3 0;
+#X connect 13 1 4 0;
+#X connect 13 2 8 1;
+#X connect 13 3 5 0;
+_initbang bang;
