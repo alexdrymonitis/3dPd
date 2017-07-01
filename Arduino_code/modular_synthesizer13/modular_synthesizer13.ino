@@ -1,12 +1,12 @@
-/*****************************************************************************
- * This Arduino sketch is written for a physical digital modular synthesizer *
- * The control part of this synthesizer runs on a Teensy3.2 (or 3.5, or 3.6) *
- * which is programmed in the Arduino language using Teensyduino             *
- * the audio part of the synthesizer runs on an embedded computer (Odroid-U3 *
- * or a Raspberry Pi 3), which is programmed in Pure Data. In order for this *
- * code to run, you'll need to combine it with the Pd patch that comes with  *
- * this sketch.                                                              *
- *****************************************************************************/
+/***********************************************************************************
+ * This Arduino sketch is written for a physical digital modular synthesizer       *
+ * The control part of this synthesizer runs on a Teensy3.2 (or 3.5, 3.6)          *
+ * which is programmed in the Arduino language using Teensyduino                   *
+ * the audio part of the synthesizer runs on an embedded computer (Raspberry Pi 3) *
+ * which is programmed in Pure Data. In order for this                             *
+ * code to run, you'll need to combine it with the Pd patch that comes with        *
+ * this sketch.                                                                    *
+ ***********************************************************************************/
 
 // This sketch uses a technique to work around the bug with not being able to print the value 13
 // from the Teensy to Pd, even with Serial.print((char)13)
