@@ -1,0 +1,28 @@
+#N canvas 870 326 478 435 10;
+#X obj 77 215 t f f;
+#X obj 212 187 *;
+#X obj 212 209 sel 0;
+#X obj 285 232 == 10;
+#X obj 212 301 f;
+#X obj 227 148 inlet 13_bug_fix;
+#X text 57 33 the 13_bug_fix will be 1 if the receiving module is not
+module 13 \, and 0 if it is;
+#X text 56 65 In case the Teensy sends 13 \, we'll receive a 10 here
+\, and the multiplication below will result in 0 \, banging 13 instead
+;
+#X msg 285 284 13;
+#X obj 285 254 sel 1;
+#X obj 77 148 inlet actual_value;
+#X obj 212 343 outlet fixed_value;
+#X connect 0 0 1 0;
+#X connect 0 1 3 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 1 11 0;
+#X connect 3 0 9 0;
+#X connect 4 0 11 0;
+#X connect 5 0 1 1;
+#X connect 8 0 4 1;
+#X connect 9 0 8 0;
+#X connect 9 1 4 1;
+#X connect 10 0 0 0;

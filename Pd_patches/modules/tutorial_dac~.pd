@@ -1,0 +1,103 @@
+#N canvas 41 82 1389 927 10;
+#X declare -path ../generic_abstractions;
+#X obj 44 28 cnv 15 420 90 empty empty Declare_generic_abstractions_path
+0 -12 0 14 -204786 -66577 0;
+#X obj 52 94 declare -path ../generic_abstractions;
+#X obj 49 316 r module\$1;
+#X obj 484 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
+0 -12 0 14 -204786 -66577 0;
+#X obj 497 69 module_data \$0 \$1 \$2 \$3;
+#X obj 497 92 switch~;
+#X text 493 34 [module_data \$0 \$1 \$2 \$3] must be used in all module
+abstractions \, otherwise the whole system will not work;
+#X text 555 93 <- control the DSP of the module accodring to its activity
+;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions ([get_switches] \, [assemble_analog_inputs]
+\, [map] \, map_zero] \, and [module_data].;
+#X text 44 201 evrey module receives potentiometer and switch data
+with [r module\$1] \, where \$1 is the module index in the chain \,
+starting from 1;
+#X text 44 249 a leading 0 in the data received in [r module\$1] denotes
+potentiomere data \, while a leading 1 denotes switch data;
+#X text 234 579 <- get your potentiometer values. argument is number
+of potentiometers;
+#X text 130 315 <- get your potentiometer and switch data here;
+#X text 198 762 <- the resolution of the analog pins is sent from the
+Arduino and received in [pd init] \, in [pd moduels]. from there it
+is sent to [r analog_res]. [map_zero] sets a default 10-bit resolution
+since it's the standard resolution of the Arduino \, and [r analog_res]
+changes it to the resolution used \, in case it's different than 10-bit
+(like with the Teensy3.2 \, which is 13-bit);
+#X obj 100 763 r analog_res;
+#X text 164 868 <- [map_zero] maps a range starting from 0 to the value
+of the first argument to a range from 0 to the second argument;
+#X obj 816 298 module_input~ 0;
+#X obj 49 338 route 0 1;
+#X obj 49 581 assemble_analog_inputs 2;
+#X obj 49 867 map_zero 1023 1;
+#X obj 174 425 s patch_update_switch;
+#X obj 214 615 + 15;
+#X obj 214 637 s ramp;
+#X obj 49 889 s \$0-amp;
+#X obj 79 381 get_switches 2;
+#X obj 79 403 change;
+#X msg 79 525 dsp \$1;
+#X obj 79 547 s pd;
+#X text 119 546 turn the DSP on and off with this switch;
+#X obj 174 403 change;
+#X text 268 637 <- this potentiometer values are sent to the [matrix_connections]
+abstraction in the main patch and they set the matrix ramp \, when
+the patching updated is deactivated. when the patching updated is reactivated
+\, the matrix will ramp to the new patch in the time set by this potentiometer.
+afterwards it will return to its default ramp time (set by the first
+argument to the [matrix_connections] abstraction). you must use the
+name "ramp" to [s ] otherwise it won't work;
+#X text 334 423 <- control the patching update with this switch. when
+it is off \, you can change your patch and the changes will be saved
+but not applied. when you reactivate it \, the saved patch changes
+will be applied. this way you can change your patching without needing
+to cause sudden changes \, or cut off the overall sound. you must use
+the name "patch_update_switch" to [s ] otherwise it won't work;
+#X obj 816 420 *~;
+#X obj 965 325 r \$0-amp;
+#X obj 965 347 pack f 20;
+#X obj 965 369 line~;
+#X obj 816 447 dac~ 1;
+#X obj 946 420 *~;
+#X obj 946 298 module_input~ 1;
+#X obj 946 447 dac~ 2;
+#X text 812 169 in this module we're just receiving two signals \,
+we're controlling their amplitude \, and we're outputting them to the
+first two channels of the sound card.;
+#X text 814 238 the [module_input~] abstractions receive signals from
+the matrix of the synthesizer. their argument is the input number starting
+from zero.;
+#X text 45 153 this module is a simple dac~ \, which receives two signals
+and outputs them to the first two channels of the sound card;
+#X text 128 338 <- split data according to potentiometer and switch
+data index;
+#X text 190 381 <- get your switch data here. argument is number of
+switches;
+#X connect 2 0 17 0;
+#X connect 4 0 5 0;
+#X connect 14 0 19 1;
+#X connect 16 0 32 0;
+#X connect 17 0 18 0;
+#X connect 17 1 24 0;
+#X connect 18 0 19 0;
+#X connect 18 1 21 0;
+#X connect 19 0 23 0;
+#X connect 21 0 22 0;
+#X connect 24 0 25 0;
+#X connect 24 1 29 0;
+#X connect 25 0 26 0;
+#X connect 26 0 27 0;
+#X connect 29 0 20 0;
+#X connect 32 0 36 0;
+#X connect 33 0 34 0;
+#X connect 34 0 35 0;
+#X connect 35 0 32 1;
+#X connect 35 0 37 1;
+#X connect 37 0 39 0;
+#X connect 38 0 37 0;
