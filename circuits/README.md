@@ -4,7 +4,8 @@ This README file provides only very basic information about the circuits. I'm pl
 
 ## Generic note about this directory
 
-In this directory you'll find all the circuits used in this modular synthesizer. It's six circuits in total, each in its own directory. They have been designed in Kicad and all the necessary files are here. Each directory includes a README file which states which extra built-in libraries have been used. The ones I have made especially for these circuits are not mentioned in the README since their directories (library/ and .pretty/) are included here.
+In this directory you'll find all the circuits used in this modular synthesizer. It's six circuits in total, each in its own directory. They have been designed in Kicad and all the necessary files are here. Each directory includes a README file which states which extra built-in libraries have been used. The ones I have made especially for these circuits are not mentioned in the README since their directories (library/ and .pretty/) are included here. The directories also include the gerber files for sending them to a manufacturer, plus a .png file for each side (in case of double-sided boards) in case you want to DIY etch it, and a .pdf with the schematic.
+
 If you've never used Kicad before and want to modify any of the circuits, I recommend to read some of the tutorials provided from Kicad's website. This tutorial was very useful for me http://kicad-pcb.org/help/documentation/#_getting_started. If you just want to have them manufactured, you can send the gerber files straight to a manufacturer.
 
 ## Note about the circuits
