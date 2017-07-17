@@ -1,6 +1,6 @@
 # modular_synthesizer
 
-This repository hosts the code (schematics, and circuit board designs (made in Kicad) will be uploaded shortly) for a hardware digital modular synthesizer. The audio is programmed in Pure Data and the hardware control in the Arduino language.
+This repository hosts the code, schematics, and circuit board designs made in Kicad, for a hardware digital modular synthesizer. The audio is programmed in Pure Data and the hardware control in the Arduino language.
 This synthesizer is supposed to run on a Raspberry Pi 3 and a Teensy3.2. You're welcome to use any other hardware you like, but this specific hardware is supported and explained here.
 
 
@@ -29,4 +29,4 @@ The first three libraries are being installed with "apt-get" and iemguts is inst
 
 ## General note
 
-I'll upload the circuit designs and create a wiki with instructions for creating the hardware of a module and the whole system. It's in my TODO list, which will hopefully happen in the near future.
+I'll upload a wiki with instructions for creating the hardware of a module and the whole system. It's in my TODO list, which will hopefully happen in the near future.
