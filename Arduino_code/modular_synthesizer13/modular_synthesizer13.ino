@@ -3,9 +3,8 @@
  * The control part of this synthesizer runs on a Teensy3.2 which is programmed in *
  * the Arduino language using Teensyduino.                                         *
  * The audio part of the synthesizer runs on an embedded computer (Raspberry Pi 3) *
- * which is programmed in Pure Data. In order for this                             *
- * code to run, you'll need to combine it with the Pd patch that comes with        *
- * this sketch.                                                                    *
+ * which is programmed in Pure Data. In order for this code to run you'll need to  *
+ * combine it with the Pd patch that comes with this sketch.                       *
  ***********************************************************************************/
 
 // This sketch uses a technique to work around the bug with not being able to print the value 13
