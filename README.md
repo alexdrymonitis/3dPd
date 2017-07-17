@@ -30,3 +30,4 @@ The first three libraries are being installed with "apt-get" and iemguts is inst
 ## General note
 
 I'll upload a wiki with instructions for creating the hardware of a module and the whole system. It's in my TODO list, which will hopefully happen in the near future.
+You can watch a demo video of the synthesizer here https://www.youtube.com/watch?v=HD13bDPyBWA
