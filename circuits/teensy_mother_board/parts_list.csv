@@ -1,0 +1,10 @@
+Reference, Value, Footprint
+P9,CONN_01X14,Header Male 14-pin Straight (to host Teensy)
+P8,CONN_01X14,Header Male 14-pin Straight (to host Teensy)
+P5,CONN_02X05,IDC Connector Male 2x5 Straight
+P6,CONN_02X03,IDC Connector Male 2x3 Straight
+P7,CONN_02X03,IDC Connector Male 2x3 Straight
+P10,CONN_01X02,Screw Terminal 2-pin 5mm Pitch
+P11,CONN_01X02,JST PH Connector Male Angled 2-pin
+P13,CONN_01X02,JST PH Connector Male Angled 2-pin
+P12,CONN_01X02,JST PH Connector Male Angled 2-pin

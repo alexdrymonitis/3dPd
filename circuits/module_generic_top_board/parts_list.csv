@@ -1,0 +1,15 @@
+Reference, Value,Type, Datasheet
+C1,0.1uF,Capacitor Ceramic Unpolarized,
+C2,0.1uF,Capacitor Ceramic Unpolarized,
+C3,0.1uF,Capacitor Ceramic Unpolarized,
+RR1,10K,Resistor Network 8 + 1,
+P2,CONN_01X08,Female Header Straight 8-pin 0.1 Inch,
+P1,CONN_01X08,Female Header Straight 8-pin 0.1 Inch,
+P4,CONN_01X08,Female Header Straight 8-pin 0.1 Inch,
+P5,CONN_01X02,Female Header Straight 2-pin 0.1 Inch,
+P6,CONN_01X11,Female Header Straight 11-pin 0.1 Inch,
+P3,CONN_01X03,JST PH Connector Male Angled 3-pin,
+U3,74HC165,8-bit Input Shift Register,https://cdn.sparkfun.com/datasheets/BreakoutBoards/sn54hc165.pdf
+U2,74HC595,8-bit Output Shift Register,http://www.ti.com/lit/ds/symlink/sn74hc595.pdf
+U1,4051,8-channel Analog Multiplexer,http://grobotronics.com/images/datasheets/schs354a.pdf
+R1,10K,Resistor,
