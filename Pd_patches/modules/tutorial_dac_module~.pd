@@ -1,0 +1,128 @@
+#N canvas 148 82 1482 961 10;
+#X declare -path ../generic_abstractions;
+#X obj 44 28 cnv 15 420 90 empty empty Declare_generic_abstractions_path
+0 -12 0 14 -204786 -66577 0;
+#X obj 52 94 declare -path ../generic_abstractions;
+#X obj 49 258 r module\$1;
+#X obj 484 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
+0 -12 0 14 -204786 -66577 0;
+#X obj 497 69 module_data \$0 \$1 \$2 \$3;
+#X obj 497 92 switch~;
+#X text 493 34 [module_data \$0 \$1 \$2 \$3] must be used in all module
+abstractions \, otherwise the whole system will not work;
+#X text 555 93 <- control the DSP of the module accodring to its activity
+;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions ([get_switches] \, [assemble_analog_inputs]
+\, [map] \, map_zero] \, and [module_data].;
+#X text 44 163 evrey module receives potentiometer and switch data
+with [r module\$1] \, where \$1 is the module index in the chain \,
+starting from 1;
+#X text 44 211 a leading 0 in the data received in [r module\$1] denotes
+potentiomere data \, while a leading 1 denotes switch data;
+#X text 130 257 <- get your potentiometer and switch data here;
+#X text 198 784 <- the resolution of the analog pins is sent from the
+Arduino and received in [pd init] \, in [pd moduels]. from there it
+is sent to [r analog_res]. [map_zero] sets a default 10-bit resolution
+since it's the standard resolution of the Arduino \, and [r analog_res]
+changes it to the resolution used \, in case it's different than 10-bit
+(like with the Teensy3.2 \, which is 13-bit);
+#X obj 100 785 r analog_res;
+#X text 164 890 <- [map_zero] maps a range starting from 0 to the value
+of the first argument to a range from 0 to the second argument;
+#X obj 1035 178 module_input~ 0;
+#X obj 49 280 route 0 1;
+#X obj 49 703 assemble_analog_inputs 2;
+#X obj 49 889 map_zero 1023 1;
+#X obj 304 472 s patch_update_switch;
+#X obj 644 720 + 15;
+#X obj 644 742 s ramp;
+#X obj 49 911 s \$0-amp;
+#X obj 79 323 get_switches 2;
+#X obj 79 345 change;
+#X msg 79 497 dsp \$1;
+#X obj 79 519 s pd;
+#X text 119 518 turn the DSP on and off with this switch;
+#X obj 304 340 change;
+#X text 698 742 <- this potentiometer values are sent to the [matrix_connections]
+abstraction in the main patch and they set the matrix ramp \, when
+the patching updated is deactivated. when the patching updated is reactivated
+\, the matrix will ramp to the new patch in the time set by this potentiometer.
+afterwards it will return to its default ramp time (set by the first
+argument to the [matrix_connections] abstraction). you must use the
+name "ramp" to [s ] otherwise it won't work;
+#X text 464 470 <- control the patching update with this switch. when
+it is off \, you can change your patch and the changes will be saved
+but not applied. when you reactivate it \, the saved patch changes
+will be applied. this way you can change your patching without needing
+to cause sudden changes \, or cut off the overall sound. you must use
+the name "patch_update_switch" to [s ] otherwise it won't work;
+#X obj 1035 300 *~;
+#X obj 1184 205 r \$0-amp;
+#X obj 1184 227 pack f 20;
+#X obj 1184 249 line~;
+#X obj 1035 327 dac~ 1;
+#X obj 1165 300 *~;
+#X obj 1165 178 module_input~ 1;
+#X obj 1165 327 dac~ 2;
+#X text 1031 49 in this module we're just receiving two signals \,
+we're controlling their amplitude \, and we're outputting them to the
+first two channels of the sound card.;
+#X text 1033 118 the [module_input~] abstractions receive signals from
+the matrix of the synthesizer. their argument is the input number starting
+from zero.;
+#X text 45 129 this module is a simple dac~ \, which receives two signals
+and outputs them to the first two channels of the sound card;
+#X text 128 280 <- split data according to potentiometer and switch
+data index;
+#X text 188 321 <- get your switch data here. argument is number of
+switches;
+#X obj 304 362 t f f;
+#X msg 355 379 print \$1u;
+#X obj 355 401 s to_comport;
+#X text 450 378 <- one module must have a switch which will be used
+to control the patching update. This switch must send the message "print
+\$1u" to the Teensy \, so that the Teensy knows if the patching update
+is active or not. If this switch is not present in the system \, the
+synthesizer won't work. Read the message below to see how this switch
+works;
+#X msg 79 593 print 1m0p\$1v;
+#X text 61 727 get your potentiometer values. argument is number of
+potentiometers;
+#X obj 79 548 r pd;
+#X obj 79 570 route dsp;
+#X obj 79 615 s to_comport;
+#X text 182 593 it's good to have visual feedback for the DSP state.
+here we're controlling an LED wired to the first pin of the output
+shift register of this module according to the DSP state. in the message
+"print 1m0p\$1v" "m" stands for "module" \, "p" for "pin" \, and "v"
+for "value". "module" starts counting from 1 and "pin" starts counting
+from 0;
+#X connect 2 0 16 0;
+#X connect 4 0 5 0;
+#X connect 13 0 18 1;
+#X connect 15 0 31 0;
+#X connect 16 0 17 0;
+#X connect 16 1 23 0;
+#X connect 17 0 18 0;
+#X connect 17 1 20 0;
+#X connect 18 0 22 0;
+#X connect 20 0 21 0;
+#X connect 23 0 24 0;
+#X connect 23 1 28 0;
+#X connect 24 0 25 0;
+#X connect 25 0 26 0;
+#X connect 28 0 44 0;
+#X connect 31 0 35 0;
+#X connect 32 0 33 0;
+#X connect 33 0 34 0;
+#X connect 34 0 31 1;
+#X connect 34 0 36 1;
+#X connect 36 0 38 0;
+#X connect 37 0 36 0;
+#X connect 44 0 19 0;
+#X connect 44 1 45 0;
+#X connect 45 0 46 0;
+#X connect 48 0 52 0;
+#X connect 50 0 51 0;
+#X connect 51 0 48 0;

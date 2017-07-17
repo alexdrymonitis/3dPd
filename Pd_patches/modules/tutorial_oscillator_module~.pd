@@ -1,0 +1,479 @@
+#N canvas 39 82 1714 960 10;
+#X declare -path ../generic_abstractions;
+#X obj 44 28 cnv 15 420 90 empty empty Declare_generic_abstractions_path
+0 -12 0 14 -204786 -66577 0;
+#X obj 52 94 declare -path ../generic_abstractions;
+#X obj 49 316 r module\$1;
+#X obj 155 699 r analog_res;
+#X obj 265 552 r analog_res;
+#X obj 484 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
+0 -12 0 14 -204786 -66577 0;
+#X obj 497 69 module_data \$0 \$1 \$2 \$3;
+#X obj 497 92 switch~;
+#X text 493 34 [module_data \$0 \$1 \$2 \$3] must be used in all module
+abstractions \, otherwise the whole system will not work;
+#X text 555 93 <- control the DSP of the module accodring to its activity
+;
+#X obj 800 721 module_output~ 0;
+#X obj 926 721 module_output~ 1;
+#X obj 800 367 phasor~;
+#X obj 800 389 +~;
+#X obj 800 697 *~;
+#X obj 49 877 s \$0-freq;
+#X obj 104 722 map_zero 1023 2;
+#X obj 104 744 s \$0-index;
+#X obj 214 575 map_zero 1023 1;
+#X obj 214 597 s \$0-amp;
+#N canvas 577 125 733 671 freq 0;
+#X obj 154 543 input_state 0;
+#X obj 29 355 r \$0-freq;
+#X obj 29 441 pack f 20;
+#X obj 29 463 line~;
+#X obj 100 504 *~;
+#X obj 29 605 *~;
+#X obj 100 526 *~;
+#X obj 154 565 t f f;
+#X obj 154 588 == 0;
+#X obj 29 627 outlet~;
+#X text 23 22 in this subpatch we're receiving the values of the first
+potentiometer ([r \$0-freq]) and the first input signal of the module
+([module_input~ 0]). [input_state 0] gives the connection state of
+the signal input. if there is a signal (or more than one) connected
+\, it will output a 1 \, otherwise it will output a zero.;
+#X text 22 108 if there's no signal connected to the first input \,
+we'll use the potentiometer values to control the frequency of the
+oscillator. if there is a signal connected to the first input \, we'll
+use that signal to control the frequency \, and we'll use the potentiometer
+to scale the control signal.;
+#X text 21 196 we receive input signals using the [module_input~] abstraction.
+this abstraction is necessary for each module to receive signals from
+the rest of the system. its argument if the number of the module input
+starting from zero.;
+#X text 260 541 <- here we receive the connection state of the first
+signal input of the module.;
+#X text 21 261 we receive the connection state of each input of the
+module with the [inpust_state] abstraction. this abstraction outputs
+a 1 when one or more signals are connected to it \, and a 0 when no
+signal is connected.;
+#X obj 158 355 r \$0-freq_range;
+#X obj 158 377 t f f;
+#X obj 158 399 == 0;
+#X obj 151 425 r \$0-lfo_freq;
+#X obj 151 447 spigot;
+#X text 272 354 <- here we're using the second switch to set the frequency
+range of the oscillators. when the switch is in the off position (outputting
+0) \, the oscillators have a range from 20 to 2000 \, and when the
+switch is in the on position (outputting 1) \, the oscillators become
+LFOs with a range from 0 to 20 Hz.;
+#X obj 29 416 spigot 1;
+#X obj 119 479 inlet~;
+#X connect 0 0 7 0;
+#X connect 1 0 21 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 3 0 5 0;
+#X connect 4 0 6 0;
+#X connect 5 0 9 0;
+#X connect 6 0 9 0;
+#X connect 7 0 8 0;
+#X connect 7 1 6 1;
+#X connect 8 0 5 1;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 16 1 19 1;
+#X connect 17 0 21 1;
+#X connect 18 0 19 0;
+#X connect 19 0 2 0;
+#X connect 21 0 2 0;
+#X connect 22 0 4 1;
+#X restore 800 333 pd freq;
+#N canvas 1 82 720 416 amp 0;
+#X obj 29 190 pack f 20;
+#X obj 29 212 line~;
+#X obj 100 253 *~;
+#X obj 29 334 *~;
+#X obj 100 275 *~;
+#X obj 154 294 t f f;
+#X obj 154 317 == 0;
+#X obj 29 356 outlet~;
+#X obj 29 166 r \$0-amp;
+#X obj 154 272 input_state 3;
+#X text 24 22 in this subpatch we're controlling the amplitude of the
+oscillators. as with the frequency subpatch \, we're either using the
+last potentiometer of the module or if there's a signal connected to
+the last input \, we use that instead \, and in this case we use the
+potentiometer to control the amplitude of the CV.;
+#X text 258 274 <- here we receive the connection state of the fourth
+input of the module;
+#X obj 119 228 inlet~;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 0 3 0;
+#X connect 2 0 4 0;
+#X connect 3 0 7 0;
+#X connect 4 0 7 0;
+#X connect 5 0 6 0;
+#X connect 5 1 4 1;
+#X connect 6 0 3 1;
+#X connect 8 0 0 0;
+#X connect 9 0 5 0;
+#X connect 12 0 2 1;
+#X restore 1069 333 pd amp;
+#X obj 49 338 route 0 1;
+#X obj 49 501 assemble_analog_inputs 4;
+#X obj 210 625 r analog_res;
+#X obj 159 670 s \$0-duty_cycle;
+#X obj 159 648 map_zero 1023 1;
+#N canvas 1 82 528 379 triangle~ 0;
+#X obj 112 215 *~ -1;
+#X obj 112 237 +~ 1;
+#X obj 87 259 min~;
+#X obj 87 173 wrap~;
+#X obj 87 148 inlet~;
+#X obj 87 281 *~ 4;
+#X obj 87 303 -~ 1;
+#X obj 87 325 outlet~;
+#X obj 260 185 output_state 1;
+#X obj 260 207 switch~;
+#X text 46 35 in all four oscillators we're using the corresponding
+output connection state to control the DSP of their subpatches. this
+way we save some CPU when we're using the module \, but not all the
+oscillators. in the case of this module the CPU usage of each oscillator
+is very small \, but this DSP control technique is applied here as
+a demonstration. in more CPU intensive modules it might be quite useful.
+;
+#X connect 0 0 1 0;
+#X connect 1 0 2 1;
+#X connect 2 0 5 0;
+#X connect 3 0 0 0;
+#X connect 3 0 2 0;
+#X connect 4 0 3 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 8 0 9 0;
+#X restore 926 511 pd triangle~;
+#X obj 926 697 *~;
+#X obj 1050 697 *~;
+#N canvas 1 82 504 342 sawtooth~ 0;
+#X obj 87 203 wrap~;
+#X obj 87 178 inlet~;
+#X obj 87 253 -~ 1;
+#X obj 87 275 outlet~;
+#X obj 87 231 *~ 2;
+#X obj 284 222 output_state 2;
+#X obj 284 244 switch~;
+#X text 46 35 in all four oscillators we're using the corresponding
+output connection state to control the DSP of their subpatches. this
+way we save some CPU when we're using the module \, but not all the
+oscillators. in the case of this module the CPU usage of each oscillator
+is very small \, but this DSP control technique is applied here as
+a demonstration. in more CPU intensive modules it might be quite useful.
+;
+#X connect 0 0 4 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X restore 1050 511 pd sawtooth~;
+#X obj 1176 697 *~;
+#N canvas 140 187 613 480 square~ 0;
+#X obj 40 253 wrap~;
+#X obj 40 228 inlet~;
+#X obj 40 413 -~ 1;
+#X obj 40 435 outlet~;
+#X obj 40 391 *~ 2;
+#X obj 40 367 <~;
+#X obj 99 285 r \$0-duty_cycle;
+#X obj 99 307 pack f 20;
+#X obj 99 329 line~;
+#X obj 99 351 *~;
+#X obj 227 290 input_state 2;
+#X obj 227 312 t f f;
+#X obj 227 334 == 0;
+#X obj 241 397 *~;
+#X obj 384 264 output_state 3;
+#X obj 384 286 switch~;
+#X text 44 17 in this last oscillator we're receiving the values of
+the third potentiometer to control the duty cycle of the square wave.
+as with the frequency subpatch \, we're detecting connections in the
+third signal input. if there's no signal connected \, we're using the
+potentiometer to control the duty cycle. if there is a signal connected
+\, we're using that singla to control the duty cycle. this time though
+we're not using the potentiometer to control the amplitude of the signal.
+;
+#X text 43 156 note that the input of this oscillator is the third
+one ([module_input~ 2] and [input_state 2]) \, while the output is
+the fourth one ([output_state 3]);
+#X obj 241 375 inlet~;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 5 0 4 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 8 0 9 0;
+#X connect 9 0 5 1;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 11 1 13 1;
+#X connect 12 0 9 1;
+#X connect 13 0 5 1;
+#X connect 14 0 15 0;
+#X connect 18 0 13 0;
+#X restore 1176 511 pd square~;
+#X obj 1050 721 module_output~ 2;
+#X obj 1176 721 module_output~ 3;
+#N canvas 1 82 611 336 sinewave~ 0;
+#X obj 69 230 inlet~;
+#X obj 69 252 cos~;
+#X obj 69 274 outlet~;
+#X obj 257 227 output_state 0;
+#X obj 257 249 switch~;
+#X text 46 105 in all four oscillators we're using the corresponding
+output connection state to control the DSP of their subpatches. this
+way we save some CPU when we're using the module \, but not all the
+oscillators. in the case of this module the CPU usage of each oscillator
+is very small \, but this DSP control technique is applied here as
+a demonstration. in more CPU intensive modules it might be quite useful.
+;
+#X text 47 27 the [output_state] absrtaction works similarly to the
+[input_state] abstraction. its argument is the module output number
+starting from 0 it will output a 1 when this output is connected to
+one or more inputs in the system \, and a 0 when it is not connected
+to anything.;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 3 0 4 0;
+#X restore 800 510 pd sinewave~;
+#N canvas 1 82 563 342 scale_offset 0;
+#X obj 39 206 inlet~;
+#X obj 39 228 *~;
+#X obj 39 250 +~;
+#X obj 39 272 outlet~;
+#X obj 181 145 r \$0-scale_offset;
+#X obj 181 167 t f f;
+#X obj 181 211 + 1;
+#X obj 181 189 * -0.5;
+#X obj 213 233 * 0.5;
+#X text 24 23 this subpatch takes input from the switch of the module
+and scales and offsets the module's output signal accordingly. when
+the switch gives 0 \, the signal is being output intact. when the switch
+gives 1 \, the signal is being multiplied by 0.5 and added to 0.5 \,
+changing its range from -1 to 1 to 0 to 1 \, thus making it unipolar.
+this way it can be used as a CV instead of an oscillator.;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 5 1 8 0;
+#X connect 6 0 1 1;
+#X connect 7 0 6 0;
+#X connect 8 0 2 1;
+#X restore 800 565 pd scale_offset;
+#N canvas 1 82 563 342 scale_offset 0;
+#X obj 39 206 inlet~;
+#X obj 39 228 *~;
+#X obj 39 250 +~;
+#X obj 39 272 outlet~;
+#X obj 181 145 r \$0-scale_offset;
+#X obj 181 167 t f f;
+#X obj 181 211 + 1;
+#X obj 181 189 * -0.5;
+#X obj 213 233 * 0.5;
+#X text 24 23 this subpatch takes input from the switch of the module
+and scales and offsets the module's output signal accordingly. when
+the switch gives 0 \, the signal is being output intact. when the switch
+gives 1 \, the signal is being multiplied by 0.5 and added to 0.5 \,
+changing its range from -1 to 1 to 0 to 1 \, thus making it unipolar.
+this way it can be used as a CV instead of an oscillator.;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 5 1 8 0;
+#X connect 6 0 1 1;
+#X connect 7 0 6 0;
+#X connect 8 0 2 1;
+#X restore 926 565 pd scale_offset;
+#N canvas 1 82 563 342 scale_offset 0;
+#X obj 39 206 inlet~;
+#X obj 39 228 *~;
+#X obj 39 250 +~;
+#X obj 39 272 outlet~;
+#X obj 181 145 r \$0-scale_offset;
+#X obj 181 167 t f f;
+#X obj 181 211 + 1;
+#X obj 181 189 * -0.5;
+#X obj 213 233 * 0.5;
+#X text 24 23 this subpatch takes input from the switch of the module
+and scales and offsets the module's output signal accordingly. when
+the switch gives 0 \, the signal is being output intact. when the switch
+gives 1 \, the signal is being multiplied by 0.5 and added to 0.5 \,
+changing its range from -1 to 1 to 0 to 1 \, thus making it unipolar.
+this way it can be used as a CV instead of an oscillator.;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 5 1 8 0;
+#X connect 6 0 1 1;
+#X connect 7 0 6 0;
+#X connect 8 0 2 1;
+#X restore 1050 565 pd scale_offset;
+#N canvas 1 82 563 342 scale_offset 0;
+#X obj 39 206 inlet~;
+#X obj 39 228 *~;
+#X obj 39 250 +~;
+#X obj 39 272 outlet~;
+#X obj 181 145 r \$0-scale_offset;
+#X obj 181 167 t f f;
+#X obj 181 211 + 1;
+#X obj 181 189 * -0.5;
+#X obj 213 233 * 0.5;
+#X text 24 23 this subpatch takes input from the switch of the module
+and scales and offsets the module's output signal accordingly. when
+the switch gives 0 \, the signal is being output intact. when the switch
+gives 1 \, the signal is being multiplied by 0.5 and added to 0.5 \,
+changing its range from -1 to 1 to 0 to 1 \, thus making it unipolar.
+this way it can be used as a CV instead of an oscillator.;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 5 1 8 0;
+#X connect 6 0 1 1;
+#X connect 7 0 6 0;
+#X connect 8 0 2 1;
+#X restore 1176 565 pd scale_offset;
+#N canvas 1 82 643 319 phase_modulation 0;
+#X obj 24 180 *~;
+#X obj 41 114 r \$0-index;
+#X obj 41 136 pack f 20;
+#X obj 41 158 line~;
+#X text 125 115 <- here we receive the values of the second potentiometer
+and we use them to control the amplitude of the second CV. this potentiometer
+becomes the index of the phase modulation of the oscillators;
+#X obj 24 202 outlet~;
+#X obj 24 58 inlet~;
+#X connect 0 0 5 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 0 1;
+#X connect 6 0 0 0;
+#X restore 917 333 pd phase_modulation;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions ([get_switches] \, [assemble_analog_inputs]
+\, [map] \, map_zero] \, and [module_data].;
+#X text 44 201 evrey module receives potentiometer and switch data
+with [r module\$1] \, where \$1 is the module index in the chain \,
+starting from 1;
+#X text 44 249 a leading 0 in the data received in [r module\$1] denotes
+potentiomere data \, while a leading 1 denotes switch data;
+#X text 128 338 <- split data according to potentiometer and switch
+data index;
+#X text 193 391 <- get your switch data. argument is number of switches
+;
+#X text 234 499 <- get your potentiometer values. argument is number
+of potentiometers;
+#X text 45 163 this module is a simple oscillator with the four standard
+waveforms (sine \, triangle \, sawtooth \, and square);
+#X text 130 315 <- get your potentiometer and switch data here;
+#X text 251 699 <- the resolution of the analog pins is sent from the
+Arduino and received in [pd init] \, in [pd moduels]. from there it
+is sent to [r analog_res]. [map_zero] sets a default 10-bit resolution
+since it's the standard resolution of the Arduino \, and [r analog_res]
+changes it to the resolution used \, in case it's different than 10-bit
+(like with the Teensy3.2 \, which is 13-bit);
+#X text 331 575 <- [map_zero] maps a range starting from 0 to the value
+of the first argument to a range from 0 to the second argument;
+#X text 795 267 check the three subpatches below first;
+#X text 1123 441 then check the four oscillator subpatches;
+#X obj 79 392 get_switches 2;
+#X obj 49 855 map 0 1023 20 2000;
+#X obj 110 832 r analog_res;
+#X text 187 855 <- [map] maps one value range to another. its arguments
+are lowest value of original range \, highest value of original range
+\, lowest value of target range \, and highest value of target range
+;
+#X obj 81 782 map_zero 1023 20;
+#X obj 49 758 t f f;
+#X obj 81 804 s \$0-lfo_freq;
+#X obj 174 424 change;
+#X obj 79 424 change;
+#X text 223 418 [get_switches] outputs all values even when only one
+switch changes \, that's why we use [change] here;
+#X obj 79 473 s \$0-freq_range;
+#X obj 174 449 s \$0-scale_offset;
+#X text 1294 565 <- check these subpatches to see the use of the second
+switch;
+#X obj 800 309 module_input~ 0;
+#X obj 917 309 module_input~ 1;
+#X obj 1068 309 module_input~ 3;
+#X obj 1244 485 module_input~ 2;
+#X text 798 147 the function of this module happens below \, where
+we receive the scaled potentiometer values and the input signals. after
+all the processing \, we send the resulting signals to the [module_output~]
+abstractions which send their outputs to the matrix of the synthesizer.
+the signal inputs of this module (coming from the matrix) are received
+in the [module_input~] abstractions \, whose argument is the input
+pin number \, starting from 0;
+#X text 798 745 the [module_output~] abstractions forward their incoming
+signals to the matrix of the synthesizer. as with [module_input~] \,
+they are necessary in order for each module to be connected to the
+rest of the system. their argument is the output number starting from
+zero.;
+#X connect 2 0 22 0;
+#X connect 3 0 16 1;
+#X connect 4 0 18 1;
+#X connect 6 0 7 0;
+#X connect 12 0 13 0;
+#X connect 13 0 27 0;
+#X connect 13 0 30 0;
+#X connect 13 0 32 0;
+#X connect 13 0 35 0;
+#X connect 14 0 10 0;
+#X connect 16 0 17 0;
+#X connect 18 0 19 0;
+#X connect 20 0 12 0;
+#X connect 21 0 14 1;
+#X connect 21 0 28 1;
+#X connect 21 0 29 1;
+#X connect 21 0 31 1;
+#X connect 22 0 23 0;
+#X connect 22 1 53 0;
+#X connect 23 0 58 0;
+#X connect 23 1 16 0;
+#X connect 23 2 26 0;
+#X connect 23 3 18 0;
+#X connect 24 0 26 1;
+#X connect 26 0 25 0;
+#X connect 27 0 37 0;
+#X connect 28 0 11 0;
+#X connect 29 0 33 0;
+#X connect 30 0 38 0;
+#X connect 31 0 34 0;
+#X connect 32 0 39 0;
+#X connect 35 0 36 0;
+#X connect 36 0 14 0;
+#X connect 37 0 28 0;
+#X connect 38 0 29 0;
+#X connect 39 0 31 0;
+#X connect 40 0 13 1;
+#X connect 53 0 61 0;
+#X connect 53 1 60 0;
+#X connect 54 0 15 0;
+#X connect 55 0 54 2;
+#X connect 57 0 59 0;
+#X connect 58 0 54 0;
+#X connect 58 1 57 0;
+#X connect 60 0 64 0;
+#X connect 61 0 63 0;
+#X connect 66 0 20 0;
+#X connect 67 0 40 0;
+#X connect 68 0 21 0;
+#X connect 69 0 32 1;
