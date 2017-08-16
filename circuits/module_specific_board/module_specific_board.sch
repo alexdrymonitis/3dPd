@@ -29,7 +29,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:pot
-LIBS:module_specific_board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -157,12 +156,12 @@ $EndComp
 $Comp
 L CONN_01X04 P7
 U 1 1 5965F62B
-P 4600 2150
-F 0 "P7" H 4600 2400 50  0000 C CNN
-F 1 "CONN_01X04" V 4700 2150 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x04" H 4600 2150 50  0001 C CNN
-F 3 "" H 4600 2150 50  0000 C CNN
-	1    4600 2150
+P 3050 2150
+F 0 "P7" H 3050 2400 50  0000 C CNN
+F 1 "CONN_01X04" V 3150 2150 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04" H 3050 2150 50  0001 C CNN
+F 3 "" H 3050 2150 50  0000 C CNN
+	1    3050 2150
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -382,14 +381,6 @@ Text Label 4900 5300 0    60   ~ 0
 GND
 Text Label 4900 5900 0    60   ~ 0
 GND
-Wire Wire Line
-	5300 2000 4800 2000
-Wire Wire Line
-	5300 2100 4800 2100
-Wire Wire Line
-	5300 2200 4800 2200
-Wire Wire Line
-	5300 2300 4800 2300
 Text Label 2500 1500 0    60   ~ 0
 GND
 Text Label 2500 1700 0    60   ~ 0
@@ -406,4 +397,96 @@ Text Label 2500 4500 0    60   ~ 0
 GND
 Text Label 2500 4700 0    60   ~ 0
 VCC
+$Comp
+L R R4
+U 1 1 5993E476
+P 4850 2000
+F 0 "R4" V 4930 2000 50  0000 C CNN
+F 1 "10K" V 4850 2000 50  0000 C CNN
+F 2 "Discret:R1" V 4780 2000 50  0001 C CNN
+F 3 "" H 4850 2000 50  0000 C CNN
+	1    4850 2000
+	0    1    1    0   
+$EndComp
+$Comp
+L R R3
+U 1 1 5993E512
+P 4600 2100
+F 0 "R3" V 4680 2100 50  0000 C CNN
+F 1 "10K" V 4600 2100 50  0000 C CNN
+F 2 "Discret:R1" V 4530 2100 50  0001 C CNN
+F 3 "" H 4600 2100 50  0000 C CNN
+	1    4600 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L R R2
+U 1 1 5993E557
+P 4350 2200
+F 0 "R2" V 4430 2200 50  0000 C CNN
+F 1 "10K" V 4350 2200 50  0000 C CNN
+F 2 "Discret:R1" V 4280 2200 50  0001 C CNN
+F 3 "" H 4350 2200 50  0000 C CNN
+	1    4350 2200
+	0    1    1    0   
+$EndComp
+$Comp
+L R R1
+U 1 1 5993E59F
+P 4100 2300
+F 0 "R1" V 4180 2300 50  0000 C CNN
+F 1 "10K" V 4100 2300 50  0000 C CNN
+F 2 "Discret:R1" V 4030 2300 50  0001 C CNN
+F 3 "" H 4100 2300 50  0000 C CNN
+	1    4100 2300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5300 2000 5000 2000
+Wire Wire Line
+	5300 2100 4750 2100
+Wire Wire Line
+	5300 2200 4500 2200
+Wire Wire Line
+	5300 2300 4250 2300
+Wire Wire Line
+	4700 2000 4350 2000
+Wire Wire Line
+	4450 2100 4200 2100
+Wire Wire Line
+	4200 2200 3950 2200
+Wire Wire Line
+	3950 2300 3700 2300
+Wire Wire Line
+	3250 2300 3600 2300
+Wire Wire Line
+	3250 2200 3600 2200
+Wire Wire Line
+	3250 2100 3600 2100
+Wire Wire Line
+	3250 2000 3600 2000
+Text Label 4400 2000 0    60   ~ 0
+GND
+Text Label 4250 2100 0    60   ~ 0
+GND
+Text Label 4000 2200 0    60   ~ 0
+GND
+Text Label 3750 2300 0    60   ~ 0
+GND
+Text Label 3300 2000 0    60   ~ 0
+MUX5
+Text Label 3300 2100 0    60   ~ 0
+MUX6
+Text Label 3300 2200 0    60   ~ 0
+MUX7
+Text Label 3300 2300 0    60   ~ 0
+MUX8
+Text Label 5050 2000 0    60   ~ 0
+MUX5
+Text Label 5050 2100 0    60   ~ 0
+MUX6
+Text Label 5050 2200 0    60   ~ 0
+MUX7
+Text Label 5050 2300 0    60   ~ 0
+MUX8
 $EndSCHEMATC

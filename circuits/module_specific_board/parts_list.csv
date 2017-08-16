@@ -7,3 +7,7 @@ J1,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HT
 J2,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HTML/Potentiometer/RotaryPotentiometers/RK09L/RK09L114001T.html
 J3,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HTML/Potentiometer/RotaryPotentiometers/RK09L/RK09L114001T.html
 J4,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HTML/Potentiometer/RotaryPotentiometers/RK09L/RK09L114001T.html
+R1,"10K resistor, 1/4W",Discret:R1,
+R2,"10K resistor, 1/4W",Discret:R1,
+R3,"10K resistor, 1/4W",Discret:R1,
+R4,"10K resistor, 1/4W",Discret:R1,
