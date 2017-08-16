@@ -1,4 +1,4 @@
-This board is a rather generic design for mounting potentiometers and wiring banana terminals, switches and LEDs to a module. Each module will have its own layout, so the board that hosts the parts of the module is rather specific than generic. Still, this board can host quite some different layouts the way it is designed.
+﻿This board is a rather generic design for mounting potentiometers and wiring banana terminals, switches and LEDs to a module. Each module will have its own layout, so the board that hosts the parts of the module is rather specific than generic. Still, this board can host quite some different layouts the way it is designed.
 
 The digital inputs and outputs are broken out to the right side and bottom side of the board respctively. The inputs start counting from the top and the outputs from left to right.
 
