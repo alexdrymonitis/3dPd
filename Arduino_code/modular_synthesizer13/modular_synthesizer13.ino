@@ -2,10 +2,9 @@
  * This Arduino sketch is written for a physical digital modular synthesizer *
  * The control part of this synthesizer runs on a Teensy3.2 (or LC)          *
  * which is programmed in the Arduino language using Teensyduino             *
- * the audio part of the synthesizer runs on an embedded computer (Odroid-U3 *
- * or a Raspberry Pi 3), which is programmed in Pure Data. In order for this *
- * code to run, you'll need to combine it with the Pd patch that comes with  *
- * this sketch.                                                              *
+ * the audio part of the synthesizer runs on aRaspberry Pi 3                 *
+ * which is programmed in Pure Data. In order for this code to run, you'll   *
+ * need to combine it with the Pd patch that comes with this sketch          *
  *****************************************************************************/
 
 // This sketch uses a technique to work around the bug with not being able to print the value 13
@@ -17,7 +16,7 @@
 // various MARCO definitions that need to be adjusted according to the synthesizer setup
 
 // define the number of modules you're using
-#define NUM_OF_MODULES 3
+#define NUM_OF_MODULES 5
 // define a speed for the SPI library so that it can work properly
 // daisy chaining many modules can result in a long distance that needs to be convered
 // by the SPI pins. a 8000000 speed worked for me for 12 modules, after that
@@ -44,7 +43,7 @@
 /****************************** output shift registers *****************************/
 
 // array to hold number of signal outputs (banana terminals) of each module
-byte outputPins[NUM_OF_MODULES] = { 2, 4, 8 };
+byte outputPins[NUM_OF_MODULES] = { 0, 4, 8, 4, 4 };
 
 
 /******************************* input shift registers *****************************/
@@ -53,12 +52,12 @@ byte outputPins[NUM_OF_MODULES] = { 2, 4, 8 };
 // a 1 is a pin with a banana terminal and a 0 is a pin with no banana terminal
 // for example, a module with two signal inputs should get the value B00000011
 // signal inputs should be wired from the first input of the shift register and should not skip pins
-byte bananaPins[NUM_OF_MODULES] = { B00000011, B00001111, B00001111 };
+byte bananaPins[NUM_OF_MODULES] = { B00000011, B00001111, B00001111, B00001111, B00001111 };
 // array to hold binary numbers of switched of each module
 // a 1 is a pin with a switch and a 0 is a pin with no switch
 // for example, a module that has three switches (and two signal inputs, like the example above) should get the value B00011100
 // switches should be wired after the signal inputs (banana terminals) and should not skip pins
-byte switchPins[NUM_OF_MODULES] = { B00001100, B00110000, B00000000 };
+byte switchPins[NUM_OF_MODULES] = { B00001100, B01110000, B00000000, B00110000, B00110000 };
 
 
 /*************************************** multiplexers ******************************/
@@ -67,11 +66,11 @@ byte switchPins[NUM_OF_MODULES] = { B00001100, B00110000, B00000000 };
 // if your setup has more than 16 modules (which is the number of channels of the CD4067 multiplexer) you'll need more than one
 const int numOfMasterMux = 1;
 // number of modules (slave multiplexers) sending potentiometer data to each master multiplexer
-int numOfSlaveMux[numOfMasterMux] = { 3 };
+int numOfSlaveMux[numOfMasterMux] = { 5 };
 // 1D or 2D array (according to the number of numOfMasterMux) to hold number of potentiometers on each module
 // rows = numOfMasterMux, columns = 16, since the master multiplexers have 16 channels
 // even if it's a 1D array, you should still write it as a 2D array, like the example below
-int numOfPots[numOfMasterMux][16] = { { 2, 4, 4 } };
+int numOfPots[numOfMasterMux][16] = { { 2, 8, 4, 4, 4 } };
 
 
 /************** end of variables that change according to setup ********************/
