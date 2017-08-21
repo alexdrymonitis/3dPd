@@ -13,8 +13,6 @@ void setup() {
 }
 
 void loop() {
-  while(true) {
-    Serial.print((char)13);
-    delay(500);
-  }
+  Serial.print((char)13);
+  delay(500);
 }
