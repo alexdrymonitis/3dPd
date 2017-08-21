@@ -12,7 +12,7 @@ void setup() {
   Serial.begin(57600);
 }
 
-void loop {
+void loop() {
   while(true) {
     Serial.print((char)13);
     delay(500);
