@@ -10,8 +10,6 @@ void setup() {
 }
 
 void loop() {
-  while(true) {
-    Serial.write(13);
-    delay(500);
-  }
+  Serial.write(13);
+  delay(500);
 }
