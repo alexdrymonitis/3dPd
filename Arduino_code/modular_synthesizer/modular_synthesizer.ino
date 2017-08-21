@@ -94,9 +94,9 @@ int numOfTotalData;
 byte *transferData;
 // variable to hold analog pin resolution which will be set in the setup() function
 // depending on whether the ANALOG_RESOLUTION macro has been declared or not
-// defaults to 10, written analogue here to avoid name collision with Arduino's
+// defaults to 1023 (to-bit), written analogue here to avoid name collision with Arduino's
 // Built-in function analogReadResolution()
-byte analogueReadResolution = 10;
+int analogueReadResolution = 1023;
 
 
 /***************************** output shift registers *******************************/
