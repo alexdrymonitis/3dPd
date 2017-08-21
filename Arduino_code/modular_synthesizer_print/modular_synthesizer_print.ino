@@ -1,11 +1,12 @@
-/***********************************************************************************
- * This Arduino sketch is written for a physical digital modular synthesizer       *
- * The control part of this synthesizer runs on a Teensy3.2 which is programmed in *
- * the Arduino language using Teensyduino.                                         *
- * The audio part of the synthesizer runs on an embedded computer (Raspberry Pi 3) *
- * which is programmed in Pure Data. In order for this code to run you'll need to  *
- * combine it with the Pd patch that comes with this sketch.                       *
- ***********************************************************************************/
+/*****************************************************************************
+ * This Arduino sketch is written for a physical digital modular synthesizer *
+ * The control part of this synthesizer runs on a Teensy3.2 (or LC)          *
+ * which is programmed in the Arduino language using Teensyduino             *
+ * the audio part of the synthesizer runs on an embedded computer (Odroid-U3 *
+ * or a Raspberry Pi 3), which is programmed in Pure Data. In order for this *
+ * code to run, you'll need to combine it with the Pd patch that comes with  *
+ * this sketch.                                                              *
+ *****************************************************************************/
 
 // this sketch uses the Serial.print() function to send data to Pd, in case the number 13 can only be written like this
 // Serial.print((char)13)
@@ -22,7 +23,7 @@
 // by the SPI pins. a 8000000 speed worked for me for 12 modules, after that
 // I needed to drop it to 4000000. trial and error will probably work here
 // if you get funny results, you'll probably need to lower the speed
-#define SPISPEED 8000000
+#define SPISPEED 4000000
 // if using a board wih an analog pin resolution greater than 10-bits
 // uncomment the line below and set the correct resolution
 #define ANALOG_RESOLUTION 13
@@ -97,9 +98,9 @@ int numOfTotalData;
 byte *transferData;
 // variable to hold analog pin resolution which will be set in the setup() function
 // depending on whether the ANALOG_RESOLUTION macro has been declared or not
-// defaults to 10, written analogue here to avoid name collision with Arduino's
+// defaults to 1023 (10-bit), written analogue here to avoid name collision with Arduino's
 // Built-in function analogReadResolution()
-byte analogueReadResolution = 10;
+int analogueReadResolution = 1023;
 
 
 /***************************** output shift registers *******************************/
@@ -168,6 +169,10 @@ byte backUpModules[NUM_OF_MODULES] = { 0 };
 // and this boolean to set whether this switch has just changed its position
 // both this information will come from reading serial data from Pd
 boolean patchUpdateChanged = false;
+// lastly a boolean to set whether a CLIP macro has been defined or not, which is used in the readPots() function
+boolean clip = false;
+// and an int which defaults to the set analog resolution, unless it's defined at the top of the code
+int clipVal;
 
 
 /********************************* Custom functions **********************************/
@@ -467,44 +472,78 @@ void sendShutDown() {
 }
 
 void readSerialData() {
+  static int serialVal, whichModule, whichPin, pinVal;
+  static bool inputStarted, endNotificationSent;
+  byte inByte;
+  
   if(Serial.available()){
-    byte inByte = Serial.read();
-    static int serialVal;
-    static int whichModule;
-    static int whichPin;
-    static int pinVal;
-    if(isDigit(inByte))
-      serialVal = serialVal * 10 + inByte - '0';
-    else{
-      if(inByte == 'm'){
-        // module indexes in the Pd patch start from 0, but arrays start from 0
-        // hence the subtraction by one below
-        whichModule = serialVal - 1;
-        serialVal = 0;
-      }
-      else if(inByte == 'p'){
-        whichPin = serialVal;
-        serialVal = 0;
-      }
-      else if(inByte == 'v'){
-        pinVal = serialVal;
-        bitWrite(outputData[whichModule], whichPin, pinVal);
-        serialVal = 0;
-      }
-      else if(inByte == 'u'){
-        patchUpdate = serialVal;
-        patchUpdateChanged = true;
-        serialVal = 0;
-      }
-      else if(inByte == 'i'){
-        sendNumInputsOutputs();
-      }
-      else if(inByte == 'a'){
-        sendAnalogReadResolution();
-      }
-      else if(inByte == 'r'){
-        resetConnections();
-        resetSwitches();
+    inByte = Serial.read();
+
+    // check if we've received the start character and notify Pd of Teensy's serial buffer availablility
+    if (inByte == '<') {
+      inputStarted = true;
+      endNotificationSent = false;
+      int localIndex = 1;
+      // store generic data index
+      transferData[localIndex++] = 0;
+      // after this, we should expect the generic data secondary index and the serial buffer availability
+      transferData[localIndex++] = 2;
+      // as a secondary index a 4 denotes the serial buffer state
+      transferData[localIndex++] = 4;
+      transferData[localIndex++] = 0;
+      Serial.write(transferData, localIndex);
+    }
+    // once we received the start character we can process the rest of the incoming bytes
+    if (inputStarted) {
+      if(isDigit(inByte))
+        serialVal = serialVal * 10 + inByte - '0';
+      else{
+        if(inByte == 'm'){
+          // module indexes in the Pd patch start from 0, but arrays start from 0
+          // hence the subtraction by one below
+          whichModule = serialVal - 1;
+          serialVal = 0;
+        }
+        else if(inByte == 'p'){
+          whichPin = serialVal;
+          serialVal = 0;
+        }
+        else if(inByte == 'v'){
+          pinVal = serialVal;
+          bitWrite(outputData[whichModule], whichPin, pinVal);
+          serialVal = 0;
+        }
+        else if(inByte == 'u'){
+          patchUpdate = serialVal;
+          patchUpdateChanged = true;
+          serialVal = 0;
+        }
+        else if(inByte == 'i'){
+          sendNumInputsOutputs();
+        }
+        else if(inByte == 'a'){
+          sendAnalogReadResolution();
+        }
+        else if(inByte == 'r'){
+          resetConnections();
+          resetSwitches();
+        }
+        // when we receive the end character we can notify Pd of the serial buffer availability again
+        else if (inByte == '>') {
+          inputStarted = false;
+          if (!endNotificationSent) {
+            int localIndex = 1;
+            // store generic data index
+            transferData[localIndex++] = 0;
+            // after this, we should expect the generic data secondary index and the serial buffer availability
+            transferData[localIndex++] = 2;
+            // as a secondary index a 4 denotes the serial buffer state
+            transferData[localIndex++] = 4;
+            transferData[localIndex++] = 1;
+            Serial.write(transferData, localIndex);
+            endNotificationSent = true;
+          }
+        }
       }
     }
   }
@@ -613,6 +652,7 @@ void setup() {
   #ifdef ANALOG_RESOLUTION
     analogReadResolution(ANALOG_RESOLUTION);
     analogueReadResolution = pow(2, ANALOG_RESOLUTION) - 1;
+    clipVal = analogueReadResolution;
   #endif
 
   // if a CLIP value has been defined, use that for the analogueReadResolution
@@ -620,6 +660,7 @@ void setup() {
     // use CLIP - 1 since 0 is included (this results in better table reading in Pd)
     analogueReadResolution = CLIP - 1;
     clip = true;
+    clipVal = analogueReadResolution;
   #endif
 }
 
