@@ -1,0 +1,133 @@
+#N canvas 259 82 988 628 10;
+#X declare -path ../generic_abstractions;
+#X obj 44 28 cnv 15 430 90 empty empty Declare_generic_abstractions_path
+0 -12 0 14 -204786 -66577 0;
+#X obj 51 93 declare -path ../generic_abstractions;
+#X obj 484 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
+0 -12 0 14 -204786 -66577 0;
+#X obj 497 69 module_data \$0 \$1 \$2 \$3;
+#X text 493 34 [module_data \$0 \$1 \$2 \$3] must be used in all module
+abstractions \, otherwise the whole system will not work;
+#X text 555 93 <- control the DSP of the module accodring to its activity
+;
+#X obj 523 265 module_input~ 0;
+#X obj 523 387 *~;
+#X obj 672 292 r \$0-amp;
+#X obj 672 314 pack f 20;
+#X obj 672 336 line~;
+#X obj 523 414 dac~ 1;
+#X obj 653 387 *~;
+#X obj 653 414 dac~ 2;
+#X text 519 136 in this module we're just receiving two signals \,
+we're controlling their amplitude \, and we're outputting them to the
+first two channels of the sound card.;
+#X text 521 205 the [module_input~] abstractions receive signals from
+the matrix of the synthesizer. their argument is the input number starting
+from zero.;
+#X obj 523 559 module_output~ 0;
+#X obj 523 531 adc~ 1;
+#X obj 653 531 adc~ 2;
+#X obj 653 559 module_output~ 1;
+#N canvas 1 82 1181 866 pots_and_switches 0;
+#X obj 31 157 r module\$1;
+#X text 112 156 <- get your potentiometer and switch data here;
+#X obj 82 666 r analog_res;
+#X text 146 771 <- [map_zero] maps a range starting from 0 to the value
+of the first argument to a range from 0 to the second argument;
+#X obj 31 770 map_zero 1023 1;
+#X obj 31 792 s \$0-amp;
+#X obj 96 233 change;
+#X msg 96 415 dsp \$1;
+#X obj 96 437 s pd;
+#X text 136 436 turn the DSP on and off with this switch;
+#X obj 163 233 change;
+#X text 180 179 <- split data according to potentiometer and switch
+data index;
+#X obj 96 466 r pd;
+#X obj 96 488 route dsp;
+#X obj 163 256 patching_update;
+#X obj 96 209 unpack f f;
+#X obj 96 510 led_ctl 2;
+#X obj 31 594 unpack f f;
+#X obj 31 179 route pots switches;
+#X obj 626 611 filter_pot 0.85;
+#X text 742 609 <- filter the potentiometer values for further smoothing.
+this is the same filtering techinque applied in the Arduino code. values
+are from 0 to 1;
+#X obj 626 677 xfade_ramp;
+#X text 710 677 <- while the patching update is deactivated \, we can
+set a ramp time for the cross-fade between the previous and the new
+patch. this abstraction sets this ramp time. when the patching update
+is re-activated and the cross-fade has finished \, the patching ramp
+will return to its default value (provided in ms by the first argument
+to [matrix_connections] \, defaults to 100);
+#X text 30 33 evrey module receives potentiometer and switch data with
+[r module\$1] \, where \$1 is the module index in the chain \, starting
+from 0;
+#X text 280 257 <- one module MUST have this abstraction controlled
+by a switch. this abstraction lets both the main patch (modular_synthesizer.pd)
+and the Teensy know whether the patching update is on or off. if you
+omit to include this in your system \, the patching update will never
+go on and your connections between modules will never go through \;
+being able to enable or disable the patching update \, enables one
+to change the physical patch without affecting the sound (e.g. if you
+want to filter an oscillator that is currently being output unprocessed).
+this way we can change our patch and when we're ready we can re-enable
+the patching update and cross-fade between the old and the new patch
+;
+#X text 169 511 it's good to have visual feedback for the DSP state.
+here we're controlling an LED wired to the third pin of the output
+shift register of this module according to the DSP state. the argument
+of the [led_ctl] abstraction is the LED pin number (starting from 0)
+;
+#X obj 31 616 filter_pot 0.85;
+#X text 175 665 <- the resolution of the analog pins is sent from the
+Arduino and received in the [arduino_data] abstraction. [map_zero]
+sets a default 10-bit resolution (1st argument) since it's the standard
+resolution of the Arduino \, and [r analog_res] changes it to the resolution
+used \, in case it's different than 10-bit (like with the Teensy3.2
+\, which is 13-bit);
+#X text 35 99 here we use two potentiometers and two switches;
+#X connect 0 0 18 0;
+#X connect 2 0 4 1;
+#X connect 4 0 5 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 10 0 14 0;
+#X connect 12 0 13 0;
+#X connect 13 0 16 0;
+#X connect 15 0 6 0;
+#X connect 15 1 10 0;
+#X connect 17 0 26 0;
+#X connect 17 1 19 0;
+#X connect 18 0 17 0;
+#X connect 18 1 15 0;
+#X connect 19 0 21 0;
+#X connect 26 0 4 0;
+#X restore 46 247 pd pots_and_switches;
+#X obj 653 265 module_input~ 1;
+#X text 45 129 this module is a simple adc~/dac~ \, which receives
+two signals and outputs them to the first two channels of the sound
+card \, and receives audio from the first two inputs of the sound card
+and forwards it to the system.;
+#X text 43 221 check the contents of the subpatch below;
+#X text 521 450 two [adc~]s are included here in case the sound card
+used has inputs. like the [module_input~] abstraction \, the signal
+output of each module is forwarded to the system via the [module_output~]
+abstraction. its argument if the output number starting from zero.
+;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions (here we use [map] \, map_zero]
+\, [patching_update] \, [xfade_ramp] \, and [module_data].;
+#X obj 497 91 switch~;
+#X connect 3 0 26 0;
+#X connect 6 0 7 0;
+#X connect 7 0 11 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 10 0 7 1;
+#X connect 10 0 12 1;
+#X connect 12 0 13 0;
+#X connect 17 0 16 0;
+#X connect 18 0 19 0;
+#X connect 21 0 12 0;

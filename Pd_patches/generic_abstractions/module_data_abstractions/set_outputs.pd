@@ -1,7 +1,7 @@
-#N canvas 846 327 540 413 10;
+#N canvas 846 327 540 369 10;
 #X obj 121 285 +;
 #X obj 89 264 t f f;
-#X obj 89 354 outlet;
+#X obj 89 330 outlet;
 #X obj 89 307 pack;
 #X obj 29 135 \$1;
 #X obj 89 174 t f b;
@@ -15,7 +15,6 @@
 #X obj 29 113 t b f f;
 #X obj 29 157 t f f;
 #X obj 29 179 +;
-#X msg 89 329 \$1 set output\$2;
 #X text 75 9 the first module gets a bang which is 0 summed previous
 outlets;
 #X text 228 90 pass sum of outlets to the next module;
@@ -23,7 +22,7 @@ outlets;
 #X connect 0 0 3 1;
 #X connect 1 0 3 0;
 #X connect 1 1 0 0;
-#X connect 3 0 16 0;
+#X connect 3 0 2 0;
 #X connect 4 0 14 0;
 #X connect 5 0 6 0;
 #X connect 5 1 9 0;
@@ -41,5 +40,4 @@ outlets;
 #X connect 13 2 0 1;
 #X connect 14 0 15 0;
 #X connect 14 1 5 0;
-#X connect 15 0 19 0;
-#X connect 16 0 2 0;
+#X connect 15 0 18 0;

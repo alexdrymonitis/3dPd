@@ -1,185 +1,153 @@
-#N canvas 37 82 1389 769 10;
+#N canvas 343 82 1211 893 10;
 #X declare -path ../generic_abstractions;
-#X obj 44 28 cnv 15 420 90 empty empty Declare_generic_abstractions_path
+#X obj 44 28 cnv 15 430 90 empty empty Declare_generic_abstractions_path
 0 -12 0 14 -204786 -66577 0;
 #X obj 52 94 declare -path ../generic_abstractions;
-#X obj 49 316 r module\$1;
 #X obj 484 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
 0 -12 0 14 -204786 -66577 0;
-#X obj 497 69 module_data \$0 \$1 \$2 \$3;
 #X obj 497 92 switch~;
 #X text 493 34 [module_data \$0 \$1 \$2 \$3] must be used in all module
 abstractions \, otherwise the whole system will not work;
 #X text 555 93 <- control the DSP of the module accodring to its activity
 ;
-#X obj 812 631 module_output~ 0;
-#X obj 828 611 module_output~ 1;
-#X obj 49 371 assemble_analog_inputs 4;
-#X obj 210 502 r analog_res;
-#X obj 159 608 map_zero 1023 1;
-#X obj 843 591 module_output~ 2;
-#X obj 858 571 module_output~ 3;
-#X text 50 34 you must declare the path to the generic abstractions
-as they are used in all module abstractions ([get_switches] \, [assemble_analog_inputs]
-\, [map] \, map_zero] \, and [module_data].;
-#X text 44 201 evrey module receives potentiometer and switch data
-with [r module\$1] \, where \$1 is the module index in the chain \,
-starting from 1;
-#X text 44 249 a leading 0 in the data received in [r module\$1] denotes
-potentiomere data \, while a leading 1 denotes switch data;
-#X text 234 369 <- get your potentiometer values. argument is number
-of potentiometers;
-#X text 130 315 <- get your potentiometer and switch data here;
-#X text 322 500 <- the resolution of the analog pins is sent from the
-Arduino and received in [pd init] \, in [pd moduels]. from there it
-is sent to [r analog_res]. [map_zero] sets a default 10-bit resolution
-since it's the standard resolution of the Arduino \, and [r analog_res]
-changes it to the resolution used \, in case it's different than 10-bit
-(like with the Teensy3.2 \, which is 13-bit);
-#X obj 49 677 map_zero 1023 1023;
-#X obj 110 653 r analog_res;
-#X text 188 677 <- here the second potentiometer sets the range of
-the first potentiometer. this way we can have a varying range \, where
-the smaller the range \, the greater the resolution;
-#X obj 159 630 s \$0-slope;
-#X obj 214 461 s \$0-gain;
-#X text 274 609 <- [map_zero] maps a range starting from 0 to the value
-of the first argument to a range from 0 to the second argument;
-#X obj 214 438 map 0 1023 -25 25;
-#X text 345 435 <- [map] maps one value range to another. its arguments
-are lowest value of original range \, highest value of original range
-\, lowest value of target range \, and highest value of target range
+#X obj 498 763 module_output~ 0;
+#X obj 514 743 module_output~ 1;
+#X obj 529 723 module_output~ 2;
+#X obj 544 703 module_output~ 3;
+#X text 493 143 the function of this module happens below \, where
+we receive the scaled potentiometer values and the input signals. after
+all the processing \, we send the resulting signals to the [module_output~]
+abstractions which send their outputs to the matrix of the synthesizer.
 ;
-#N canvas 545 222 727 627 freq 0;
-#X obj 145 454 *~;
-#X obj 27 594 outlet~;
-#X obj 27 524 *~;
-#X obj 145 537 *~;
-#X obj 27 333 r \$0-freq;
-#X obj 27 378 line~;
-#X obj 202 476 input_state 1;
-#X obj 202 498 pack f 20;
-#X obj 202 521 line~;
-#X obj 27 356 pack f 20;
-#X obj 46 459 *~ -1;
-#X obj 46 481 +~ 1;
-#X text 21 196 we receive input signals using the [module_input~] abstraction.
-this abstraction is necessary for each module to receive signals from
-the rest of the system. its argument if the number of the module input
-starting from zero.;
-#X text 21 261 we receive the connection state of each input of the
-module with the [inpust_state] abstraction. this abstraction outputs
-a 1 when one or more signals are connected to it \, and a 0 when no
-signal is connected.;
+#X text 493 787 the [module_output~] abstractions forward their incoming
+signals to the matrix of the synthesizer. they are necessary in order
+for each module to be connected to the rest of the system. their argument
+is the output number starting from zero.;
+#N canvas 129 223 721 623 freq 0;
+#X obj 27 564 outlet~;
+#X obj 27 507 *~;
+#X obj 145 485 *~;
+#X obj 27 348 line~;
 #X text 23 22 in this subpatch we're receiving the values of the first
 two potentiometers ([r \$0-freq]) and the second input signal of the
 module ([module_input~ 1]). [input_state 1] gives the connection state
 of the signal input. if there is a signal (or more than one) connected
 \, it will output a 1 \, otherwise it will output a zero.;
-#X text 22 108 if there's no signal connected to the first input \,
+#X obj 163 402 inlet~;
+#X obj 202 446 input_state 1;
+#X obj 27 229 r \$0-freq;
+#X obj 27 315 pack f 20;
+#X obj 156 229 r \$0-freq_range;
+#X obj 156 251 t f f;
+#X obj 156 273 == 0;
+#X obj 149 321 spigot;
+#X obj 27 290 spigot 1;
+#X obj 290 469 smooth_val~;
+#X obj 290 491 invert_val~;
+#X obj 145 424 +~;
+#X text 22 112 if there's no signal connected to the first input \,
 we'll use the potentiometer values to control the frequency of the
 filter. if there is a signal connected to the first input \, we'll
 use that signal to control the frequency \, and we'll use the potentiometer
-to scale the control signal.;
-#X obj 163 432 inlet~;
-#X connect 0 0 3 0;
-#X connect 2 0 1 0;
+to give an offset to the control signal.;
+#X text 270 228 <- here we're using the switch to set the frequency
+range of the filters. when the switch is in the off position (outputting
+0) \, the filters have a range from 20 to 2000 \, and when the switch
+is in the on position (outputting 1) \, the filters have a range from
+0 to 40 Hz.;
+#X obj 149 299 r \$0-low_freq;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
 #X connect 3 0 1 0;
-#X connect 4 0 9 0;
-#X connect 5 0 2 0;
-#X connect 5 0 0 0;
-#X connect 6 0 7 0;
-#X connect 7 0 8 0;
-#X connect 8 0 3 1;
-#X connect 8 0 10 0;
-#X connect 9 0 5 0;
+#X connect 3 0 16 0;
+#X connect 5 0 16 1;
+#X connect 6 1 14 0;
+#X connect 7 0 13 0;
+#X connect 8 0 3 0;
+#X connect 9 0 10 0;
 #X connect 10 0 11 0;
-#X connect 11 0 2 1;
-#X connect 16 0 0 1;
-#X restore 840 322 pd freq;
-#X obj 49 699 s \$0-freq;
-#X obj 812 256 module_input~ 0;
-#X obj 812 459 multiFilter_abs~;
-#X obj 272 415 r analog_res;
-#N canvas 543 220 676 543 slope 0;
-#X obj 145 334 *~;
+#X connect 10 1 12 1;
+#X connect 11 0 13 1;
+#X connect 12 0 8 0;
+#X connect 13 0 8 0;
+#X connect 14 0 15 0;
+#X connect 14 0 2 1;
+#X connect 15 0 1 1;
+#X connect 16 0 2 0;
+#X connect 19 0 12 0;
+#X restore 526 430 pd freq;
+#X obj 498 575 multiFilter_abs~;
+#N canvas 545 222 676 543 slope 0;
 #X obj 27 474 outlet~;
-#X obj 27 404 *~;
-#X obj 145 417 *~;
+#X obj 27 417 *~;
+#X obj 145 395 *~;
 #X obj 27 258 line~;
-#X obj 202 378 pack f 20;
-#X obj 202 401 line~;
 #X obj 27 236 pack f 20;
-#X obj 46 339 *~ -1;
-#X obj 46 361 +~ 1;
 #X obj 27 213 r \$0-slope;
-#X obj 202 356 input_state 2;
 #X text 23 22 in this subpatch we're receiving the values of the third
 potentiometer ([r \$0-slope]) and the third input signal of the module
 ([module_input~ 2]). [input_state 2] gives the connection state of
 the signal input. if there is a signal (or more than one) connected
 \, it will output a 1 \, otherwise it will output a zero.;
-#X text 22 108 if there's no signal connected to the first input \,
+#X obj 163 312 inlet~;
+#X obj 202 356 input_state 2;
+#X obj 290 379 smooth_val~;
+#X obj 290 401 invert_val~;
+#X text 22 120 if there's no signal connected to the first input \,
 we'll use the potentiometer values to control the slope of the filter.
 if there is a signal connected to the first input \, we'll use that
-signal to control the slope \, and we'll use the potentiometer to scale
-the control signal.;
-#X obj 163 312 inlet~;
-#X connect 0 0 3 0;
-#X connect 2 0 1 0;
+signal to control the slope \, and we'll use the potentiometer to give
+an offset to the control signal.;
+#X obj 145 334 +~;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
 #X connect 3 0 1 0;
-#X connect 4 0 2 0;
-#X connect 4 0 0 0;
-#X connect 5 0 6 0;
-#X connect 6 0 3 1;
-#X connect 6 0 8 0;
-#X connect 7 0 4 0;
-#X connect 8 0 9 0;
+#X connect 3 0 12 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 7 0 12 1;
+#X connect 8 1 9 0;
+#X connect 9 0 10 0;
 #X connect 9 0 2 1;
-#X connect 10 0 7 0;
-#X connect 11 0 5 0;
-#X connect 14 0 0 1;
-#X restore 866 367 pd slope;
-#N canvas 541 218 676 543 gain 0;
-#X obj 145 334 *~;
+#X connect 10 0 1 1;
+#X connect 12 0 2 0;
+#X restore 552 479 pd slope;
+#N canvas 543 220 676 543 gain 0;
 #X obj 27 474 outlet~;
-#X obj 27 404 *~;
-#X obj 145 417 *~;
+#X obj 27 417 *~;
+#X obj 145 395 *~;
 #X obj 27 258 line~;
-#X obj 202 378 pack f 20;
-#X obj 202 401 line~;
 #X obj 27 236 pack f 20;
-#X obj 46 339 *~ -1;
-#X obj 46 361 +~ 1;
 #X obj 27 213 r \$0-gain;
 #X text 23 22 in this subpatch we're receiving the values of the fourth
 potentiometer ([r \$0-gain]) and the third input signal of the module
 ([module_input~ 3]). [input_state 3] gives the connection state of
 the signal input. if there is a signal (or more than one) connected
 \, it will output a 1 \, otherwise it will output a zero.;
+#X obj 163 312 inlet~;
 #X obj 202 356 input_state 3;
+#X obj 290 379 smooth_val~;
+#X obj 290 401 invert_val~;
 #X text 22 108 if there's no signal connected to the first input \,
 we'll use the potentiometer values to control the gain of the filter.
 if there is a signal connected to the first input \, we'll use that
-signal to control the gain \, and we'll use the potentiometer to scale
-the control signal.;
-#X obj 163 312 inlet~;
-#X connect 0 0 3 0;
-#X connect 2 0 1 0;
+signal to control the gain \, and we'll use the potentiometer to give
+an offset to the control signal.;
+#X obj 145 334 +~;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
 #X connect 3 0 1 0;
-#X connect 4 0 2 0;
-#X connect 4 0 0 0;
-#X connect 5 0 6 0;
-#X connect 6 0 3 1;
-#X connect 6 0 8 0;
-#X connect 7 0 4 0;
-#X connect 8 0 9 0;
+#X connect 3 0 12 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 7 0 12 1;
+#X connect 8 1 9 0;
+#X connect 9 0 10 0;
 #X connect 9 0 2 1;
-#X connect 10 0 7 0;
-#X connect 12 0 5 0;
-#X connect 14 0 0 1;
-#X restore 893 413 pd gain;
-#N canvas 86 83 930 425 set_filter_type 0;
+#X connect 10 0 1 1;
+#X connect 12 0 2 0;
+#X restore 579 529 pd gain;
+#N canvas 88 85 930 425 set_filter_type 0;
 #X msg 15 184 lowpass \$1;
 #X obj 422 290 outlet;
 #X msg 125 184 highpass \$1;
@@ -195,6 +163,7 @@ if the first outlet connects to an inlet in the system \, the lowpass
 filter will be activated \, and if it is disconnected \, the lowpass
 filter will be deactivated. the same applies to all eight filter types.
 check the help patch of [multiFilter_abs~] for more information;
+#X obj 785 161 output_state 7;
 #X obj 15 161 output_state 0;
 #X obj 125 161 output_state 1;
 #X obj 235 161 output_state 2;
@@ -202,7 +171,6 @@ check the help patch of [multiFilter_abs~] for more information;
 #X obj 455 161 output_state 4;
 #X obj 565 161 output_state 5;
 #X obj 675 161 output_state 6;
-#X obj 785 161 output_state 7;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;
@@ -211,69 +179,202 @@ check the help patch of [multiFilter_abs~] for more information;
 #X connect 6 0 1 0;
 #X connect 7 0 1 0;
 #X connect 8 0 1 0;
-#X connect 10 0 0 0;
-#X connect 11 0 2 0;
-#X connect 12 0 3 0;
-#X connect 13 0 4 0;
-#X connect 14 0 5 0;
-#X connect 15 0 6 0;
-#X connect 16 0 7 0;
-#X connect 17 0 8 0;
-#X restore 921 436 pd set_filter_type;
-#X obj 874 551 module_output~ 4;
-#X obj 890 531 module_output~ 5;
-#X obj 905 511 module_output~ 6;
-#X obj 920 491 module_output~ 7;
-#X text 45 153 this module is a filter which can output eight different
+#X connect 10 0 8 0;
+#X connect 11 0 0 0;
+#X connect 12 0 2 0;
+#X connect 13 0 3 0;
+#X connect 14 0 4 0;
+#X connect 15 0 5 0;
+#X connect 16 0 6 0;
+#X connect 17 0 7 0;
+#X restore 607 552 pd set_filter_type;
+#X obj 560 683 module_output~ 4;
+#X obj 576 663 module_output~ 5;
+#X obj 591 643 module_output~ 6;
+#X obj 606 623 module_output~ 7;
+#X text 45 199 this module is a filter which can output eight different
 filter types at the same time (check [pd set_filter_type] to see the
 available filters);
-#X text 128 338 <- split data according to potentiometer data index
-;
-#X obj 49 338 route 0;
-#X text 839 279 check the four subpatches below;
-#X text 935 459 <- check the help patch of this abstraction for more
+#X text 525 386 check the four subpatches below;
+#X text 621 575 <- check the help patch of this abstraction for more
 info;
-#X obj 840 299 module_input~ 1;
-#X obj 866 345 module_input~ 2;
-#X obj 893 391 module_input~ 3;
-#X text 809 132 the function of this module happens below \, where
-we receive the scaled potentiometer values and the input signals. after
-all the processing \, we send the resulting signals to the [module_output~]
-abstractions which send their outputs to the matrix of the synthesizer.
-The signal inputs of this module (coming from the matrix) are received
-through the [module_input~] abstraction which takes the input number
-(starting from 0) as its argument;
-#X text 807 655 the [module_output~] abstractions forward their incoming
-signals to the matrix of the synthesizer. as with the [module_input~]
-\, they are necessary in order for each module to be connected to the
-rest of the system. their argument is the output number starting from
-zero.;
-#X connect 2 0 43 0;
-#X connect 4 0 5 0;
-#X connect 10 0 21 0;
-#X connect 10 1 21 2;
-#X connect 10 2 12 0;
-#X connect 10 3 27 0;
-#X connect 11 0 12 1;
-#X connect 12 0 24 0;
-#X connect 21 0 30 0;
-#X connect 22 0 21 1;
-#X connect 27 0 25 0;
-#X connect 29 0 32 1;
-#X connect 31 0 32 0;
-#X connect 32 0 8 0;
-#X connect 32 1 9 0;
-#X connect 32 2 13 0;
-#X connect 32 3 14 0;
-#X connect 32 4 37 0;
-#X connect 32 5 38 0;
-#X connect 32 6 39 0;
-#X connect 32 7 40 0;
-#X connect 33 0 27 2;
-#X connect 34 0 32 2;
-#X connect 35 0 32 3;
-#X connect 36 0 32 4;
-#X connect 43 0 10 0;
-#X connect 46 0 29 0;
-#X connect 47 0 34 0;
-#X connect 48 0 35 0;
+#X text 48 136 Note: for this abstraction you'll need the [multiFilter_abs~]
+abstraction which you can find here https://github.com/alexdrymonitis/filter_abstractions
+;
+#N canvas 629 212 743 805 pots_and_switches 0;
+#X obj 42 126 r module\$1;
+#X obj 133 391 r analog_res;
+#X obj 82 497 map_zero 1023 1;
+#X text 123 125 <- get your potentiometer and switch data here;
+#X obj 82 519 s \$0-slope;
+#X obj 123 330 s \$0-gain;
+#X text 197 498 <- [map_zero] maps a range starting from 0 to the value
+of the first argument to a range from 0 to the second argument;
+#X obj 123 307 map 0 1023 -25 25;
+#X text 254 304 <- [map] maps one value range to another. its arguments
+are lowest value of original range \, highest value of original range
+\, lowest value of target range \, and highest value of target range
+;
+#X obj 181 284 r analog_res;
+#X obj 42 717 s \$0-freq;
+#X obj 42 599 t f f;
+#X obj 42 201 unpack f f f;
+#X text 240 221 <- filter the potentiometer values for further smoothing.
+this is the same filtering techinque applied in the Arduino code. values
+are from 0 to 1;
+#X text 245 389 <- the resolution of the analog pins is sent from the
+Teensy and received in [arduino_data]. from there it is sent to [r
+analog_res]. [map_zero] sets a default 10-bit resolution (1st argument)
+since it's the standard resolution of the Teensy \, and [r analog_res]
+changes it to the resolution used \, in case it's different than 10-bit
+(like with the Teensy3.2 \, which is 13-bit);
+#X obj 42 148 route pots switches;
+#X obj 107 173 s \$0-freq_range;
+#X text 224 176 <- this one goes inside [pd freq];
+#X obj 42 551 filter_pot 0.85;
+#X obj 82 361 filter_pot 0.85;
+#X obj 123 224 filter_pot 0.85;
+#X text 44 14 evrey module receives potentiometer and switch data with
+[r module\$1] \, where \$1 is the module index in the chain \, starting
+from;
+#X text 43 81 here we're using three potentiometers and one switch
+;
+#X obj 42 573 tabread exp_tab;
+#X text 163 577 <- read the exponential table for better frequency
+control (goes from 0 to 1);
+#X obj 74 622 * 40;
+#X obj 74 644 s \$0-lwo_freq;
+#X obj 42 670 * 20000;
+#X obj 42 693 + 50;
+#X connect 0 0 15 0;
+#X connect 1 0 2 1;
+#X connect 2 0 4 0;
+#X connect 7 0 5 0;
+#X connect 9 0 7 2;
+#X connect 11 0 27 0;
+#X connect 11 1 25 0;
+#X connect 12 0 18 0;
+#X connect 12 1 19 0;
+#X connect 12 2 20 0;
+#X connect 15 0 12 0;
+#X connect 15 1 16 0;
+#X connect 18 0 23 0;
+#X connect 19 0 2 0;
+#X connect 20 0 7 0;
+#X connect 23 0 11 0;
+#X connect 25 0 26 0;
+#X connect 27 0 28 0;
+#X connect 28 0 10 0;
+#X restore 48 288 pd pots_and_switches;
+#X obj 526 406 module_input~ 1;
+#X obj 552 456 module_input~ 2;
+#X obj 579 506 module_input~ 3;
+#X obj 498 354 module_input~ 0 metalink 0 1 2 3 4 5 6 7;
+#N canvas 299 287 450 300 metadata0 0;
+#X obj 81 53 loadbang;
+#X msg 81 75 filttype : lowpass;
+#X obj 81 97 outlet;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X restore 685 746 pd metadata0;
+#N canvas 299 287 450 300 metadata1 0;
+#X obj 81 53 loadbang;
+#X obj 81 97 outlet;
+#X msg 81 75 filttype : highpass;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 695 726 pd metadata1;
+#X obj 497 69 module_data \$0 \$1 \$2 \$3;
+#N canvas 326 634 450 300 metadata2 0;
+#X obj 81 53 loadbang;
+#X obj 81 97 outlet;
+#X msg 81 75 filttype : bandpass;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 705 706 pd metadata2;
+#N canvas 335 447 450 300 metadata3 0;
+#X obj 81 53 loadbang;
+#X obj 81 97 outlet;
+#X msg 81 75 filttype : allpass;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 715 686 pd metadata3;
+#N canvas 324 467 450 300 metadata4 0;
+#X obj 81 53 loadbang;
+#X obj 81 97 outlet;
+#X msg 81 75 filttype : lowshelf;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 725 666 pd metadata4;
+#N canvas 302 445 450 300 metadata5 0;
+#X obj 81 53 loadbang;
+#X obj 81 97 outlet;
+#X msg 81 75 filttype : peaknotch;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 735 646 pd metadata5;
+#N canvas 299 287 450 300 metadata6 0;
+#X obj 81 53 loadbang;
+#X obj 81 97 outlet;
+#X msg 81 75 filttype : highshelf;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 745 626 pd metadata6;
+#N canvas 299 287 450 300 metadata7 0;
+#X obj 81 53 loadbang;
+#X obj 81 97 outlet;
+#X msg 81 75 filttype : resonant;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X restore 755 606 pd metadata7;
+#X text 47 265 check the contents of the subpatch below;
+#X text 493 226 we receive input signals using the [module_input~]
+abstraction. this abstraction is necessary for each module to receive
+signals from the rest of the system. its argument if the number of
+the module input starting from zero.;
+#N canvas 262 105 450 300 about_metalink 0;
+#X text 9 25 metadata coming to an input can be sent to one or more
+linked outputs so they can be forwarded further down the connection
+chain \; the [module_input~] below is linked to all eight [module_output~]s
+so its incoming metadata will be forwarded to all the outputs \; linking
+is set by giving the following arguments to [module_input~] \, after
+its initial argument \, which is the input number:;
+#X text 8 159 first argument MUST be "metalink" which lets the abstraction
+know that it will be linked to at least one output. then we must write
+the number(s) of the output(s) we want this input to link to. it is
+advisable to use incrementing values and not to mix them. you should
+definitely put the number 0 (in case you're linking an input to the
+first output) at the first position after "metalink" \, otherwise linking
+won't work properly;
+#X restore 497 311 pd about_metalink;
+#X text 631 311 <- read this;
+#X text 784 748 <- metadata here are used as a demonstration of how
+linking works;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions (here we use [map] \, map_zero]
+\, [smooth_val~] \, [invert_val~] \, and [module_data]).;
+#X connect 12 0 13 1;
+#X connect 13 0 6 0;
+#X connect 13 1 7 0;
+#X connect 13 2 8 0;
+#X connect 13 3 9 0;
+#X connect 13 4 17 0;
+#X connect 13 5 18 0;
+#X connect 13 6 19 0;
+#X connect 13 7 20 0;
+#X connect 14 0 13 2;
+#X connect 15 0 13 3;
+#X connect 16 0 13 4;
+#X connect 26 0 12 0;
+#X connect 27 0 14 0;
+#X connect 28 0 15 0;
+#X connect 29 0 13 0;
+#X connect 30 0 6 1;
+#X connect 31 0 7 1;
+#X connect 32 0 3 0;
+#X connect 33 0 8 1;
+#X connect 34 0 9 1;
+#X connect 35 0 17 1;
+#X connect 36 0 18 1;
+#X connect 37 0 19 1;
+#X connect 38 0 20 1;

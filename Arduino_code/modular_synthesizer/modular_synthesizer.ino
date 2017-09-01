@@ -13,7 +13,7 @@
 // various MARCO definitions that need to be adjusted according to the synthesizer setup
 
 // define the number of modules you're using
-#define NUM_OF_MODULES 5
+#define NUM_OF_MODULES 6
 // define a speed for the SPI library so that it can work properly
 // daisy chaining many modules can result in a long distance that needs to be convered
 // by the SPI pins. a 8000000 speed worked for me for 12 modules, after that
@@ -27,8 +27,8 @@
 //#define CLIP 8100
 // set the filter coefficient for smoothing out the potentiometer readings
 // the value should be between 0 and 1. the greater the value, the more the smoothing
-// but the less responsive the potentiometers will be, plus the more jitter you'll
-// get the first time you read a pot
+// but the less responsive the potentiometers will be, plus the more jitter you'll get the first time you read a pot
+// further smoothing is being done in the Pd patch
 #define FILTER_COEFF 0.5
 
 
@@ -40,7 +40,7 @@
 /****************************** output shift registers *****************************/
 
 // array to hold number of signal outputs (banana terminals) of each module
-byte outputPins[NUM_OF_MODULES] = { 0, 4, 8, 4, 4 };
+byte outputPins[NUM_OF_MODULES] = { 2, 4, 8, 4, 4, 5 };
 
 
 /******************************* input shift registers *****************************/
@@ -49,12 +49,12 @@ byte outputPins[NUM_OF_MODULES] = { 0, 4, 8, 4, 4 };
 // a 1 is a pin with a banana terminal and a 0 is a pin with no banana terminal
 // for example, a module with two signal inputs should get the value B00000011
 // signal inputs should be wired from the first input of the shift register and should not skip pins
-byte bananaPins[NUM_OF_MODULES] = { B00000011, B00001111, B00001111, B00001111, B00001111 };
+byte bananaPins[NUM_OF_MODULES] = { B00000011, B00000111, B00001111, B00000111, B00001111, B11111111 };
 // array to hold binary numbers of switched of each module
 // a 1 is a pin with a switch and a 0 is a pin with no switch
 // for example, a module that has three switches (and two signal inputs, like the example above) should get the value B00011100
 // switches should be wired after the signal inputs (banana terminals) and should not skip pins
-byte switchPins[NUM_OF_MODULES] = { B00001100, B01110000, B00000000, B00110000, B00110000  };
+byte switchPins[NUM_OF_MODULES] = { B00001100, B00001000, B00010000, B00000000, B00110000, B00000000 };
 
 
 /*************************************** multiplexers ******************************/
@@ -63,11 +63,11 @@ byte switchPins[NUM_OF_MODULES] = { B00001100, B01110000, B00000000, B00110000, 
 // if your setup has more than 16 modules (which is the number of channels of the CD4067 multiplexer) you'll need more than one
 const int numOfMasterMux = 1;
 // number of modules (slave multiplexers) sending potentiometer data to each master multiplexer
-int numOfSlaveMux[numOfMasterMux] = { 5 };
+int numOfSlaveMux[numOfMasterMux] = { 6 };
 // 1D or 2D array (according to the number of numOfMasterMux) to hold number of potentiometers on each module
 // rows = numOfMasterMux, columns = 16, since the master multiplexers have 16 channels
 // even if it's a 1D array, you should still write it as a 2D array, like the example below
-int numOfPots[numOfMasterMux][16] = { { 2, 8, 4, 4, 4 } };
+int numOfPots[numOfMasterMux][16] = { { 2, 2, 3, 2, 8, 8 } };
 
 
 /************** end of variables that change according to setup ********************/
@@ -203,35 +203,30 @@ void checkConnections(int pin, int module) {
     // check if the input byte has changed and only then send the corresponding data to Pd
     if(maskedBanana != bananaStates[pin][i]){
       // store generic data index (0) and number of expected bytes beyond that which are
-      // secondary index for generic data (check Pd patch)
-      // input chip byte (split in two), number of input pins of current chip
-      // number of output pin, and total number of input pins
+      // secondary index for generic data (check Pd patch), 1 is for connection data
+      // input chip byte (split in two)
+      // number of input pins of current chip
+      // number of output pin
+      // and total number of input pins
       transferData[localIndex++] = 0;
       transferData[localIndex++] = 6;
-
-      // data that are not diffused to modules need a secondary index where 1 is the index for the connections data
       transferData[localIndex++] = 1;
-
-      // then we split the input byte
       transferData[localIndex++] = maskedBanana & 0x7f;
       transferData[localIndex++] = maskedBanana >> 7;
-
       transferData[localIndex++] = totalInputBananas[i];
-
-      // [mtx_*~] in Pd starts counting from 1
+      // matrixes from iemmatrix in Pd start counting from 1
       transferData[localIndex++] = pin + 1;
-
-      // zero last byte of this group first
+      // we first zero the total number of input chips
       transferData[localIndex] = 0;
-      // and then check if we're not in the first module
+      // and then we check if we're not in the first module
       if(i){
-        // if we're not in the first module accumulate the number of previous modules' input pins
+        // if we're not in the first module, we accumulate the number of previous modules' input pins
         // and increment localIndex
         for(int j = 0; j < i; j++) transferData[localIndex] += totalInputBananas[j];
         localIndex++;
       }
       else{
-        // otherwise just increment localIndex
+        // otherwise we just increment localIndex
         localIndex++;
       }
       updateModules(maskedBanana, pin, module, i);
@@ -299,24 +294,22 @@ void checkSwitches() {
     // mask the input byte according to the position of the switches and check if changed
     byte maskedSwitch = inputData[i] & switchPins[i];
     if(maskedSwitch != switchStates[i]){
-      // if changed, store module index (starting from 1) and num of bytes Pd should expect beyond that which are
-      // module data index (1 for switches, 0 for potentiometers)
-      // input chip byte split in two, number of switches of current module
-      // and pin number of the first switch of the current module
-      transferData[localIndex++] = i + 1;
-      transferData[localIndex++] = 5;
-
-      // 1 indicates that the data received in a module abstraction concern its switches
+      // if changed, store a 1 which denotes module data instead of generic data
+      // the extra index 1 to denote that the following values are switch values
+      // the module index (starting from 0)
       transferData[localIndex++] = 1;
+      transferData[localIndex++] = 1;
+      transferData[localIndex++] = i;
 
-      // split the input byte
+      // afterward store the data for splitting the byte with the switch values
+      // this is number of switches of current module
+      // pin number of the first switch of the current module
+      // and input chip byte split in two
+      transferData[localIndex++] = totalNumSwitches[i];
+      transferData[localIndex++] = firstSwitch[i];
       transferData[localIndex++] = maskedSwitch & 0x7f;
       transferData[localIndex++] = maskedSwitch >> 7;
-      // write the number of switches of this module
-      transferData[localIndex++] = totalNumSwitches[i];
-
-      // write the pin number of the first switch of the current module
-      transferData[localIndex++] = firstSwitch[i];
+      
       // update the switchStates array and the global index and exit loop
       switchStates[i] = maskedSwitch;
       break;
@@ -337,16 +330,17 @@ void readPots() {
   for(int masterMux = 0; masterMux < numOfMasterMux; masterMux++){
     // run through all slave multiplexers
     for(int slaveMux = 0; slaveMux < numOfSlaveMux[masterMux]; slaveMux++){
-      // if this module is active, store its index (starting from 1) and the number of bytes to expect which are
+      // if this module is active, store a 1 which denotes module data instead of generic data
       // the extra index 0 to denote that the following values are potentiometer values
+      // the module index (starting from 0)
+      // and the number of potentiometers
       // Note: activity of modules is being stored in the checkConnections function
       if(activeModules[moduleIndex]){
-        transferData[localIndex++] = moduleIndex + 1;
-        // pot values are being split in two, and we need an extra byte for the pot index
-        transferData[localIndex++] = (numOfPots[masterMux][slaveMux] * 2) + 1;
-
-        // then send the pot index
+        transferData[localIndex++] = 1;
         transferData[localIndex++] = 0;
+        transferData[localIndex++] = moduleIndex;
+        transferData[localIndex++] = numOfPots[masterMux][slaveMux];
+
         // set the control pins of the current master multiplexer
         for(int i = 0; i < numMasterCtlPins; i++)
           digitalWrite(masterCtlPins[i], (slaveMux & masterCtlValues[i]) >> i);
@@ -490,9 +484,7 @@ void readSerialData() {
         serialVal = serialVal * 10 + inByte - '0';
       else{
         if(inByte == 'm'){
-          // module indexes in the Pd patch start from 0, but arrays start from 0
-          // hence the subtraction by one below
-          whichModule = serialVal - 1;
+          whichModule = serialVal;
           serialVal = 0;
         }
         else if(inByte == 'p'){
