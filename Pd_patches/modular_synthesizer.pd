@@ -1,71 +1,80 @@
-#N canvas 234 242 738 690 10;
-#X declare -path ./generic_abstractions -path ./modules -path ./modules/module_abstractions
--path ./modules/module_clones -path /usr/lib/pd/extra/zexy -lib zexy
--path /usr/lib/pd/extra/iemmatrix -lib iemmatrix -path /usr/lib/pd/extra/comport
--path /home/pi/pd-externals/iemguts;
-#X text 82 439 close serial port;
-#X text 44 343 check serial devices;
-#X floatatom 57 393 5 0 0 0 - - -, f 5;
-#X text 55 378 open serial port;
-#X text 68 407 open device by name;
-#X symbolatom 70 424 0 0 0 0 - - -;
-#X msg 45 360 devices;
-#X msg 83 456 close;
-#X obj 90 532 r to_comport;
+#N canvas 539 135 695 799 10;
+#X declare -path ./generic_abstractions -path ./modules;
+#X text 82 539 close serial port;
+#X text 44 443 check serial devices;
+#X floatatom 57 493 5 0 0 0 - - -, f 5;
+#X text 55 478 open serial port;
+#X text 68 507 open device by name;
+#X symbolatom 70 524 0 0 0 0 - - -;
+#X msg 45 460 devices;
+#X msg 83 556 close;
+#X obj 90 632 r to_comport;
 #N canvas 424 155 397 357 modules 0;
 #X text 41 15 Module abstraction arguments:;
 #X text 40 53 2nd: number of inlets;
 #X text 40 71 3rd: number of outlets;
-#N canvas 1172 303 619 539 init 0;
-#X obj 17 67 loadbang;
-#X text 15 267 if a resolution for the analog pins other than 10-bit
-is used \, it will be sent over serial on boot \, and it will be received
-below;
-#X obj 21 320 r resolution;
-#X obj 21 456 s analog_res;
-#X obj 17 111 t b b;
-#X obj 17 156 del 100;
-#X obj 49 135 s module_data1;
-#X text 17 18 Delay a bang to [r module_data1] so that all [module_data]
-abstractions have time to set the [s ] name for the next module;
-#X obj 17 89 del 250;
-#X text 71 156 query the analogReadResolution;
-#X msg 17 178 print a;
-#X obj 17 200 s to_comport;
-#X obj 21 433 +;
-#X obj 88 416 * 128;
-#X obj 183 394 bug13;
-#X obj 183 372 unpack f f f f;
-#X obj 246 394 bug13;
-#X obj 21 372 unpack f f;
-#X text 178 339 if you're facing the 13_bug \, replace [unpack f f]
-to the left with the objects below;
-#X connect 0 0 8 0;
-#X connect 2 0 17 0;
-#X connect 4 0 5 0;
-#X connect 4 1 6 0;
-#X connect 5 0 10 0;
-#X connect 8 0 4 0;
-#X connect 10 0 11 0;
-#X connect 12 0 3 0;
-#X connect 13 0 12 1;
-#X connect 15 0 14 0;
-#X connect 15 1 14 1;
-#X connect 15 2 16 0;
-#X connect 15 3 16 1;
-#X connect 17 0 12 0;
-#X connect 17 1 13 0;
-#X restore 42 103 pd init;
 #X text 103 103 <- stuff needed on load;
 #X text 40 35 1st: module number \, starting from 1;
-#X obj 41 162 tutorial_dac_module~ 1 2 0;
 #X obj 41 189 tutorial_envelope_module~ 2 4 4;
 #X obj 41 216 tutorial_filter_module~ 3 4 8;
 #X obj 41 243 tutorial_oscillator_module~ 4 4 4;
-#X obj 41 270 tutorial_oscillator_module~ 5 4 4;
-#X restore 45 633 pd modules;
-#X floatatom 91 483 5 0 0 0 - - -, f 5;
-#X msg 91 502 baud \$1;
+#X obj 41 162 tutorial_adc_dac_module~ 1 2 0;
+#N canvas 1172 303 557 565 init 0;
+#X obj 17 127 loadbang;
+#X obj 17 149 del 250;
+#X obj 17 172 s module_data0;
+#X text 13 14 Bang the first [module_data] abstraction so it can create
+the names to all its [module_input~] \, [module_output~] \, [input_state]
+\, and [output_state] abstractions. A delay is necessary so the all
+[module_data] abstractions have time to do their internal workings
+before they are ready to create the names mentioned above.;
+#X obj 18 218 r analog_res;
+#X obj 18 312 t f b;
+#X obj 18 334 until;
+#X obj 18 378 f;
+#X obj 48 378 + 1;
+#X msg 36 355 0;
+#X obj 18 400 t f f;
+#X obj 18 240 t f f;
+#X obj 18 262 + 1;
+#X obj 50 422 /;
+#X obj 18 290 t f f;
+#X obj 50 444 pow 2;
+#X obj 18 473 pack;
+#X obj 18 496 array define exp_tab;
+#X obj 155 307 array size exp_tab;
+#X text 16 521 write an exponential table which is used for frequency
+slopes;
+#X text 115 218 <- this comes from [arduino_data] received from the
+Teensy;
+#X text 63 257 the value sent from the Teensy is the analog resolution
+minus 1 (for example 1023 for 10-bits) for better table reading;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 4 0 11 0;
+#X connect 5 0 6 0;
+#X connect 5 1 9 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 7 0 10 0;
+#X connect 8 0 7 1;
+#X connect 9 0 7 1;
+#X connect 10 0 16 0;
+#X connect 10 1 13 0;
+#X connect 11 0 12 0;
+#X connect 11 1 13 1;
+#X connect 12 0 14 0;
+#X connect 13 0 15 0;
+#X connect 14 0 5 0;
+#X connect 14 1 18 0;
+#X connect 15 0 16 1;
+#X connect 16 0 17 0;
+#X restore 42 103 pd init;
+#X obj 41 270 tutorial_lfo_module~ 5 3 4;
+#X obj 41 297 tutorial_vca_mixer_module~ 6 8 5;
+#X restore 45 733 pd modules;
+#X floatatom 91 583 5 0 0 0 - - -, f 5;
+#X msg 91 602 baud \$1;
 #N canvas 673 634 653 283 poweroff 0;
 #X obj 45 129 spigot;
 #N canvas 971 116 679 389 shut_down_script 0;
@@ -150,34 +159,41 @@ a too short time \, you can utilize it to give some visual feedback
 #X connect 4 0 0 1;
 #X connect 6 0 1 0;
 #X connect 7 0 0 0;
-#X restore 45 660 pd poweroff;
-#X text 186 533 <- various messages for the Arduino;
-#X text 40 190 declare the path to the generic_abstractions and the
-modules abstractions \, and the paths to the zexy \, iemmatrix \, comport
-\, and iemguts libraries \, and load the zexy and iemmatrix libraries
-;
-#X text 157 565 <- argument is serial port;
-#X text 235 601 <- arguments are matrix ramp time and debounce time
+#X restore 45 760 pd poweroff;
+#X text 186 633 <- various messages for the Arduino;
+#X text 157 665 <- argument is serial port;
+#X text 235 701 <- arguments are matrix ramp time and debounce time
 (both default to 100);
-#X obj 45 599 matrix_connections 100 100;
-#X obj 45 566 arduino_data 0;
-#X obj 42 255 declare -path ./generic_abstractions -path ./modules
--path ./modules/module_abstractions -path ./modules/module_clones -path
-/usr/lib/pd/extra/zexy -lib zexy -path /usr/lib/pd/extra/iemmatrix
--lib iemmatrix -path /usr/lib/pd/extra/comport -path /home/pi/pd-externals/iemguts
+#X obj 45 699 matrix_connections 100 100;
+#X obj 45 666 arduino_data 0;
+#X obj 42 405 declare -path ./generic_abstractions -path ./modules
 ;
-#X text 40 22 This is the patch for the modular synthesizer. In this
-patch the four tutorial module abstractions are used (in [pd modules])
-\, where the oscillator abstraction is being used twice.;
 #X text 40 79 This patch works only with the corresponding Arduino
-sketch and the corresponding hardware (you need to have the Teensy
-connected otherwise the patch won't work);
-#X text 40 124 Read the tutorial modular abstractions and the Arduino
-sketch \, to understand how this setup works;
-#X connect 2 0 18 0;
-#X connect 5 0 18 0;
-#X connect 6 0 18 0;
-#X connect 7 0 18 0;
-#X connect 8 0 18 0;
+sketch and the corresponding hardware (all the infrastructure of the
+synthesizer \, plus the module circuit boards \, all connected properly).
+Note that you need to have the Teensy connected otherwise the patch
+won't work.;
+#X text 40 154 Read the tutorial module abstractions (inside [pd modules])
+and the Arduino sketch \, to understand how this setup works;
+#X text 40 22 This is the patch for the modular synthesizer. In this
+patch the tutorial module abstractions are used (in [pd modules]) \,
+to demonstrate how this system works.;
+#X text 39 192 Declare the path to the generic_abstractions and the
+modules abstractions;
+#X text 37 226 You should also declare the paths to the following external
+libraries: zexy \, iemmatrix \, comport \, iemguts \, list-abs \, and
+tabreceive_mult~ (if list-abs is in the externals directory in your
+Documents directory -which is very likely to be so- you don't need
+to include it because all its abstractions have the "list-abs" directory
+prepended \, e.g. [list-abs/list-drip]) \; For zexy and iemmatrix you
+should also include the flag -lib to load the library \; This is not
+included here because it is system specific and relative paths cannot
+be used since these libraries are not shipped with the patches of this
+project;
+#X connect 2 0 17 0;
+#X connect 5 0 17 0;
+#X connect 6 0 17 0;
+#X connect 7 0 17 0;
+#X connect 8 0 17 0;
 #X connect 10 0 11 0;
-#X connect 11 0 18 0;
+#X connect 11 0 17 0;

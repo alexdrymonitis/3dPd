@@ -1,0 +1,16 @@
+#N canvas 1277 480 563 300 10;
+#X obj 16 64 inlet;
+#X obj 16 128 pack f 100;
+#X obj 16 150 line~;
+#X obj 16 172 outlet~;
+#X obj 83 64 r mtx_ramp;
+#X obj 98 128 r matrix_ramp_time;
+#X text 105 96 set the initial ramp time (first argument of [matrix_connections])
+;
+#X text 83 44 update the ramp according to the patching update state
+;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 4 0 1 1;
+#X connect 5 0 1 1;
