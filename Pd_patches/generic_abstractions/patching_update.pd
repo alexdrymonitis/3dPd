@@ -1,0 +1,11 @@
+#N canvas 491 185 585 250 10;
+#X obj 35 128 inlet;
+#X obj 35 174 s patch_update_switch;
+#X text 57 152 this goes to [matrix_connections];
+#X text 33 22 it's a bit of an overkill to have an abstraction that
+just sends its input to a [send] \, but it's probably clearer to use
+the patching update feature with an abstraction rather than with a
+[send]. still you can just use the [send] below instead of this abstraction
+\, but whichever way you do it \, you MUST send a 1 or a 0 to the [send]
+below;
+#X connect 0 0 1 0;

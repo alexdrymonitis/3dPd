@@ -1,0 +1,70 @@
+#N canvas 230 98 597 582 10;
+#N canvas 743 260 450 300 debounce 0;
+#X obj 76 64 inlet;
+#X obj 76 86 spigot 1;
+#X msg 129 64 0;
+#X obj 173 125 del 100;
+#X msg 205 169 1;
+#X obj 76 245 outlet;
+#X obj 76 108 t b b b b;
+#X msg 116 169 1;
+#X obj 173 147 t b b;
+#X msg 173 169 0;
+#X obj 116 215 outlet led_ctl;
+#X connect 0 0 1 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 1;
+#X connect 3 0 8 0;
+#X connect 4 0 1 1;
+#X connect 6 0 5 0;
+#X connect 6 1 2 0;
+#X connect 6 2 7 0;
+#X connect 6 3 3 0;
+#X connect 7 0 10 0;
+#X connect 8 0 9 0;
+#X connect 8 1 4 0;
+#X connect 9 0 10 0;
+#X restore 27 324 pd debounce;
+#X obj 27 217 inlet~;
+#X obj 27 465 line~;
+#X obj 27 510 outlet~;
+#X obj 27 416 f;
+#X text 178 486 use [tabread~] instead of [tabread4~] because with
+the latter the envelope value is never zeroed;
+#X msg 27 439 0 \, 2047 \$1;
+#X obj 27 289 threshold~ 0 10 0 10;
+#X obj 203 221 inlet metadata;
+#X obj 203 243 route polarity;
+#X obj 203 265 route bi uni;
+#X msg 203 287 0;
+#X msg 243 287 0.1;
+#X msg 203 313 set \$1 10 \$1 10;
+#X obj 101 347 outlet;
+#X text 24 16 in this abstraction we're using the incoming metadata
+to determing the threshold value for trigger the envelope. if the incoming
+CV is bipolar (set by the value "bi" of the key "polarity") we'll set
+the threshold to 0 \, and if it's unipolar (set by the value "uni"
+of the same key) we'll set it to 0.5 \; connect a [print] to [inlet
+metadata] to see all the metadata arriving at this inlet when you connect
+it to the oscillator modules or the filter module \; if you connect
+an oscillator to the filter and then here you'll see the metadata of
+both modules arriving here because in the filter module we're linking
+the metadata coming in the first input to all its outputs;
+#X obj 45 393 r \$1-env_dur\$2;
+#X obj 27 487 tabread~ \$1-envelope;
+#X connect 0 0 4 0;
+#X connect 0 1 14 0;
+#X connect 1 0 7 0;
+#X connect 2 0 17 0;
+#X connect 4 0 6 0;
+#X connect 6 0 2 0;
+#X connect 7 0 0 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 10 1 12 0;
+#X connect 11 0 13 0;
+#X connect 12 0 13 0;
+#X connect 13 0 7 0;
+#X connect 16 0 4 1;
+#X connect 17 0 3 0;

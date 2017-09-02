@@ -1,0 +1,8 @@
+#N canvas 1 82 325 196 10;
+#X obj 86 41 inlet;
+#X obj 86 93 max;
+#X obj 104 68 r matrix_ramp_time;
+#X obj 86 117 s ramp;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 1;
