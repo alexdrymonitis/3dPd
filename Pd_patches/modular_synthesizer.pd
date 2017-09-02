@@ -15,9 +15,9 @@
 #X text 40 71 3rd: number of outlets;
 #X text 103 103 <- stuff needed on load;
 #X text 40 35 1st: module number \, starting from 1;
-#X obj 41 189 tutorial_envelope_module~ 2 4 4;
+#X obj 41 242 tutorial_envelope_module~ 2 4 4;
 #X obj 41 216 tutorial_filter_module~ 3 4 8;
-#X obj 41 243 tutorial_oscillator_module~ 4 4 4;
+#X obj 41 188 tutorial_oscillator_module~ 4 4 4;
 #X obj 41 162 tutorial_adc_dac_module~ 1 2 0;
 #N canvas 1172 303 557 565 init 0;
 #X obj 17 127 loadbang;
