@@ -9,16 +9,15 @@
 #X msg 45 460 devices;
 #X msg 83 556 close;
 #X obj 90 632 r to_comport;
-#N canvas 424 155 397 357 modules 0;
+#N canvas 917 174 397 357 modules 0;
 #X text 41 15 Module abstraction arguments:;
 #X text 40 53 2nd: number of inlets;
 #X text 40 71 3rd: number of outlets;
 #X text 103 103 <- stuff needed on load;
 #X text 40 35 1st: module number \, starting from 1;
-#X obj 41 242 tutorial_envelope_module~ 2 4 4;
-#X obj 41 216 tutorial_filter_module~ 3 4 8;
+#X obj 41 269 tutorial_envelope_module~ 2 4 4;
+#X obj 41 214 tutorial_filter_module~ 3 4 8;
 #X obj 41 188 tutorial_oscillator_module~ 4 4 4;
-#X obj 41 162 tutorial_adc_dac_module~ 1 2 0;
 #N canvas 1172 303 557 565 init 0;
 #X obj 17 127 loadbang;
 #X obj 17 149 del 250;
@@ -70,8 +69,9 @@ minus 1 (for example 1023 for 10-bits) for better table reading;
 #X connect 15 0 16 1;
 #X connect 16 0 17 0;
 #X restore 42 103 pd init;
-#X obj 41 270 tutorial_lfo_module~ 5 3 4;
+#X obj 41 241 tutorial_lfo_module~ 5 3 4;
 #X obj 41 297 tutorial_vca_mixer_module~ 6 8 5;
+#X obj 41 162 tutorial_adc_dac_module~ 1 2 2;
 #X restore 45 733 pd modules;
 #X floatatom 91 583 5 0 0 0 - - -, f 5;
 #X msg 91 602 baud \$1;
@@ -181,15 +181,15 @@ to demonstrate how this system works.;
 #X text 39 192 Declare the path to the generic_abstractions and the
 modules abstractions;
 #X text 37 226 You should also declare the paths to the following external
-libraries: zexy \, iemmatrix \, comport \, iemguts \, list-abs \, and
-tabreceive_mult~ (if list-abs is in the externals directory in your
-Documents directory -which is very likely to be so- you don't need
-to include it because all its abstractions have the "list-abs" directory
-prepended \, e.g. [list-abs/list-drip]) \; For zexy and iemmatrix you
-should also include the flag -lib to load the library \; This is not
-included here because it is system specific and relative paths cannot
-be used since these libraries are not shipped with the patches of this
-project;
+libraries: zexy \, iemmatrix \, comport \, iemguts \, ggee \, list-abs
+\, and tabreceive_mult~ (if list-abs is in the externals directory
+in your Documents directory -which is very likely to be so- you don't
+need to include it because all its abstractions have the "list-abs"
+directory prepended \, e.g. [list-abs/list-drip]) \; For zexy and iemmatrix
+you should also include the flag -lib to load the library \; This is
+not included here because it is system specific and relative paths
+cannot be used since these libraries are not shipped with the patches
+of this project;
 #X connect 2 0 17 0;
 #X connect 5 0 17 0;
 #X connect 6 0 17 0;
