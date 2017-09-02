@@ -1,9 +1,7 @@
-#N canvas 952 167 952 737 10;
+#N canvas 952 167 952 765 10;
 #X declare -path ./generic_abstractions;
-#X obj 41 124 hradio 15 1 0 9 empty empty empty 0 -8 0 10 -262144 -1
--1 0;
-#X msg 41 147 symbol module\$1;
-#X obj 41 216 spigot;
+#X msg 41 167 symbol module\$1;
+#X obj 41 236 spigot;
 #X obj 501 304 list prepend matrix;
 #X obj 501 326 list trim;
 #X obj 501 253 route matrix;
@@ -11,30 +9,22 @@
 #X obj 501 161 spigot;
 #X obj 540 141 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 41 682 filter_pot 0.85;
-#X floatatom 41 704 5 0 0 0 - - -, f 5;
-#X obj 143 660 r filter_coeff;
-#X obj 62 638 filter_pot 0.85;
-#X floatatom 62 660 5 0 0 0 - - -, f 5;
-#X obj 164 616 r filter_coeff;
-#X obj 84 594 filter_pot 0.85;
-#X floatatom 84 616 5 0 0 0 - - -, f 5;
-#X obj 186 572 r filter_coeff;
-#X obj 105 550 filter_pot 0.85;
-#X floatatom 105 572 5 0 0 0 - - -, f 5;
-#X obj 207 528 r filter_coeff;
-#X obj 127 506 filter_pot 0.85;
-#X floatatom 127 528 5 0 0 0 - - -, f 5;
-#X obj 229 484 r filter_coeff;
-#X obj 148 462 filter_pot 0.85;
-#X floatatom 148 484 5 0 0 0 - - -, f 5;
-#X obj 250 440 r filter_coeff;
-#X obj 170 418 filter_pot 0.85;
-#X floatatom 170 440 5 0 0 0 - - -, f 5;
-#X obj 272 396 r filter_coeff;
-#X obj 192 374 filter_pot 0.85;
-#X floatatom 192 396 5 0 0 0 - - -, f 5;
-#X obj 294 352 r filter_coeff;
+#X obj 41 702 filter_pot 0.85;
+#X floatatom 41 724 5 0 0 0 - - -, f 5;
+#X obj 62 658 filter_pot 0.85;
+#X floatatom 62 680 5 0 0 0 - - -, f 5;
+#X obj 84 614 filter_pot 0.85;
+#X floatatom 84 636 5 0 0 0 - - -, f 5;
+#X obj 105 570 filter_pot 0.85;
+#X floatatom 105 592 5 0 0 0 - - -, f 5;
+#X obj 127 526 filter_pot 0.85;
+#X floatatom 127 548 5 0 0 0 - - -, f 5;
+#X obj 148 482 filter_pot 0.85;
+#X floatatom 148 504 5 0 0 0 - - -, f 5;
+#X obj 170 438 filter_pot 0.85;
+#X floatatom 170 460 5 0 0 0 - - -, f 5;
+#X obj 192 394 filter_pot 0.85;
+#X floatatom 192 416 5 0 0 0 - - -, f 5;
 #X text 497 17 enable printing the matrix messages. when the patching
 update is re-enabled \, the whole matrix is being printed \, while
 the patching update is enabled \, single matrix messages are being
@@ -42,86 +32,84 @@ printed \, of the form "element \$1 \$2 \$3" \, where \$1 is the input
 number of the whole system \, \$2 is the output number \, and \$3 is
 the connection state between the input and output (0 or 1);
 #X obj 501 348 mtx_print;
-#X obj 41 351 unpack f f f f f f f f;
-#X obj 41 239 route pots switches;
-#X obj 106 263 unpack f f f f f f f f;
-#X obj 106 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 41 371 unpack f f f f f f f f;
+#X obj 41 259 route pots switches;
+#X obj 106 283 unpack f f f f f f f f;
+#X obj 106 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 127 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 127 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 149 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 149 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 170 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 170 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 192 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 192 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 213 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 213 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 235 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 235 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 257 287 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 257 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 41 170 iemguts/oreceive module0;
+#X obj 41 190 iemguts/oreceive module0;
 #X obj 502 491 r ardu_mess;
-#X obj 502 560 print ardu_mess;
+#X obj 502 582 print ardu_mess;
 #X obj 502 538 spigot;
 #X obj 541 516 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X text 41 88 set the module index of the module you want to receive
-potentiometer data from;
-#X obj 80 196 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 80 216 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 500 468 print the messages sent to the Teensy;
-#X obj 40 42 declare -path ./generic_abstractions;
-#X text 41 9 we're using [filter_pot] from the generic_abstractions
-directory so we must declare that path;
+#X obj 40 82 declare -path ./generic_abstractions;
 #X obj 501 116 r mtx_msg;
-#X connect 0 0 1 0;
-#X connect 1 0 46 0;
-#X connect 2 0 36 0;
-#X connect 3 0 4 0;
-#X connect 4 0 34 0;
-#X connect 5 0 3 0;
-#X connect 5 1 6 0;
-#X connect 7 0 5 0;
-#X connect 8 0 7 1;
-#X connect 9 0 10 0;
-#X connect 11 0 9 1;
+#X floatatom 41 148 5 0 0 0 - - -, f 5;
+#X text 39 110 set the module index of the module you want to receive
+potentiometer and switch data from;
+#X text 41 9 we're using [filter_pot] from the generic_abstractions
+directory so we must declare that path. also [mtx_print] is used which
+is from the iemmatrix library. most likely this patch is opened with
+the main patch where this library is loaded;
+#X obj 502 560 list tosymbol;
+#X text 602 558 make the messages human readable;
+#X connect 0 0 37 0;
+#X connect 1 0 27 0;
+#X connect 2 0 3 0;
+#X connect 3 0 25 0;
+#X connect 4 0 2 0;
+#X connect 4 1 5 0;
+#X connect 6 0 4 0;
+#X connect 7 0 6 1;
+#X connect 8 0 9 0;
+#X connect 10 0 11 0;
 #X connect 12 0 13 0;
-#X connect 14 0 12 1;
-#X connect 15 0 16 0;
-#X connect 17 0 15 1;
+#X connect 14 0 15 0;
+#X connect 16 0 17 0;
 #X connect 18 0 19 0;
-#X connect 20 0 18 1;
-#X connect 21 0 22 0;
-#X connect 23 0 21 1;
-#X connect 24 0 25 0;
-#X connect 26 0 24 1;
-#X connect 27 0 28 0;
-#X connect 29 0 27 1;
-#X connect 30 0 31 0;
-#X connect 32 0 30 1;
-#X connect 35 0 9 0;
-#X connect 35 1 12 0;
-#X connect 35 2 15 0;
-#X connect 35 3 18 0;
-#X connect 35 4 21 0;
-#X connect 35 5 24 0;
-#X connect 35 6 27 0;
-#X connect 35 7 30 0;
-#X connect 36 0 35 0;
-#X connect 36 1 37 0;
-#X connect 37 0 38 0;
-#X connect 37 1 39 0;
-#X connect 37 2 40 0;
-#X connect 37 3 41 0;
-#X connect 37 4 42 0;
-#X connect 37 5 43 0;
-#X connect 37 6 44 0;
-#X connect 37 7 45 0;
-#X connect 46 0 2 0;
-#X connect 47 0 49 0;
-#X connect 49 0 48 0;
-#X connect 50 0 49 1;
-#X connect 52 0 2 1;
-#X connect 56 0 7 0;
+#X connect 20 0 21 0;
+#X connect 22 0 23 0;
+#X connect 26 0 8 0;
+#X connect 26 1 10 0;
+#X connect 26 2 12 0;
+#X connect 26 3 14 0;
+#X connect 26 4 16 0;
+#X connect 26 5 18 0;
+#X connect 26 6 20 0;
+#X connect 26 7 22 0;
+#X connect 27 0 26 0;
+#X connect 27 1 28 0;
+#X connect 28 0 29 0;
+#X connect 28 1 30 0;
+#X connect 28 2 31 0;
+#X connect 28 3 32 0;
+#X connect 28 4 33 0;
+#X connect 28 5 34 0;
+#X connect 28 6 35 0;
+#X connect 28 7 36 0;
+#X connect 37 0 1 0;
+#X connect 38 0 40 0;
+#X connect 40 0 49 0;
+#X connect 41 0 40 1;
+#X connect 42 0 1 1;
+#X connect 45 0 6 0;
+#X connect 46 0 0 0;
+#X connect 49 0 39 0;
