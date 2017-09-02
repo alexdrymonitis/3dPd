@@ -13,7 +13,7 @@
 // various MARCO definitions that need to be adjusted according to the synthesizer setup
 
 // define the number of modules you're using
-#define NUM_OF_MODULES 3
+#define NUM_OF_MODULES 6
 // define a speed for the SPI library so that it can work properly
 // daisy chaining many modules can result in a long distance that needs to be convered
 // by the SPI pins. a 8000000 speed worked for me for 12 modules, after that
@@ -40,7 +40,7 @@
 /****************************** output shift registers *****************************/
 
 // array to hold number of signal outputs (banana terminals) of each module
-byte outputPins[NUM_OF_MODULES] = { 2, 4, 8 };//, 4, 4, 5 };
+byte outputPins[NUM_OF_MODULES] = { 2, 4, 8, 4, 4, 5 };
 
 
 /******************************* input shift registers *****************************/
@@ -49,12 +49,12 @@ byte outputPins[NUM_OF_MODULES] = { 2, 4, 8 };//, 4, 4, 5 };
 // a 1 is a pin with a banana terminal and a 0 is a pin with no banana terminal
 // for example, a module with two signal inputs should get the value B00000011
 // signal inputs should be wired from the first input of the shift register and should not skip pins
-byte bananaPins[NUM_OF_MODULES] = { B00000011, B00000111, B00001111 };//, B00000111, B00001111, B11111111 };
+byte bananaPins[NUM_OF_MODULES] = { B00000011, B00000111, B00001111, B00000111, B00001111, B11111111 };
 // array to hold binary numbers of switched of each module
 // a 1 is a pin with a switch and a 0 is a pin with no switch
 // for example, a module that has three switches (and two signal inputs, like the example above) should get the value B00011100
 // switches should be wired after the signal inputs (banana terminals) and should not skip pins
-byte switchPins[NUM_OF_MODULES] = { B00001100, B00001000, B00010000 };//, B00000000, B00110000, B00000000 };
+byte switchPins[NUM_OF_MODULES] = { B00001100, B00001000, B00010000, B00000000, B00110000, B00000000 };
 
 
 /*************************************** multiplexers ******************************/
@@ -67,7 +67,7 @@ int numOfSlaveMux[numOfMasterMux] = { 6 };
 // 1D or 2D array (according to the number of numOfMasterMux) to hold number of potentiometers on each module
 // rows = numOfMasterMux, columns = 16, since the master multiplexers have 16 channels
 // even if it's a 1D array, you should still write it as a 2D array, like the example below
-int numOfPots[numOfMasterMux][16] = { { 2, 2, 3 } };//, 2, 8, 8 } };
+int numOfPots[numOfMasterMux][16] = { { 2, 2, 3, 2, 8, 8 } };
 
 
 /************** end of variables that change according to setup ********************/
