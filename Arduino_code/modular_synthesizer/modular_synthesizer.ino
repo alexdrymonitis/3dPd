@@ -13,7 +13,7 @@
 // various MARCO definitions that need to be adjusted according to the synthesizer setup
 
 // define the number of modules you're using
-#define NUM_OF_MODULES 6
+#define NUM_OF_MODULES 3
 // define a speed for the SPI library so that it can work properly
 // daisy chaining many modules can result in a long distance that needs to be convered
 // by the SPI pins. a 8000000 speed worked for me for 12 modules, after that
@@ -40,7 +40,7 @@
 /****************************** output shift registers *****************************/
 
 // array to hold number of signal outputs (banana terminals) of each module
-byte outputPins[NUM_OF_MODULES] = { 2, 4, 8, 4, 4, 5 };
+byte outputPins[NUM_OF_MODULES] = { 2, 4, 8 };//, 4, 4, 5 };
 
 
 /******************************* input shift registers *****************************/
@@ -49,12 +49,12 @@ byte outputPins[NUM_OF_MODULES] = { 2, 4, 8, 4, 4, 5 };
 // a 1 is a pin with a banana terminal and a 0 is a pin with no banana terminal
 // for example, a module with two signal inputs should get the value B00000011
 // signal inputs should be wired from the first input of the shift register and should not skip pins
-byte bananaPins[NUM_OF_MODULES] = { B00000011, B00000111, B00001111, B00000111, B00001111, B11111111 };
+byte bananaPins[NUM_OF_MODULES] = { B00000011, B00000111, B00001111 };//, B00000111, B00001111, B11111111 };
 // array to hold binary numbers of switched of each module
 // a 1 is a pin with a switch and a 0 is a pin with no switch
 // for example, a module that has three switches (and two signal inputs, like the example above) should get the value B00011100
 // switches should be wired after the signal inputs (banana terminals) and should not skip pins
-byte switchPins[NUM_OF_MODULES] = { B00001100, B00001000, B00010000, B00000000, B00110000, B00000000 };
+byte switchPins[NUM_OF_MODULES] = { B00001100, B00001000, B00010000 };//, B00000000, B00110000, B00000000 };
 
 
 /*************************************** multiplexers ******************************/
@@ -67,7 +67,7 @@ int numOfSlaveMux[numOfMasterMux] = { 6 };
 // 1D or 2D array (according to the number of numOfMasterMux) to hold number of potentiometers on each module
 // rows = numOfMasterMux, columns = 16, since the master multiplexers have 16 channels
 // even if it's a 1D array, you should still write it as a 2D array, like the example below
-int numOfPots[numOfMasterMux][16] = { { 2, 2, 3, 2, 8, 8 } };
+int numOfPots[numOfMasterMux][16] = { { 2, 2, 3 } };//, 2, 8, 8 } };
 
 
 /************** end of variables that change according to setup ********************/
@@ -133,8 +133,6 @@ byte firstSwitch[NUM_OF_MODULES] = { 0 };
 byte **bananaStates;
 // array to store states of switches
 byte switchStates[NUM_OF_MODULES];
-// variable to determine whether to store connection states to activeModules or backUpArray
-int patchUpdate = 0;
 
 
 /********************************** multiplexers ************************************/
@@ -158,13 +156,10 @@ int totalPots = 0;
 // pointer to create an array with values that will be used for smoothing
 // its size is calculated in the setup() function and it contains one element per potentiometer
 float *smoothedVals;
-// arrays to store and back up activity of modules (back up if we're not updating the patching)
+// array to store and back up activity of modules
 // the potentiometers of each module will be either read or not read according to their activity
+// Pd sends the activity values
 byte activeModules[NUM_OF_MODULES] = { 0 };
-byte backUpModules[NUM_OF_MODULES] = { 0 };
-// and this boolean to set whether this switch has just changed its position
-// both this information will come from reading serial data from Pd
-boolean patchUpdateChanged = false;
 // lastly a boolean to set whether a CLIP macro has been defined or not, which is used in the readPots() function
 boolean clip = false;
 // and an int which defaults to the set analog resolution, unless it's defined at the top of the code
@@ -229,7 +224,7 @@ void checkConnections(int pin, int module) {
         // otherwise we just increment localIndex
         localIndex++;
       }
-      updateModules(maskedBanana, pin, module, i);
+      //updateModules(maskedBanana, pin, module, i);
       // update the bananaStates array
       bananaStates[pin][i] = maskedBanana;
       // set the loop termination boolean to true, update the global index and exit loop
@@ -238,53 +233,6 @@ void checkConnections(int pin, int module) {
     }
   }
   if(localIndex > 1) Serial.write(transferData, localIndex);
-  // update the activeModules array if the patch update switch has changed to on
-  if(patchUpdate && patchUpdateChanged){
-    for(int i = 0; i < NUM_OF_MODULES; i++) activeModules[i] = backUpModules[i];
-    patchUpdateChanged = false;
-  }
-}
-
-void updateModules(byte maskedBanana, int pin, int module, int i) {
-  // check if the current module is being activated or not
-  // whenever a patch cord is plugged in, the input byte will increase no matter which bit reads HIGH
-  // whenever a patch cord is plugged out, the input byte will decrease
-  if(maskedBanana > bananaStates[pin][i]){
-    if(module == i){
-      backUpModules[i] += 1;
-      if(patchUpdate) activeModules[i] += 1;
-    }
-    else{
-      backUpModules[i] += 1;
-      backUpModules[module] += 1;
-      if(patchUpdate){
-        activeModules[i] += 1;
-        activeModules[module] += 1;
-      }
-    }
-  }
-  else{
-    if(module == i){
-      backUpModules[i] -= 1;
-      if(backUpModules[i] < 0) backUpModules[i] = 0;
-      if(patchUpdate){
-        activeModules[i] -= 1;
-        if(activeModules[i] < 0) activeModules[i] = 0;
-      }
-    }
-    else{
-      backUpModules[i] -= 1;
-      backUpModules[module] -= 1;
-      if(backUpModules[i] < 0) backUpModules[i] = 0;
-      if(backUpModules[module] < 0) backUpModules[module] = 0;
-      if(patchUpdate){
-        activeModules[i] -= 1;
-        activeModules[module] -= 1;
-        if(activeModules[i] < 0) activeModules[i] = 0;
-        if(activeModules[module] < 0) activeModules[module] = 0;
-      }
-    }
-  }
 }
 
 void checkSwitches() {
@@ -388,7 +336,6 @@ void resetConnections() {
     for(int j = 0; j < NUM_OF_MODULES; j++){
       bananaStates[i][j] = 0;
       activeModules[j] = 0;
-      backUpModules[j] = 0;
     }
   }
 }
@@ -496,15 +443,14 @@ void readSerialData() {
           bitWrite(outputData[whichModule], whichPin, pinVal);
           serialVal = 0;
         }
-        else if(inByte == 'u'){
-          patchUpdate = serialVal;
-          patchUpdateChanged = true;
+        else if(inByte == 'a'){
+          activeModules[whichModule] = serialVal;
           serialVal = 0;
         }
         else if(inByte == 'i'){
           sendNumInputsOutputs();
         }
-        else if(inByte == 'a'){
+        else if(inByte == 'b'){
           sendAnalogReadResolution();
         }
         else if(inByte == 'r'){
