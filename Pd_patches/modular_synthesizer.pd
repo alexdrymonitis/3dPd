@@ -67,7 +67,7 @@ minus 1 (for example 1023 for 10-bits) for better table reading;
 #X restore 42 103 pd init;
 #X text 40 35 1st: module number \, starting from 0;
 #X obj 41 162 tutorial_adc_dac_module~ 0 2 2;
-#X obj 41 188 tutorial_oscillator_module~ 1 4 4;
+#X obj 41 188 tutorial_oscillator_module~ 1 3 4;
 #X obj 41 214 tutorial_filter_module~ 2 4 8;
 #X obj 41 241 tutorial_lfo_module~ 3 3 4;
 #X obj 41 269 tutorial_envelope_module~ 4 4 4;
