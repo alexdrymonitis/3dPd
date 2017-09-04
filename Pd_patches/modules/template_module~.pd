@@ -1,44 +1,24 @@
 #N canvas 252 101 1098 947 10;
-#X declare -path ../generic_abstractions -path ../externals -lib modular_synthesizer
-;
-#X obj 44 28 cnv 15 420 90 empty empty Declare_generic_abstractions_path
+#X declare -path ../generic_abstractions;
+#X obj 44 28 cnv 15 425 90 empty empty Declare_generic_abstractions_path
 0 -12 0 14 -204786 -66577 0;
-#X obj 49 301 r module\$1;
-#X obj 49 323 route 0 1;
-#X obj 104 574 map 0 1023 1 -1;
-#X obj 159 520 map_zero 1023 100;
-#X obj 100 601 r analog_res;
-#X obj 155 551 r analog_res;
-#X obj 217 497 r analog_res;
-#X obj 265 447 r analog_res;
-#X obj 79 349 get_switches 4;
+#X obj 49 338 r module\$1;
+#X obj 100 598 r analog_res;
 #X obj 504 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
 0 -12 0 14 -204786 -66577 0;
 #X obj 517 69 module_data \$0 \$1 \$2 \$3;
 #X obj 517 92 switch~;
 #X text 513 34 [module_data \$0 \$1 \$2 \$3] must be used in all module
 abstractions \, otherwise the whole system will not work;
-#X obj 49 625 map 0 1023 -1 1;
-#X obj 214 470 map_zero 1023 1;
+#X obj 49 622 map 0 1023 -1 1;
 #X text 49 133 this is your workspace. in this template four potentiometers
 \, four switches \, four signal inputs and four signal outputs are
 used. change to fit your module's setup.;
-#X text 195 347 <- get your switch data here;
-#X text 234 414 <- get your potentiometer values here;
-#X text 306 521 <- map your potentiometer ranges here;
+#X text 373 547 <- map your potentiometer ranges here;
 #X text 583 701 <- get your signal inputs here;
-#X text 597 892 <- get your signal outputs here;
-#X text 50 36 you must declare the path to the generic abstractions
-as they are used in all module abstractions ([get_switches] \, [assemble_analog_inputs]
-\, [map] \, and [module_data].;
+#X text 597 912 <- get your signal outputs here;
 #X text 575 93 <- control the DSP of the module accodring to its activity
 ;
-#X text 48 186 remember that signal inputs and switches share the same
-chip on the module's hardware. this means that since you can have eight
-inputs in total \, their total number added must not exceed eight (hence
-four of each in this template). the same applies to signal outputs
-and LEDs \, since they also share the same chip on the module's hardware.
-Potentiometers are also limited to eight per module.;
 #X text 606 731 <- get your input connection states here;
 #X text 616 852 <- get your output connection states here;
 #X obj 64 732 input_state 0;
@@ -53,23 +33,90 @@ Potentiometers are also limited to eight per module.;
 #X obj 189 701 module_input~ 1;
 #X obj 329 701 module_input~ 2;
 #X obj 469 701 module_input~ 3;
-#X obj 49 891 module_output~ 0;
-#X obj 189 891 module_output~ 1;
-#X obj 329 891 module_output~ 2;
-#X obj 469 891 module_output~ 3;
-#X text 130 300 <- get your switch and potentiometer data here;
-#X obj 50 89 declare -path ../generic_abstractions -path ../externals
--lib modular_synthesizer;
-#X obj 49 416 assemble_analog_inputs 4;
-#X connect 1 0 2 0;
-#X connect 2 0 45 0;
-#X connect 2 1 9 0;
-#X connect 5 0 14 2;
-#X connect 6 0 3 2;
-#X connect 7 0 4 1;
-#X connect 8 0 15 1;
-#X connect 11 0 12 0;
-#X connect 45 0 14 0;
-#X connect 45 1 3 0;
-#X connect 45 2 4 0;
-#X connect 45 3 15 0;
+#X obj 49 911 module_output~ 0;
+#X obj 189 911 module_output~ 1;
+#X obj 329 911 module_output~ 2;
+#X obj 469 911 module_output~ 3;
+#X text 130 337 <- get your switch and potentiometer data here;
+#X obj 49 360 route pots switches;
+#X obj 49 453 unpack f f f f;
+#X obj 114 384 unpack f f f f;
+#X obj 114 408 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 145 408 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 177 408 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 209 408 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 49 575 filter_pot 0.85;
+#X obj 131 518 r analog_res;
+#X obj 80 542 map 0 1023 -1 1;
+#X obj 80 495 filter_pot 0.85;
+#X obj 281 598 r analog_res;
+#X obj 230 575 filter_pot 0.85;
+#X obj 230 622 map_zero 1023 1;
+#X obj 301 518 r analog_res;
+#X obj 250 495 filter_pot 0.85;
+#X obj 250 542 map_zero 1023 1;
+#X obj 50 94 declare -path ../generic_abstractions;
+#X text 50 36 you must declare the path to the generic abstractions
+as they are used in all module abstractions \, as well as to the tabreceive_mult~
+library so you can open this patch without needing to open the main
+patch;
+#X obj 572 755 smooth_val~;
+#X obj 572 777 invert_val~;
+#X text 658 755 ramp to the input state in the length of the matrix
+ramp;
+#X text 659 775 invert the ramp values;
+#N canvas 1 82 450 300 metadata 0;
+#X obj 32 148 loadbang;
+#X msg 32 170 <key> : <value> | <key> : <value> | <key> : <value>;
+#X obj 32 212 outlet;
+#X text 17 36 put your module's metadata here. replace <key> and <value>
+with your metadata's keys and values;
+#X connect 0 0 1 0;
+#X restore 578 886 pd metadata;
+#X text 666 885 <- put your metadata here;
+#X obj 621 218 led_ctl 4;
+#X obj 621 238 led_ctl 5;
+#X obj 621 258 led_ctl 6;
+#X obj 621 278 led_ctl 7;
+#X text 619 193 use these to control LEDs;
+#X text 48 186 remember that signal inputs and switches share the same
+chip on the module's hardware. this means that since you can have eight
+inputs in total \, their total number added must not exceed eight (hence
+four of each in this template). the same applies to signal outputs
+and LEDs \, since they also share the same chip on the module's hardware.
+Potentiometers are also limited to eight per module (if you run out
+of digital inputs but have some potentiometer inputs spare \, you can
+use those with 10K pull-down resistors for switches).;
+#X text 619 336 one module in your system MUST control the abstraction
+below;
+#X obj 620 362 patching_update;
+#X text 620 412 the same module could also control the abstraction
+below;
+#X obj 623 437 xfade_ramp;
+#X connect 1 0 32 0;
+#X connect 2 0 7 2;
+#X connect 4 0 5 0;
+#X connect 18 1 51 0;
+#X connect 32 0 33 0;
+#X connect 32 1 34 0;
+#X connect 33 0 39 0;
+#X connect 33 1 42 0;
+#X connect 33 2 44 0;
+#X connect 33 3 47 0;
+#X connect 34 0 35 0;
+#X connect 34 1 36 0;
+#X connect 34 2 37 0;
+#X connect 34 3 38 0;
+#X connect 39 0 7 0;
+#X connect 40 0 41 2;
+#X connect 42 0 41 0;
+#X connect 43 0 45 1;
+#X connect 44 0 45 0;
+#X connect 46 0 48 1;
+#X connect 47 0 48 0;
+#X connect 51 0 52 0;
+#X connect 55 0 30 1;
