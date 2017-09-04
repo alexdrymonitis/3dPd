@@ -93,7 +93,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory gerber_files/))
+      (outputdirectory ../../../../Documents/kicad/3dPd/module_generic_bottom_board/svg_files/))
   )
 
   (net 0 "")
