@@ -22,7 +22,7 @@
 #define SPISPEED 4000000
 // if using a board wih an analog pin resolution greater than 10-bits
 // uncomment the line below and set the correct resolution
-#define ANALOG_RESOLUTION 12
+#define ANALOG_RESOLUTION 13
 // clip analog readings for a more unified result
 //#define CLIP 8100
 // set the filter coefficient for smoothing out the potentiometer readings
@@ -503,9 +503,9 @@ void setup() {
 
   // transferData array
   // since each function writes separately, the maximum size is totalPots * 2 (the pot values split in two)
-  // plus total number of modules * 2
-  // one for sending the module index, one for sending the nr of pots of each module
-  numOfTotalData = (totalPots * 2) + (NUM_OF_MODULES * 2);
+  // plus total number of modules * 4 for the data indexes and number of pots
+  // plus 1 for the start character
+  numOfTotalData = (totalPots * 2) + (NUM_OF_MODULES * 4) + 1;
   transferData = new byte [numOfTotalData];
   // write the start character to the transfer_data array
   transferData[0] = 0xff;
