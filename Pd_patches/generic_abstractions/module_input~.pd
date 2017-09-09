@@ -11,14 +11,14 @@
 #N canvas 78 367 879 550 set_tables 0;
 #X text 79 227 here we receive outlet number and connection state;
 #X obj 29 107 route 1 0;
-#N canvas 1007 421 628 357 grow_list 0;
+#N canvas 1007 421 606 361 grow_list 0;
 #X obj 133 47 inlet;
 #X obj 40 41 sel 1;
-#X obj 40 221 list split 2;
-#X obj 55 253 list;
-#X obj 40 297 t b l;
-#X obj 55 275 route bang;
-#X obj 72 320 outlet;
+#X obj 40 205 list split 2;
+#X obj 55 237 list;
+#X obj 40 281 t b l;
+#X obj 55 259 route bang;
+#X obj 72 304 outlet;
 #X obj 133 69 t b l;
 #X msg 133 91 1;
 #X obj 40 108 spigot;
@@ -27,10 +27,55 @@
 #X text 170 89 let through only if at least one list comes through
 while the patching update is disabled;
 #X obj 40 19 r update_patching;
-#X obj 165 131 list prepend;
-#X obj 165 153 t l l;
-#X obj 40 170 list;
-#X obj 40 192 t l b b;
+#X obj 40 154 list;
+#X obj 40 176 t l b b;
+#N canvas 386 156 624 449 check_and_grow 0;
+#X text 23 8 in case of stacked connections \, while the patching update
+is deactivated we'll might want to remove the connection at the bottom
+of the stack. in this case we'll have to remove the top connection
+\, then the bottom \, and then reposition the top connection. in here
+we check if a connection to an outlet already exists and if so \, we'll
+replace the last connection state arrived. if we omit this \, in the
+case mentioned above \, all connections will be made \, but after the
+cross-fade ramp has ended \, the top connection (the one repositioned)
+will be removed from [tabreceive_mult~].;
+#X obj 69 187 inlet;
+#X obj 232 187 inlet;
+#X obj 141 231 unpack;
+#X obj 141 253 list-abs/list-find;
+#X obj 69 316 list-abs/list-replace;
+#X obj 264 275 t f f;
+#X obj 69 292 spigot;
+#X obj 257 323 spigot;
+#X obj 69 214 t l l l;
+#X obj 232 229 t a a;
+#X obj 257 349 list-abs/list-extend;
+#X obj 394 326 t b b;
+#X obj 296 300 == 0;
+#X obj 257 371 t l l;
+#X obj 69 338 outlet;
+#X connect 1 0 9 0;
+#X connect 2 0 10 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 1;
+#X connect 4 1 6 0;
+#X connect 5 0 15 0;
+#X connect 6 0 7 1;
+#X connect 6 1 13 0;
+#X connect 7 0 5 0;
+#X connect 8 0 11 0;
+#X connect 9 0 7 0;
+#X connect 9 1 8 0;
+#X connect 9 2 3 0;
+#X connect 10 0 5 2;
+#X connect 10 1 4 1;
+#X connect 11 0 14 0;
+#X connect 12 0 11 1;
+#X connect 12 1 10 0;
+#X connect 13 0 8 1;
+#X connect 14 0 15 0;
+#X connect 14 1 10 0;
+#X restore 165 137 pd check_and_grow;
 #X connect 0 0 7 0;
 #X connect 1 0 9 0;
 #X connect 2 0 4 0;
@@ -40,20 +85,18 @@ while the patching update is disabled;
 #X connect 4 1 6 0;
 #X connect 5 1 2 0;
 #X connect 7 0 8 0;
-#X connect 7 1 14 0;
+#X connect 7 1 16 0;
 #X connect 8 0 9 1;
 #X connect 9 0 10 0;
-#X connect 10 0 16 0;
+#X connect 10 0 14 0;
 #X connect 10 1 11 0;
 #X connect 11 0 9 1;
 #X connect 13 0 1 0;
 #X connect 14 0 15 0;
-#X connect 15 0 16 1;
+#X connect 15 0 2 0;
 #X connect 15 1 14 1;
-#X connect 16 0 17 0;
-#X connect 17 0 2 0;
-#X connect 17 1 16 1;
-#X connect 17 2 14 1;
+#X connect 15 2 16 1;
+#X connect 16 0 14 1;
 #X restore 59 130 pd grow_list;
 #X text 103 98 if the patching update is disabled \, we store the incoming
 messages and output them all together;
