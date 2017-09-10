@@ -1,0 +1,115 @@
+#N canvas 590 290 987 488 10;
+#X declare -path ../generic_abstractions;
+#N canvas 400 192 723 516 pots_and_switches 0;
+#X obj 63 98 r module\$1;
+#X obj 63 375 filter_pot 0.85;
+#X obj 84 325 filter_pot 0.85;
+#X obj 106 275 filter_pot 0.85;
+#X obj 127 225 filter_pot 0.85;
+#X obj 292 225 > 512;
+#X obj 524 138 r analog_res;
+#X obj 524 160 / 2;
+#X obj 292 269 s \$0-switch0;
+#X obj 392 225 > 512;
+#X obj 492 225 > 512;
+#X obj 592 225 > 512;
+#X obj 392 269 s \$0-switch1;
+#X obj 492 269 s \$0-switch2;
+#X obj 592 269 s \$0-switch3;
+#X obj 292 247 change;
+#X obj 392 247 change;
+#X obj 492 247 change;
+#X obj 592 247 change;
+#X obj 63 120 route pots;
+#X obj 63 143 unpack f f f f f f f f;
+#X obj 63 399 s \$0-pot0;
+#X obj 84 349 s \$0-pot1;
+#X obj 106 299 s \$0-pot2;
+#X obj 127 249 s \$0-pot3;
+#X text 60 16 in this abstraction we're reading the last four pots
+as switches cause all the digital inputs are taken by banana terminals
+(just use a 10k pull-down resistor and attach a switch to the analog
+input \, then threshold it);
+#X connect 0 0 19 0;
+#X connect 1 0 21 0;
+#X connect 2 0 22 0;
+#X connect 3 0 23 0;
+#X connect 4 0 24 0;
+#X connect 5 0 15 0;
+#X connect 6 0 7 0;
+#X connect 7 0 5 1;
+#X connect 7 0 9 1;
+#X connect 7 0 10 1;
+#X connect 7 0 11 1;
+#X connect 9 0 16 0;
+#X connect 10 0 17 0;
+#X connect 11 0 18 0;
+#X connect 15 0 8 0;
+#X connect 16 0 12 0;
+#X connect 17 0 13 0;
+#X connect 18 0 14 0;
+#X connect 19 0 20 0;
+#X connect 20 0 1 0;
+#X connect 20 1 2 0;
+#X connect 20 2 3 0;
+#X connect 20 3 4 0;
+#X connect 20 4 5 0;
+#X connect 20 5 9 0;
+#X connect 20 6 10 0;
+#X connect 20 7 11 0;
+#X restore 17 137 pd pots_and_switches;
+#X obj 14 28 cnv 15 430 100 empty empty Declare_generic_abstractions_path
+0 -12 0 14 -204786 -66577 0;
+#X obj 454 28 cnv 15 490 100 empty empty Use_module_data_and_switch~
+0 -12 0 14 -204786 -66577 0;
+#X obj 467 69 module_data \$0 \$1 \$2 \$3;
+#X obj 467 92 switch~;
+#X text 463 34 [module_data \$0 \$1 \$2 \$3] must be used in all module
+abstractions \, otherwise the whole system will not work;
+#X text 525 93 <- control the DSP of the module accodring to its activity
+;
+#X obj 22 84 declare -path ../generic_abstractions;
+#X text 20 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions;
+#X obj 16 307 module_input~ 0;
+#X obj 136 307 module_input~ 1;
+#X obj 256 307 module_input~ 2;
+#X obj 376 307 module_input~ 3;
+#X obj 496 307 module_input~ 4;
+#X obj 616 307 module_input~ 5;
+#X obj 736 307 module_input~ 6;
+#X obj 856 307 module_input~ 7;
+#X obj 429 412 module_output~ 0;
+#N canvas 454 309 459 559 README 0;
+#X text 9 30 this abstraction is only demonstrating the use of the
+[activity_ctl] abstraction \; here we have a scenario of a module with
+eight inputs \, four switches \, and four potentiometers. since switches
+and inputs share the same IC \, we're left with no pins for the switches
+\; since we have four pins left in the mux IC \, we can use those (with
+10K pull-down resistors) to wired our switches (check [pd pots_and_switches]).
+in this case we'll be receiving the switch values only when we connect
+a signal to one inlet or outlet of the module \, because only when
+a module is connected to something it becomes "active" and the Teensy
+reads its potentiometers \; this activity control is being done implicitly
+by [module_data]. there might be a case though where we might need
+to receive the switch values even if this module is not connected to
+anything (e.g. to run a script \, to connect to an external serial
+device \, etc.). in this case we need to be able to control the activity
+of this module explicitly.;
+#X obj 12 443 loadbang;
+#X msg 12 465 1;
+#X obj 12 487 activity_ctl \$1;
+#X text 9 300 below we have the [activity_ctl] abstraction which takes
+a 1 to activate the module \, and a 0 to deactivate it. once this abstraction
+is placed in a module abstraction \, [module_data]'s implicit activity
+control is disabled and we can only control the activity through [activity_ctl].
+its argument is the first argument of the module abstraction \, which
+is the module index. in this example we're only activating the module
+on load and it will remain active.;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X restore 17 162 pd README;
+#X text 15 204 this module abstraction only demonstrates the use of
+the [activity_ctl] abstraction (inside [pd README]). there's nothing
+else happening here;
+#X connect 3 0 4 0;
