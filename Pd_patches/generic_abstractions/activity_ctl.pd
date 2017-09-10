@@ -43,15 +43,15 @@ changed;
 #X obj 40 117 t b s;
 #X msg 40 139 0;
 #X obj 40 178 s;
-#X msg 72 161 \$1-activity;
 #X text 24 19 this goes into [module_data] of this module abstraction
 ;
+#X msg 72 161 symbol \$1-activity;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X connect 2 1 5 0;
+#X connect 2 1 6 0;
 #X connect 3 0 4 0;
-#X connect 5 0 4 1;
+#X connect 6 0 4 1;
 #X restore 411 25 pd disable_implicit_activity_ctl;
 #X connect 0 0 1 1;
 #X connect 1 0 4 0;
