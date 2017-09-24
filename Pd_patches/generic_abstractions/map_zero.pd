@@ -9,11 +9,11 @@
 #X obj 84 58 inlet to_low;
 #X obj 191 58 inlet to_high;
 #X obj 313 151 \$2;
-#X obj 345 151 \$1;
+#X obj 340 151 \$1;
 #X obj 325 104 r \$0-high;
-#X obj 352 126 r \$0-low;
+#X obj 347 126 r \$0-low;
 #X obj 84 122 s \$0-high;
-#X obj 116 101 s \$0-low;
+#X obj 111 101 s \$0-low;
 #X obj 191 80 s \$0-high;
 #X connect 0 0 3 0;
 #X connect 1 0 2 0;

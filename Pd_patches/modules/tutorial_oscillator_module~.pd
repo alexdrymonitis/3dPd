@@ -10,11 +10,10 @@
 abstractions \, otherwise the whole system will not work;
 #X text 555 93 <- control the DSP of the module accodring to its activity
 ;
-#X obj 523 595 module_output~ 0;
 #X obj 523 431 phasor~;
 #X obj 523 453 +~;
 #N canvas 251 166 778 644 freq 0;
-#X obj 154 413 input_state 0;
+#X obj 167 413 input_state 0;
 #X obj 29 225 r \$0-freq;
 #X obj 100 396 *~;
 #X obj 29 586 outlet~;
@@ -23,22 +22,22 @@ potentiometer ([r \$0-freq]) and the first input signal of the module
 ([module_input~ 0]). [input_state 0] gives the connection state of
 the signal input. if there is a signal (or more than one) connected
 \, it will output a 1 \, otherwise it will output a zero.;
-#X text 180 348 <- here we receive the signal of the first input of
+#X text 177 348 <- here we receive the signal of the first input of
 the module.;
 #X obj 158 225 r \$0-freq_range;
 #X obj 158 247 t f f;
 #X obj 158 269 == 0;
-#X obj 151 317 spigot;
+#X obj 152 317 spigot;
 #X obj 29 286 spigot 1;
-#X obj 119 349 inlet~;
-#X obj 242 548 invert_val~;
+#X obj 116 349 inlet~;
+#X obj 242 548 invert_state~;
 #X obj 29 564 *~;
-#X text 260 411 <- here we receive the connection state of the first
+#X text 273 411 <- here we receive the connection state of the first
 signal input of the module. the left outlet outputs a 1 immediately
 when a connection is made and a 0 after the matrix ramp time has ended
 \, when a connection is broken. the right outlet omits this matrix
 ramp time delay;
-#X obj 242 496 smooth_val~;
+#X obj 242 496 smooth_state~;
 #X text 330 495 <- this abstraction smooths a control value according
 to the matrix ramp time;
 #X text 329 548 <- this abstraction inverts a unipolar value going
@@ -49,7 +48,7 @@ oscillator. if there is a signal connected to the first input \, we'll
 use that signal to control the frequency \, and we'll use the potentiometer
 to give an offset to the control signal.;
 #X obj 100 374 +~;
-#X obj 151 295 r \$0-low_freq;
+#X obj 152 295 r \$0-low_freq;
 #X text 272 224 <- here we're using the second switch to set the frequency
 range of the oscillators. when the switch is in the off position (outputting
 0) \, the oscillators have a range from 20 to 7000 \, and when the
@@ -78,8 +77,8 @@ a lower range from 0 to 100 Hz.;
 #X connect 23 0 22 0;
 #X restore 523 387 pd freq;
 #N canvas 1 82 472 275 triangle~ 0;
-#X obj 52 105 *~ -1;
-#X obj 52 127 +~ 1;
+#X obj 49 105 *~ -1;
+#X obj 49 127 +~ 1;
 #X obj 27 149 min~;
 #X obj 27 63 wrap~;
 #X obj 27 38 inlet~;
@@ -126,10 +125,10 @@ a lower range from 0 to 100 Hz.;
 #X obj 241 207 *~;
 #X obj 384 96 switch~;
 #X obj 241 185 inlet~;
-#X obj 227 100 input_state 2;
+#X obj 240 100 input_state 2;
 #X obj 384 74 output_state 3;
-#X obj 315 123 smooth_val~;
-#X obj 315 145 invert_val~;
+#X obj 315 123 smooth_state~;
+#X obj 315 145 invert_state~;
 #X obj 99 161 *~;
 #X connect 0 0 5 0;
 #X connect 1 0 0 0;
@@ -184,64 +183,58 @@ is the output number starting from zero.;
 #N canvas 1 82 707 724 pots_and_switches 0;
 #X obj 39 128 r module\$1;
 #X obj 39 633 s \$0-freq;
-#X obj 157 301 r analog_res;
-#X obj 106 434 s \$0-duty_cycle;
-#X obj 106 399 map_zero 1023 1;
+#X obj 139 301 r analog_res;
+#X obj 96 434 s \$0-duty_cycle;
 #X text 188 150 <- split data according to potentiometer and switch
 data index;
 #X text 120 127 <- get your potentiometer and switch data here;
-#X text 220 399 <- [map_zero] maps a range starting from 0 to the value
+#X text 210 399 <- [map_zero] maps a range starting from 0 to the value
 of the first argument to a range from 0 to the second argument;
 #X obj 39 515 t f f;
-#X obj 104 194 s \$0-freq_range;
+#X obj 94 194 s \$0-freq_range;
 #X obj 39 150 route pots switches;
-#X text 225 250 <- filter the potentiometer values for further smoothing.
+#X text 215 250 <- filter the potentiometer values for further smoothing.
 this is the same filtering techinque applied in the Arduino code. values
 are from 0 to 1;
-#X text 262 301 <- the resolution of the analog pins is sent from the
+#X text 244 301 <- the resolution of the analog pins is sent from the
 Teensy and received in [arduino_data]. from there it is sent to [r
 analog_res]. [map_zero] sets a default 10-bit resolution (1st argument)
 since it's the standard resolution of the Arduino \, and [r analog_res]
 changes it to the resolution used \, in case it's different than 10-bit
 (like with the Teensy3.2 \, which is 13-bit);
-#X text 221 197 <- this one goes inside [pd freq];
-#X text 223 435 <- this goes in [pd square~];
+#X text 211 197 <- this one goes inside [pd freq];
+#X text 213 435 <- this goes in [pd square~];
 #X obj 39 461 filter_pot 0.85;
-#X obj 106 249 filter_pot 0.85;
+#X obj 96 249 filter_pot 0.85;
 #X text 43 11 evrey module receives potentiometer and switch data with
 [r module\$1] \, where \$1 is the module index in the chain \, starting
 from 0;
-#X obj 71 560 s \$0-low_freq;
+#X obj 66 560 s \$0-low_freq;
 #X text 51 77 here we're using two potentiometers and one switch;
 #X obj 39 226 unpack f f;
 #X obj 39 483 tabread exp_tab;
-#X obj 71 538 * 100;
+#X obj 66 538 * 100;
 #X obj 39 587 * 7000;
 #X obj 39 609 + 50;
 #X text 154 487 <-read the exponential slope for better frequency control
 (goes from 0 to 1);
-#X connect 0 0 10 0;
-#X connect 2 0 4 1;
-#X connect 4 0 3 0;
-#X connect 8 0 23 0;
-#X connect 8 1 22 0;
-#X connect 10 0 20 0;
-#X connect 10 1 9 0;
-#X connect 15 0 21 0;
-#X connect 16 0 4 0;
-#X connect 20 0 15 0;
-#X connect 20 1 16 0;
-#X connect 21 0 8 0;
-#X connect 22 0 18 0;
-#X connect 23 0 24 0;
-#X connect 24 0 1 0;
+#X obj 96 399 map_zero 1023 1;
+#X connect 0 0 9 0;
+#X connect 2 0 25 1;
+#X connect 7 0 22 0;
+#X connect 7 1 21 0;
+#X connect 9 0 19 0;
+#X connect 9 1 8 0;
+#X connect 14 0 20 0;
+#X connect 15 0 25 0;
+#X connect 19 0 14 0;
+#X connect 19 1 15 0;
+#X connect 20 0 7 0;
+#X connect 21 0 17 0;
+#X connect 22 0 23 0;
+#X connect 23 0 1 0;
+#X connect 25 0 3 0;
 #X restore 50 207 pd pots_and_switches;
-#X obj 649 595 module_output~ 1;
-#X obj 773 595 module_output~ 2;
-#X obj 899 595 module_output~ 3;
-#X obj 523 362 module_input~ 0;
-#X obj 643 362 module_input~ 1;
-#X obj 966 511 module_input~ 2;
 #X obj 497 69 module_data \$0 \$1 \$2 \$3;
 #X text 48 184 check the contents of the subpatch below;
 #X text 648 342 second input modulates the phase of the oscillators
@@ -251,7 +244,7 @@ abstraction. this abstraction is necessary for each module to receive
 signals from the rest of the system. its argument if the number of
 the module input starting from zero.;
 #X text 357 388 check this subpatch ->;
-#X text 970 489 this is a CV for the duty cycle;
+#X text 960 489 this is a CV for the duty cycle;
 #X text 237 534 check the four oscillator subpatches ->;
 #X text 316 571 check the metadata subpatches ->;
 #N canvas 338 320 468 340 metadata0 0;
@@ -271,21 +264,21 @@ Pd will crash \; metadata of an outlet are fixed and set on load and
 they can't be changed;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
-#X restore 552 571 pd metadata0;
+#X restore 616 571 pd metadata0;
 #N canvas 1 82 450 300 metadata1 0;
 #X obj 43 139 outlet;
 #X obj 43 89 loadbang;
 #X msg 43 114 type : oscillator | waveform : tri | polarity : bi;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
-#X restore 677 571 pd metadata1;
+#X restore 742 571 pd metadata1;
 #N canvas 1 82 450 300 metadata2 0;
 #X obj 43 137 outlet;
 #X obj 43 89 loadbang;
 #X msg 43 113 type : oscillator | waveform : saw | polarity : bi;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
-#X restore 802 571 pd metadata2;
+#X restore 867 571 pd metadata2;
 #N canvas 1 82 450 300 metadata3 0;
 #X obj 43 136 outlet;
 #X obj 43 89 loadbang;
@@ -293,25 +286,32 @@ they can't be changed;
 ;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
-#X restore 927 571 pd metadata3;
+#X restore 992 571 pd metadata3;
 #X text 50 34 you must declare the path to the generic abstractions
 as they are used in all module abstractions (here we use [map] \, map_zero]
-\, [smooth_val~] \, [invert_val~] \, and [module_data]).;
-#X connect 7 0 8 0;
-#X connect 8 0 10 0;
-#X connect 8 0 11 0;
-#X connect 8 0 12 0;
-#X connect 8 0 13 0;
-#X connect 9 0 7 0;
-#X connect 10 0 18 0;
-#X connect 11 0 19 0;
-#X connect 12 0 20 0;
-#X connect 13 0 6 0;
-#X connect 21 0 9 0;
-#X connect 22 0 8 1;
-#X connect 23 0 12 1;
-#X connect 24 0 3 0;
-#X connect 32 0 6 1;
-#X connect 33 0 18 1;
-#X connect 34 0 19 1;
-#X connect 35 0 20 1;
+\, [smooth_state~] \, [invert_state~] \, and [module_data]).;
+#X obj 523 362 module_input~ 0;
+#X obj 643 362 module_input~ 1;
+#X obj 956 511 module_input~ 2;
+#X obj 523 595 module_output~ 0;
+#X obj 649 595 module_output~ 1;
+#X obj 773 595 module_output~ 2;
+#X obj 899 595 module_output~ 3;
+#X connect 6 0 7 0;
+#X connect 7 0 9 0;
+#X connect 7 0 10 0;
+#X connect 7 0 11 0;
+#X connect 7 0 12 0;
+#X connect 8 0 6 0;
+#X connect 9 0 34 0;
+#X connect 10 0 35 0;
+#X connect 11 0 36 0;
+#X connect 12 0 33 0;
+#X connect 17 0 3 0;
+#X connect 25 0 33 1;
+#X connect 26 0 34 1;
+#X connect 27 0 35 1;
+#X connect 28 0 36 1;
+#X connect 30 0 8 0;
+#X connect 31 0 7 1;
+#X connect 32 0 11 1;

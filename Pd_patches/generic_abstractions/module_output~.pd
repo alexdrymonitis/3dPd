@@ -12,7 +12,7 @@
 #N canvas 833 374 842 591 handle_metadata 0;
 #X obj 53 411 oreceive;
 #X obj 53 458 t b f;
-#X msg 85 530 symbol get_metadata\$1;
+#X msg 80 530 symbol get_metadata\$1;
 #X obj 53 547 s;
 #X obj 53 482 list;
 #X msg 134 134 symbol \$1-metalink\$2;
@@ -23,10 +23,10 @@
 #X obj 134 67 inlet;
 #X obj 53 89 t f f;
 #X obj 576 128 oreceive;
-#X obj 608 195 list;
-#X obj 608 172 t b f;
-#X obj 608 237 s;
-#X msg 640 220 symbol clear_metadata\$1;
+#X obj 603 195 list;
+#X obj 603 172 t b f;
+#X obj 603 237 s;
+#X msg 630 220 symbol clear_metadata\$1;
 #X msg 576 106 symbol erase_metadata\$1;
 #X obj 53 435 t f f;
 #X obj 202 442 inlet metadata;
@@ -35,14 +35,14 @@
 #X obj 39 78 inlet clear;
 #X obj 319 256 list-abs/list-extend;
 #X obj 39 104 list-abs/list-find;
-#X obj 176 231 list-abs/list-idx;
+#X obj 156 231 list-abs/list-idx;
 #X obj 39 148 + 1;
-#X obj 176 253 + 2;
+#X obj 156 253 + 2;
 #X text 175 199 erase both the output nr and the number of metadata
 along with the actual metadata;
 #X obj 39 170 t b f;
 #X obj 39 192 list;
-#X obj 365 303 outlet;
+#X obj 358 303 outlet;
 #X text 39 5 this subpatch only takes care of deleting a disconnecting
 linked input and setting the rest of the list (if there's anything
 left) to the right inlet of [list prepend] in the main abstraction
@@ -76,15 +76,15 @@ window;
 #N canvas 1141 295 566 517 clear_linked_metadata 0;
 #X obj 203 336 inlet;
 #X obj 39 78 inlet clear;
-#X obj 71 424 outlet;
+#X obj 66 424 outlet;
 #X obj 39 104 list-abs/list-find;
-#X obj 71 237 list-abs/list-idx;
-#X obj 71 401 list store;
+#X obj 66 237 list-abs/list-idx;
+#X obj 66 401 list store;
 #X obj 39 148 + 1;
-#X obj 71 305 pack;
-#X msg 71 379 get \$2 \$1;
-#X obj 71 259 + 2;
-#X text 119 260 erase both the output nr and the number of metadata
+#X obj 66 305 pack;
+#X msg 66 379 get \$2 \$1;
+#X obj 66 259 + 2;
+#X text 114 260 erase both the output nr and the number of metadata
 along with the actual metadata;
 #X obj 39 170 t b f;
 #X obj 39 192 list;
@@ -95,14 +95,14 @@ along with the actual metadata;
 #X obj 86 188 list split 1;
 #X obj 86 210 list append clear;
 #X obj 86 17 inlet;
-#X obj 61 301 outlet;
+#X obj 65 301 outlet;
 #X obj 86 39 t b l;
-#X obj 118 62 list split 2;
+#X obj 134 56 list split 2;
 #X obj 86 232 list-abs/list-extend;
-#X obj 223 208 inlet;
-#X obj 61 278 list prepend;
-#X obj 61 255 list;
-#X obj 167 165 t b b;
+#X obj 203 208 inlet;
+#X obj 65 278 list prepend;
+#X obj 65 255 list;
+#X obj 155 165 t b b;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 2 0 3 0;
@@ -127,8 +127,8 @@ to the connecting input and keep track of the deleted output to the
 linked input of this instance;
 #X obj 39 454 list-abs/list-delete 0 1;
 #X obj 39 126 t f f f;
-#X obj 71 281 t f f;
-#X obj 263 407 outlet;
+#X obj 66 281 t f f;
+#X obj 254 407 outlet;
 #X obj 203 384 t a a a a;
 #X obj 39 214 t a a;
 #X obj 39 476 t a a;
@@ -162,7 +162,7 @@ linked input of this instance;
 #X restore 260 387 pd clear_linked_metadata;
 #X obj 134 240 spigot;
 #X obj 134 262 t f f;
-#X msg 243 223 1;
+#X msg 227 223 1;
 #X text 183 245 go through the list clearing process only in case this
 output is linked to an input;
 #N canvas 1293 529 626 383 connected_inputs 0;
@@ -182,18 +182,18 @@ gets disconnected;
 #X obj 396 256 list;
 #X obj 396 232 t b f;
 #X obj 51 87 inlet clear;
-#X obj 148 87 inlet get;
-#X obj 113 220 sel 0 1;
-#X msg 113 272 symbol clear;
-#X msg 136 243 symbol get;
-#X obj 83 305 pack f s;
-#X msg 113 126 0;
-#X msg 180 131 1;
-#X msg 83 331 symbol \$2_metadata\$1;
+#X obj 158 87 inlet get;
+#X obj 123 220 sel 0 1;
+#X msg 123 272 symbol clear;
+#X msg 142 243 symbol get;
+#X obj 78 305 pack f s;
+#X msg 123 126 0;
+#X msg 185 131 1;
+#X msg 78 331 symbol \$2_metadata\$1;
 #X obj 396 302 t a a;
 #X obj 234 156 t a a a;
 #X obj 51 109 t a b;
-#X obj 148 109 t a b;
+#X obj 158 109 t a b;
 #X obj 51 149 t b a;
 #X connect 0 0 23 0;
 #X connect 1 0 3 0;
@@ -239,9 +239,9 @@ it receives the linked metadata and when it is connected before that
 #X obj 576 150 t f f;
 #X obj 134 178 route disconnect;
 #N canvas 306 154 729 429 own_metadata 0;
-#X obj 85 152 list-abs/list-extend;
+#X obj 78 152 list-abs/list-extend;
 #X obj 39 94 list-abs/list-drip;
-#X obj 85 312 t l l;
+#X obj 78 312 t l l;
 #N canvas 308 388 393 327 create_clear_list 0;
 #X obj 146 129 list;
 #X obj 146 66 until;
@@ -270,26 +270,26 @@ it receives the linked metadata and when it is connected before that
 #X connect 10 0 8 0;
 #X connect 11 0 1 0;
 #X connect 11 1 5 1;
-#X restore 117 334 pd create_clear_list;
-#X obj 85 174 t l l;
-#X obj 166 211 list length;
-#X obj 85 289 list prepend;
-#X text 179 287 include output nr and nr of metadata in the list so
+#X restore 105 334 pd create_clear_list;
+#X obj 78 174 t l l;
+#X obj 147 211 list length;
+#X obj 78 289 list prepend;
+#X text 172 287 include output nr and nr of metadata in the list so
 we can easily delete parts of lists from linked outputs;
 #X obj 39 128 sel : |;
-#X obj 222 111 t b b;
-#X obj 166 233 list prepend \$1;
-#X text 280 233 <- this argument is actually replaced when this abstraction
+#X obj 195 111 t b b;
+#X obj 147 233 list prepend \$1;
+#X text 273 233 <- this argument is actually replaced when this abstraction
 is placed in the main patch \, but it's here to prevent Pd from crashing
 when we open the abstraction by itself;
-#X obj 64 42 inlet;
-#X obj 85 381 outlet;
-#X obj 117 356 outlet;
-#X text 104 130 exclude colon and slash from resulting list;
-#X obj 236 165 inlet;
+#X obj 60 42 inlet;
+#X obj 78 381 outlet;
+#X obj 105 356 outlet;
+#X text 94 130 exclude colon and slash from resulting list;
+#X obj 207 165 inlet;
 #X obj 39 67 list;
-#X obj 236 187 t b f;
-#X text 284 188 wait first for the outlet number to come in and then
+#X obj 207 187 t b f;
+#X text 255 188 wait first for the outlet number to come in and then
 store the metadata list;
 #X connect 0 0 4 0;
 #X connect 1 0 8 0;
@@ -315,10 +315,10 @@ store the metadata list;
 #X obj 270 301 t a a;
 #X text 62 18 use [t a] instead of [t l] because when a list is emptied
 it outputs a bang;
-#X obj 393 218 t a a;
-#X obj 243 201 t b a;
-#X obj 467 482 t b a;
-#X obj 425 513 list append;
+#X obj 375 218 t a a;
+#X obj 227 201 t b a;
+#X obj 443 482 t b a;
+#X obj 401 513 list append;
 #X connect 0 0 18 0;
 #X connect 1 0 4 0;
 #X connect 1 1 2 0;
@@ -366,7 +366,7 @@ it outputs a bang;
 #X connect 37 1 38 1;
 #X connect 38 0 13 1;
 #X restore 192 182 pd handle_metadata;
-#X obj 315 158 inlet metadata;
+#X obj 297 158 inlet metadata;
 #X connect 0 0 2 0;
 #X connect 1 0 9 0;
 #X connect 2 0 1 0;

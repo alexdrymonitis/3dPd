@@ -10,10 +10,6 @@
 abstractions \, otherwise the whole system will not work;
 #X text 555 93 <- control the DSP of the module accodring to its activity
 ;
-#X obj 498 763 module_output~ 0;
-#X obj 514 743 module_output~ 1;
-#X obj 529 723 module_output~ 2;
-#X obj 544 703 module_output~ 3;
 #X text 493 143 the function of this module happens below \, where
 we receive the scaled potentiometer values and the input signals. after
 all the processing \, we send the resulting signals to the [module_output~]
@@ -33,17 +29,17 @@ two potentiometers ([r \$0-freq]) and the second input signal of the
 module ([module_input~ 1]). [input_state 1] gives the connection state
 of the signal input. if there is a signal (or more than one) connected
 \, it will output a 1 \, otherwise it will output a zero.;
-#X obj 163 402 inlet~;
-#X obj 202 446 input_state 1;
+#X obj 161 402 inlet~;
+#X obj 215 446 input_state 1;
 #X obj 27 229 r \$0-freq;
 #X obj 27 315 pack f 20;
 #X obj 156 229 r \$0-freq_range;
 #X obj 156 251 t f f;
 #X obj 156 273 == 0;
-#X obj 149 321 spigot;
+#X obj 150 321 spigot;
 #X obj 27 290 spigot 1;
-#X obj 290 469 smooth_val~;
-#X obj 290 491 invert_val~;
+#X obj 290 469 smooth_state~;
+#X obj 290 491 invert_state~;
 #X obj 145 424 +~;
 #X text 22 112 if there's no signal connected to the first input \,
 we'll use the potentiometer values to control the frequency of the
@@ -55,7 +51,7 @@ range of the filters. when the switch is in the off position (outputting
 0) \, the filters have a range from 20 to 2000 \, and when the switch
 is in the on position (outputting 1) \, the filters have a range from
 0 to 40 Hz.;
-#X obj 149 299 r \$0-low_freq;
+#X obj 150 299 r \$0-low_freq;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 1 0;
@@ -75,7 +71,7 @@ is in the on position (outputting 1) \, the filters have a range from
 #X connect 15 0 1 1;
 #X connect 16 0 2 0;
 #X connect 19 0 12 0;
-#X restore 526 430 pd freq;
+#X restore 522 430 pd freq;
 #X obj 498 575 multiFilter_abs~;
 #N canvas 545 222 676 543 slope 0;
 #X obj 27 474 outlet~;
@@ -89,10 +85,10 @@ potentiometer ([r \$0-slope]) and the third input signal of the module
 ([module_input~ 2]). [input_state 2] gives the connection state of
 the signal input. if there is a signal (or more than one) connected
 \, it will output a 1 \, otherwise it will output a zero.;
-#X obj 163 312 inlet~;
-#X obj 202 356 input_state 2;
-#X obj 290 379 smooth_val~;
-#X obj 290 401 invert_val~;
+#X obj 161 312 inlet~;
+#X obj 215 356 input_state 2;
+#X obj 290 379 smooth_state~;
+#X obj 290 401 invert_state~;
 #X text 22 120 if there's no signal connected to the first input \,
 we'll use the potentiometer values to control the slope of the filter.
 if there is a signal connected to the first input \, we'll use that
@@ -111,7 +107,7 @@ an offset to the control signal.;
 #X connect 9 0 2 1;
 #X connect 10 0 1 1;
 #X connect 12 0 2 0;
-#X restore 552 479 pd slope;
+#X restore 544 479 pd slope;
 #N canvas 543 220 676 543 gain 0;
 #X obj 27 474 outlet~;
 #X obj 27 417 *~;
@@ -124,10 +120,10 @@ potentiometer ([r \$0-gain]) and the third input signal of the module
 ([module_input~ 3]). [input_state 3] gives the connection state of
 the signal input. if there is a signal (or more than one) connected
 \, it will output a 1 \, otherwise it will output a zero.;
-#X obj 163 312 inlet~;
-#X obj 202 356 input_state 3;
-#X obj 290 379 smooth_val~;
-#X obj 290 401 invert_val~;
+#X obj 161 312 inlet~;
+#X obj 215 356 input_state 3;
+#X obj 290 379 smooth_state~;
+#X obj 290 401 invert_state~;
 #X text 22 108 if there's no signal connected to the first input \,
 we'll use the potentiometer values to control the gain of the filter.
 if there is a signal connected to the first input \, we'll use that
@@ -146,7 +142,7 @@ an offset to the control signal.;
 #X connect 9 0 2 1;
 #X connect 10 0 1 1;
 #X connect 12 0 2 0;
-#X restore 579 529 pd gain;
+#X restore 568 529 pd gain;
 #N canvas 88 85 930 425 set_filter_type 0;
 #X msg 15 184 lowpass \$1;
 #X obj 422 290 outlet;
@@ -187,15 +183,11 @@ check the help patch of [multiFilter_abs~] for more information;
 #X connect 15 0 5 0;
 #X connect 16 0 6 0;
 #X connect 17 0 7 0;
-#X restore 607 552 pd set_filter_type;
-#X obj 560 683 module_output~ 4;
-#X obj 576 663 module_output~ 5;
-#X obj 591 643 module_output~ 6;
-#X obj 606 623 module_output~ 7;
+#X restore 591 552 pd set_filter_type;
 #X text 45 199 this module is a filter which can output eight different
 filter types at the same time (check [pd set_filter_type] to see the
 available filters);
-#X text 525 386 check the four subpatches below;
+#X text 521 386 check the four subpatches below;
 #X text 621 575 <- check the help patch of this abstraction for more
 info;
 #X text 48 136 Note: for this abstraction you'll need the [multiFilter_abs~]
@@ -203,37 +195,36 @@ abstraction which you can find here https://github.com/alexdrymonitis/filter_abs
 ;
 #N canvas 629 212 743 805 pots_and_switches 0;
 #X obj 42 126 r module\$1;
-#X obj 133 391 r analog_res;
-#X obj 82 497 map_zero 1023 1;
+#X obj 119 391 r analog_res;
 #X text 123 125 <- get your potentiometer and switch data here;
-#X obj 82 519 s \$0-slope;
-#X obj 123 330 s \$0-gain;
-#X text 197 498 <- [map_zero] maps a range starting from 0 to the value
+#X obj 76 519 s \$0-slope;
+#X obj 111 330 s \$0-gain;
+#X text 191 498 <- [map_zero] maps a range starting from 0 to the value
 of the first argument to a range from 0 to the second argument;
-#X obj 123 307 map 0 1023 -25 25;
-#X text 254 304 <- [map] maps one value range to another. its arguments
+#X obj 111 307 map 0 1023 -25 25;
+#X text 242 304 <- [map] maps one value range to another. its arguments
 are lowest value of original range \, highest value of original range
 \, lowest value of target range \, and highest value of target range
 ;
-#X obj 181 284 r analog_res;
+#X obj 160 284 r analog_res;
 #X obj 42 717 s \$0-freq;
 #X obj 42 599 t f f;
 #X obj 42 201 unpack f f f;
-#X text 240 221 <- filter the potentiometer values for further smoothing.
+#X text 228 221 <- filter the potentiometer values for further smoothing.
 this is the same filtering techinque applied in the Arduino code. values
 are from 0 to 1;
-#X text 245 389 <- the resolution of the analog pins is sent from the
+#X text 239 389 <- the resolution of the analog pins is sent from the
 Teensy and received in [arduino_data]. from there it is sent to [r
 analog_res]. [map_zero] sets a default 10-bit resolution (1st argument)
 since it's the standard resolution of the Teensy \, and [r analog_res]
 changes it to the resolution used \, in case it's different than 10-bit
 (like with the Teensy3.2 \, which is 13-bit);
 #X obj 42 148 route pots switches;
-#X obj 107 173 s \$0-freq_range;
-#X text 224 176 <- this one goes inside [pd freq];
+#X obj 97 173 s \$0-freq_range;
+#X text 214 176 <- this one goes inside [pd freq];
 #X obj 42 551 filter_pot 0.85;
-#X obj 82 361 filter_pot 0.85;
-#X obj 123 224 filter_pot 0.85;
+#X obj 76 361 filter_pot 0.85;
+#X obj 111 224 filter_pot 0.85;
 #X text 44 14 evrey module receives potentiometer and switch data with
 [r module\$1] \, where \$1 is the module index in the chain \, starting
 from;
@@ -242,34 +233,31 @@ from;
 #X obj 42 573 tabread exp_tab;
 #X text 163 577 <- read the exponential table for better frequency
 control (goes from 0 to 1);
-#X obj 74 622 * 40;
-#X obj 74 644 s \$0-lwo_freq;
+#X obj 69 622 * 40;
+#X obj 69 644 s \$0-lwo_freq;
 #X obj 42 670 * 20000;
 #X obj 42 693 + 50;
-#X connect 0 0 15 0;
-#X connect 1 0 2 1;
-#X connect 2 0 4 0;
-#X connect 7 0 5 0;
-#X connect 9 0 7 2;
-#X connect 11 0 27 0;
-#X connect 11 1 25 0;
-#X connect 12 0 18 0;
-#X connect 12 1 19 0;
-#X connect 12 2 20 0;
-#X connect 15 0 12 0;
-#X connect 15 1 16 0;
-#X connect 18 0 23 0;
-#X connect 19 0 2 0;
-#X connect 20 0 7 0;
-#X connect 23 0 11 0;
-#X connect 25 0 26 0;
-#X connect 27 0 28 0;
-#X connect 28 0 10 0;
+#X obj 76 497 map_zero 1023 1;
+#X connect 0 0 14 0;
+#X connect 1 0 28 1;
+#X connect 6 0 4 0;
+#X connect 8 0 6 2;
+#X connect 10 0 26 0;
+#X connect 10 1 24 0;
+#X connect 11 0 17 0;
+#X connect 11 1 18 0;
+#X connect 11 2 19 0;
+#X connect 14 0 11 0;
+#X connect 14 1 15 0;
+#X connect 17 0 22 0;
+#X connect 18 0 28 0;
+#X connect 19 0 6 0;
+#X connect 22 0 10 0;
+#X connect 24 0 25 0;
+#X connect 26 0 27 0;
+#X connect 27 0 9 0;
+#X connect 28 0 3 0;
 #X restore 48 288 pd pots_and_switches;
-#X obj 526 406 module_input~ 1;
-#X obj 552 456 module_input~ 2;
-#X obj 579 506 module_input~ 3;
-#X obj 498 354 module_input~ 0 metalink 0 1 2 3 4 5 6 7;
 #N canvas 299 287 450 300 metadata0 0;
 #X obj 81 53 loadbang;
 #X msg 81 75 filttype : lowpass;
@@ -352,29 +340,41 @@ won't work properly;
 linking works;
 #X text 50 34 you must declare the path to the generic abstractions
 as they are used in all module abstractions (here we use [map] \, map_zero]
-\, [smooth_val~] \, [invert_val~] \, and [module_data]).;
-#X connect 12 0 13 1;
-#X connect 13 0 6 0;
-#X connect 13 1 7 0;
-#X connect 13 2 8 0;
-#X connect 13 3 9 0;
-#X connect 13 4 17 0;
-#X connect 13 5 18 0;
-#X connect 13 6 19 0;
-#X connect 13 7 20 0;
-#X connect 14 0 13 2;
-#X connect 15 0 13 3;
-#X connect 16 0 13 4;
-#X connect 26 0 12 0;
-#X connect 27 0 14 0;
-#X connect 28 0 15 0;
-#X connect 29 0 13 0;
-#X connect 30 0 6 1;
-#X connect 31 0 7 1;
-#X connect 32 0 3 0;
-#X connect 33 0 8 1;
-#X connect 34 0 9 1;
-#X connect 35 0 17 1;
-#X connect 36 0 18 1;
-#X connect 37 0 19 1;
-#X connect 38 0 20 1;
+\, [smooth_state~] \, [invert_state~] \, and [module_data]).;
+#X obj 522 406 module_input~ 1;
+#X obj 544 456 module_input~ 2;
+#X obj 568 506 module_input~ 3;
+#X obj 498 354 module_input~ 0 metalink 0 1 2 3 4 5 6 7;
+#X obj 498 763 module_output~ 0;
+#X obj 511 743 module_output~ 1;
+#X obj 524 723 module_output~ 2;
+#X obj 537 703 module_output~ 3;
+#X obj 551 683 module_output~ 4;
+#X obj 564 663 module_output~ 5;
+#X obj 577 643 module_output~ 6;
+#X obj 592 623 module_output~ 7;
+#X connect 8 0 9 1;
+#X connect 9 0 37 0;
+#X connect 9 1 38 0;
+#X connect 9 2 39 0;
+#X connect 9 3 40 0;
+#X connect 9 4 41 0;
+#X connect 9 5 42 0;
+#X connect 9 6 43 0;
+#X connect 9 7 44 0;
+#X connect 10 0 9 2;
+#X connect 11 0 9 3;
+#X connect 12 0 9 4;
+#X connect 18 0 37 1;
+#X connect 19 0 38 1;
+#X connect 20 0 3 0;
+#X connect 21 0 39 1;
+#X connect 22 0 40 1;
+#X connect 23 0 41 1;
+#X connect 24 0 42 1;
+#X connect 25 0 43 1;
+#X connect 26 0 44 1;
+#X connect 33 0 8 0;
+#X connect 34 0 10 0;
+#X connect 35 0 11 0;
+#X connect 36 0 9 0;

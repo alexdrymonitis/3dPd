@@ -2,7 +2,7 @@
 #X obj 106 145 *;
 #X obj 106 167 +;
 #X obj 106 189 t f f;
-#X obj 124 97 swap 1;
+#X obj 121 97 swap 1;
 #N canvas 1 83 334 229 round_int 0;
 #X obj 85 83 inlet;
 #X obj 85 105 + 0.5;
@@ -14,12 +14,12 @@
 #X restore 106 231 pd round_int;
 #X obj 106 253 outlet;
 #X obj 197 206 * \$1;
-#X obj 124 122 -;
-#X obj 124 53 loadbang;
-#X obj 124 75 \$1;
+#X obj 121 122 -;
+#X obj 121 53 loadbang;
+#X obj 121 75 \$1;
 #X obj 106 17 inlet;
-#X obj 190 17 inlet;
-#X obj 190 39 t f f;
+#X obj 191 17 inlet;
+#X obj 191 39 t f f;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 4 0;
