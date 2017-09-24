@@ -5,4 +5,4 @@ I found a work around this problem by adding some extra data to the data sent fr
 
 Upload the write.ino Arduino sketch to the Teensy and open the test13.pd patch. If you get 13 printed in Pd's console, you're good to go. Upload the modular_synthesizer.ino sketch and open the modular_synthesizer.pd patch.
 If instead of 13 you get 10 printed to Pd's console, open the print13.ino sketch and the test13.pd patch. If you get 13 printed in Pd's console, you're good to go. Upload the modular_synthesizer_print.ino sketch and open the modular_synthesizer.pd patch.
-If you still get 10 printed to Pd's console, upload the modular_synthesizer13.ino sketch to the Teensy. In modular_synthesizer.pd patch, change the [arduino_data] and [matrix_connections] abstractions with [arduino_data13] and [matrix_connections13] abstractions. The rest should work as expected.
+If you still get 10 printed to Pd's console, upload the modular_synthesizer13.ino sketch to the Teensy. In modular_synthesizer.pd patch, change the [arduino_data] abstraction with [arduino_data13]. The rest should work as expected.
