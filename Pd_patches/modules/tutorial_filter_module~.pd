@@ -2,7 +2,7 @@
 #X declare -path ../generic_abstractions;
 #X obj 44 28 cnv 15 430 90 empty empty Declare_generic_abstractions_path
 0 -12 0 14 -204786 -66577 0;
-#X obj 52 94 declare -path ../generic_abstractions;
+#X obj 52 84 declare -path ../generic_abstractions;
 #X obj 484 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
 0 -12 0 14 -204786 -66577 0;
 #X obj 497 92 switch~;
@@ -338,9 +338,6 @@ won't work properly;
 #X text 631 311 <- read this;
 #X text 784 748 <- metadata here are used as a demonstration of how
 linking works;
-#X text 50 34 you must declare the path to the generic abstractions
-as they are used in all module abstractions (here we use [map] \, map_zero]
-\, [smooth_state~] \, [invert_state~] \, and [module_data]).;
 #X obj 522 406 module_input~ 1;
 #X obj 544 456 module_input~ 2;
 #X obj 568 506 module_input~ 3;
@@ -353,28 +350,30 @@ as they are used in all module abstractions (here we use [map] \, map_zero]
 #X obj 564 663 module_output~ 5;
 #X obj 577 643 module_output~ 6;
 #X obj 592 623 module_output~ 7;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions;
 #X connect 8 0 9 1;
-#X connect 9 0 37 0;
-#X connect 9 1 38 0;
-#X connect 9 2 39 0;
-#X connect 9 3 40 0;
-#X connect 9 4 41 0;
-#X connect 9 5 42 0;
-#X connect 9 6 43 0;
-#X connect 9 7 44 0;
+#X connect 9 0 36 0;
+#X connect 9 1 37 0;
+#X connect 9 2 38 0;
+#X connect 9 3 39 0;
+#X connect 9 4 40 0;
+#X connect 9 5 41 0;
+#X connect 9 6 42 0;
+#X connect 9 7 43 0;
 #X connect 10 0 9 2;
 #X connect 11 0 9 3;
 #X connect 12 0 9 4;
-#X connect 18 0 37 1;
-#X connect 19 0 38 1;
+#X connect 18 0 36 1;
+#X connect 19 0 37 1;
 #X connect 20 0 3 0;
-#X connect 21 0 39 1;
-#X connect 22 0 40 1;
-#X connect 23 0 41 1;
-#X connect 24 0 42 1;
-#X connect 25 0 43 1;
-#X connect 26 0 44 1;
-#X connect 33 0 8 0;
-#X connect 34 0 10 0;
-#X connect 35 0 11 0;
-#X connect 36 0 9 0;
+#X connect 21 0 38 1;
+#X connect 22 0 39 1;
+#X connect 23 0 40 1;
+#X connect 24 0 41 1;
+#X connect 25 0 42 1;
+#X connect 26 0 43 1;
+#X connect 32 0 8 0;
+#X connect 33 0 10 0;
+#X connect 34 0 11 0;
+#X connect 35 0 9 0;

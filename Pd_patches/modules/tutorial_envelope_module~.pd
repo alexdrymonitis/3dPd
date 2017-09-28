@@ -333,16 +333,12 @@ and one switch;
 #X text 47 192 set the ADSR values with the first four potentiometers
 and create the envelope by pushing the push-button (it must be wired
 to the first input after the banana terminals;
-#X obj 52 94 declare -path ../generic_abstractions -path ./module_abstractions
+#X obj 52 91 declare -path ../generic_abstractions -path ./module_abstractions
 ;
 #X obj 491 326 trigger_envelope~ \$0 0;
 #X text 487 224 in this module we're using an extra abstraction \,
 [trigger_envelope~] which is in the module_abstractions directory \,
 which is set in this abstractions path via [declare];
-#X text 50 34 you must declare the path to the generic abstractions
-as they are used in all module abstractions (here we use [map] \, map_zero]
-\, and [module_data]) \, as well as the module_abstractions directory.
-;
 #X obj 491 302 module_input~ 0;
 #X obj 711 302 module_input~ 1;
 #X obj 931 302 module_input~ 2;
@@ -358,20 +354,23 @@ as they are used in all module abstractions (here we use [map] \, map_zero]
 #X obj 711 326 trigger_envelope~ \$0 1;
 #X obj 931 326 trigger_envelope~ \$0 2;
 #X obj 1151 326 trigger_envelope~ \$0 3;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions \, as well as the module_abstractions
+directory where the [trigger_envelope~] abstraction is located;
 #X connect 2 0 3 0;
-#X connect 16 0 23 0;
-#X connect 16 1 27 0;
-#X connect 19 0 16 0;
-#X connect 19 1 16 1;
+#X connect 16 0 22 0;
+#X connect 16 1 26 0;
+#X connect 18 0 16 0;
+#X connect 18 1 16 1;
+#X connect 19 0 30 0;
+#X connect 19 1 30 1;
 #X connect 20 0 31 0;
 #X connect 20 1 31 1;
 #X connect 21 0 32 0;
 #X connect 21 1 32 1;
-#X connect 22 0 33 0;
-#X connect 22 1 33 1;
+#X connect 30 0 23 0;
+#X connect 30 1 27 0;
 #X connect 31 0 24 0;
 #X connect 31 1 28 0;
 #X connect 32 0 25 0;
 #X connect 32 1 29 0;
-#X connect 33 0 26 0;
-#X connect 33 1 30 0;

@@ -2,7 +2,7 @@
 #X declare -path ../generic_abstractions;
 #X obj 44 28 cnv 15 435 90 empty empty Declare_generic_abstractions_path
 0 -12 0 14 -204786 -66577 0;
-#X obj 52 94 declare -path ../generic_abstractions;
+#X obj 52 84 declare -path ../generic_abstractions;
 #X obj 484 28 cnv 15 490 90 empty empty Use_module_data_and_switch~
 0 -12 0 14 -204786 -66577 0;
 #X obj 497 92 switch~;
@@ -287,9 +287,6 @@ they can't be changed;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
 #X restore 992 571 pd metadata3;
-#X text 50 34 you must declare the path to the generic abstractions
-as they are used in all module abstractions (here we use [map] \, map_zero]
-\, [smooth_state~] \, [invert_state~] \, and [module_data]).;
 #X obj 523 362 module_input~ 0;
 #X obj 643 362 module_input~ 1;
 #X obj 956 511 module_input~ 2;
@@ -297,21 +294,23 @@ as they are used in all module abstractions (here we use [map] \, map_zero]
 #X obj 649 595 module_output~ 1;
 #X obj 773 595 module_output~ 2;
 #X obj 899 595 module_output~ 3;
+#X text 50 34 you must declare the path to the generic abstractions
+as they are used in all module abstractions;
 #X connect 6 0 7 0;
 #X connect 7 0 9 0;
 #X connect 7 0 10 0;
 #X connect 7 0 11 0;
 #X connect 7 0 12 0;
 #X connect 8 0 6 0;
-#X connect 9 0 34 0;
-#X connect 10 0 35 0;
-#X connect 11 0 36 0;
-#X connect 12 0 33 0;
+#X connect 9 0 33 0;
+#X connect 10 0 34 0;
+#X connect 11 0 35 0;
+#X connect 12 0 32 0;
 #X connect 17 0 3 0;
-#X connect 25 0 33 1;
-#X connect 26 0 34 1;
-#X connect 27 0 35 1;
-#X connect 28 0 36 1;
-#X connect 30 0 8 0;
-#X connect 31 0 7 1;
-#X connect 32 0 11 1;
+#X connect 25 0 32 1;
+#X connect 26 0 33 1;
+#X connect 27 0 34 1;
+#X connect 28 0 35 1;
+#X connect 29 0 8 0;
+#X connect 30 0 7 1;
+#X connect 31 0 11 1;
