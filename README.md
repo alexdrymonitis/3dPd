@@ -29,7 +29,7 @@ tabreceive_mult~
 
 The first five libraries are being installed with "apt-get" and the last two are installed through Deken (In Pd got to Help -> Find externals and type these two names -one at a time-, the highlighted version(s) is good for your system).
 
-Pd-0.48.0 or higher (latest at the time or writing) is required.
+Pd-0.47.0 or higher is required.
 
 
 ## General note
