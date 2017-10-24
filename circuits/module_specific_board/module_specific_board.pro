@@ -1,4 +1,4 @@
-update=Wed 12 Jul 2017 12:38:22 PM EEST
+update=Τρι 24 Οκτ 2017 12:17:51 μμ EEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=library
+LibDir=
 [eeschema/libraries]
 LibName1=power
 LibName2=device
@@ -58,4 +58,4 @@ LibName26=opto
 LibName27=atmel
 LibName28=contrib
 LibName29=valves
-LibName30=library/pot
+LibName30=library/alpspot097

@@ -28,7 +28,8 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:pot
+LIBS:alpspot097
+LIBS:module_specific_board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -108,50 +109,6 @@ F 2 "Pin_Headers:Pin_Header_Straight_1x08" H 4600 4250 50  0001 C CNN
 F 3 "" H 4600 4250 50  0000 C CNN
 	1    4600 4250
 	-1   0    0    -1  
-$EndComp
-$Comp
-L Pot J1
-U 1 1 5965F4E3
-P 1800 1350
-F 0 "J1" H 1800 1350 60  0000 C CNN
-F 1 "Pot" H 1800 550 60  0000 C CNN
-F 2 "pot:Pot" H 1800 1350 60  0001 C CNN
-F 3 "" H 1800 1350 60  0000 C CNN
-	1    1800 1350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Pot J2
-U 1 1 5965F575
-P 1800 2350
-F 0 "J2" H 1800 2350 60  0000 C CNN
-F 1 "Pot" H 1800 1550 60  0000 C CNN
-F 2 "pot:Pot" H 1800 2350 60  0001 C CNN
-F 3 "" H 1800 2350 60  0000 C CNN
-	1    1800 2350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Pot J3
-U 1 1 5965F5BA
-P 1800 3350
-F 0 "J3" H 1800 3350 60  0000 C CNN
-F 1 "Pot" H 1800 2550 60  0000 C CNN
-F 2 "pot:Pot" H 1800 3350 60  0001 C CNN
-F 3 "" H 1800 3350 60  0000 C CNN
-	1    1800 3350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Pot J4
-U 1 1 5965F5EE
-P 1800 4350
-F 0 "J4" H 1800 4350 60  0000 C CNN
-F 1 "Pot" H 1800 3550 60  0000 C CNN
-F 2 "pot:Pot" H 1800 4350 60  0001 C CNN
-F 3 "" H 1800 4350 60  0000 C CNN
-	1    1800 4350
-	1    0    0    -1  
 $EndComp
 $Comp
 L CONN_01X04 P7
@@ -237,28 +194,12 @@ Text Label 4900 1900 0    60   ~ 0
 POT4
 Text Label 2500 1600 0    60   ~ 0
 POT1
-Text Label 2500 1900 0    60   ~ 0
-GND
-Text Label 2500 2000 0    60   ~ 0
-GND
 Text Label 2500 2600 0    60   ~ 0
 POT2
-Text Label 2500 2900 0    60   ~ 0
-GND
-Text Label 2500 3000 0    60   ~ 0
-GND
 Text Label 2500 3600 0    60   ~ 0
 POT3
-Text Label 2500 3900 0    60   ~ 0
-GND
-Text Label 2500 4000 0    60   ~ 0
-GND
 Text Label 2500 4600 0    60   ~ 0
 POT4
-Text Label 2500 4900 0    60   ~ 0
-GND
-Text Label 2500 5000 0    60   ~ 0
-GND
 $Comp
 L CONN_01X01 P9
 U 1 1 59660760
@@ -279,6 +220,122 @@ F 1 "CONN_01X01" V 5600 5900 50  0000 C CNN
 F 2 "drillhole:hole" H 5500 5900 50  0001 C CNN
 F 3 "" H 5500 5900 50  0000 C CNN
 	1    5500 5900
+	1    0    0    -1  
+$EndComp
+Text Label 4900 5300 0    60   ~ 0
+GND
+Text Label 4900 5900 0    60   ~ 0
+GND
+$Comp
+L R R4
+U 1 1 5993E476
+P 4850 2000
+F 0 "R4" V 4930 2000 50  0000 C CNN
+F 1 "10K" V 4850 2000 50  0000 C CNN
+F 2 "Discret:R1" V 4780 2000 50  0001 C CNN
+F 3 "" H 4850 2000 50  0000 C CNN
+	1    4850 2000
+	0    1    1    0   
+$EndComp
+$Comp
+L R R3
+U 1 1 5993E512
+P 4600 2100
+F 0 "R3" V 4680 2100 50  0000 C CNN
+F 1 "10K" V 4600 2100 50  0000 C CNN
+F 2 "Discret:R1" V 4530 2100 50  0001 C CNN
+F 3 "" H 4600 2100 50  0000 C CNN
+	1    4600 2100
+	0    1    1    0   
+$EndComp
+$Comp
+L R R2
+U 1 1 5993E557
+P 4350 2200
+F 0 "R2" V 4430 2200 50  0000 C CNN
+F 1 "10K" V 4350 2200 50  0000 C CNN
+F 2 "Discret:R1" V 4280 2200 50  0001 C CNN
+F 3 "" H 4350 2200 50  0000 C CNN
+	1    4350 2200
+	0    1    1    0   
+$EndComp
+$Comp
+L R R1
+U 1 1 5993E59F
+P 4100 2300
+F 0 "R1" V 4180 2300 50  0000 C CNN
+F 1 "10K" V 4100 2300 50  0000 C CNN
+F 2 "Discret:R1" V 4030 2300 50  0001 C CNN
+F 3 "" H 4100 2300 50  0000 C CNN
+	1    4100 2300
+	0    1    1    0   
+$EndComp
+Text Label 4400 2000 0    60   ~ 0
+GND
+Text Label 4250 2100 0    60   ~ 0
+GND
+Text Label 4000 2200 0    60   ~ 0
+GND
+Text Label 3750 2300 0    60   ~ 0
+GND
+Text Label 3300 2000 0    60   ~ 0
+MUX5
+Text Label 3300 2100 0    60   ~ 0
+MUX6
+Text Label 3300 2200 0    60   ~ 0
+MUX7
+Text Label 3300 2300 0    60   ~ 0
+MUX8
+Text Label 5050 2000 0    60   ~ 0
+MUX5
+Text Label 5050 2100 0    60   ~ 0
+MUX6
+Text Label 5050 2200 0    60   ~ 0
+MUX7
+Text Label 5050 2300 0    60   ~ 0
+MUX8
+$Comp
+L ALPSpot097 j1
+U 1 1 59EF07F6
+P 1950 1750
+F 0 "j1" H 1900 2150 60  0000 C CNN
+F 1 "ALPSpot097" H 1900 1400 60  0000 C CNN
+F 2 "Potentiometers:Potentiometer_Alps_RK09K_Horizontal" H 1950 1750 60  0001 C CNN
+F 3 "" H 1950 1750 60  0001 C CNN
+	1    1950 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L ALPSpot097 j2
+U 1 1 59EF0860
+P 1950 2750
+F 0 "j2" H 1900 3150 60  0000 C CNN
+F 1 "ALPSpot097" H 1900 2400 60  0000 C CNN
+F 2 "Potentiometers:Potentiometer_Alps_RK09K_Horizontal" H 1950 2750 60  0001 C CNN
+F 3 "" H 1950 2750 60  0001 C CNN
+	1    1950 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L ALPSpot097 j3
+U 1 1 59EF08A3
+P 1950 3750
+F 0 "j3" H 1900 4150 60  0000 C CNN
+F 1 "ALPSpot097" H 1900 3400 60  0000 C CNN
+F 2 "Potentiometers:Potentiometer_Alps_RK09K_Horizontal" H 1950 3750 60  0001 C CNN
+F 3 "" H 1950 3750 60  0001 C CNN
+	1    1950 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L ALPSpot097 j4
+U 1 1 59EF08EC
+P 1950 4750
+F 0 "j4" H 1900 5150 60  0000 C CNN
+F 1 "ALPSpot097" H 1900 4400 60  0000 C CNN
+F 2 "Potentiometers:Potentiometer_Alps_RK09K_Horizontal" H 1950 4750 60  0001 C CNN
+F 3 "" H 1950 4750 60  0001 C CNN
+	1    1950 4750
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -340,19 +397,11 @@ Wire Wire Line
 Wire Wire Line
 	2250 1700 2800 1700
 Wire Wire Line
-	2250 1900 2800 1900
-Wire Wire Line
-	2250 2000 2800 2000
-Wire Wire Line
 	2250 2500 2800 2500
 Wire Wire Line
 	2250 2600 2800 2600
 Wire Wire Line
 	2250 2700 2800 2700
-Wire Wire Line
-	2250 2900 2800 2900
-Wire Wire Line
-	2250 3000 2800 3000
 Wire Wire Line
 	2250 3500 2800 3500
 Wire Wire Line
@@ -360,87 +409,15 @@ Wire Wire Line
 Wire Wire Line
 	2250 3700 2800 3700
 Wire Wire Line
-	2250 3900 2800 3900
-Wire Wire Line
-	2250 4000 2800 4000
-Wire Wire Line
 	2250 4500 2800 4500
 Wire Wire Line
 	2250 4600 2800 4600
 Wire Wire Line
 	2250 4700 2800 4700
 Wire Wire Line
-	2250 4900 2800 4900
-Wire Wire Line
-	2250 5000 2800 5000
-Wire Wire Line
 	5300 5300 4800 5300
 Wire Wire Line
 	5300 5900 4800 5900
-Text Label 4900 5300 0    60   ~ 0
-GND
-Text Label 4900 5900 0    60   ~ 0
-GND
-Text Label 2500 1500 0    60   ~ 0
-GND
-Text Label 2500 1700 0    60   ~ 0
-VCC
-Text Label 2500 2500 0    60   ~ 0
-GND
-Text Label 2500 2700 0    60   ~ 0
-VCC
-Text Label 2500 3500 0    60   ~ 0
-GND
-Text Label 2500 3700 0    60   ~ 0
-VCC
-Text Label 2500 4500 0    60   ~ 0
-GND
-Text Label 2500 4700 0    60   ~ 0
-VCC
-$Comp
-L R R4
-U 1 1 5993E476
-P 4850 2000
-F 0 "R4" V 4930 2000 50  0000 C CNN
-F 1 "10K" V 4850 2000 50  0000 C CNN
-F 2 "Discret:R1" V 4780 2000 50  0001 C CNN
-F 3 "" H 4850 2000 50  0000 C CNN
-	1    4850 2000
-	0    1    1    0   
-$EndComp
-$Comp
-L R R3
-U 1 1 5993E512
-P 4600 2100
-F 0 "R3" V 4680 2100 50  0000 C CNN
-F 1 "10K" V 4600 2100 50  0000 C CNN
-F 2 "Discret:R1" V 4530 2100 50  0001 C CNN
-F 3 "" H 4600 2100 50  0000 C CNN
-	1    4600 2100
-	0    1    1    0   
-$EndComp
-$Comp
-L R R2
-U 1 1 5993E557
-P 4350 2200
-F 0 "R2" V 4430 2200 50  0000 C CNN
-F 1 "10K" V 4350 2200 50  0000 C CNN
-F 2 "Discret:R1" V 4280 2200 50  0001 C CNN
-F 3 "" H 4350 2200 50  0000 C CNN
-	1    4350 2200
-	0    1    1    0   
-$EndComp
-$Comp
-L R R1
-U 1 1 5993E59F
-P 4100 2300
-F 0 "R1" V 4180 2300 50  0000 C CNN
-F 1 "10K" V 4100 2300 50  0000 C CNN
-F 2 "Discret:R1" V 4030 2300 50  0001 C CNN
-F 3 "" H 4100 2300 50  0000 C CNN
-	1    4100 2300
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	5300 2000 5000 2000
 Wire Wire Line
@@ -465,28 +442,52 @@ Wire Wire Line
 	3250 2100 3600 2100
 Wire Wire Line
 	3250 2000 3600 2000
-Text Label 4400 2000 0    60   ~ 0
+Wire Wire Line
+	2250 1850 2800 1850
+Wire Wire Line
+	2250 1950 2800 1950
+Wire Wire Line
+	2250 2850 2800 2850
+Wire Wire Line
+	2250 2950 2800 2950
+Wire Wire Line
+	2250 3850 2800 3850
+Wire Wire Line
+	2250 3950 2800 3950
+Wire Wire Line
+	2250 4850 2800 4850
+Wire Wire Line
+	2250 4950 2800 4950
+Text Label 2500 4850 0    60   ~ 0
 GND
-Text Label 4250 2100 0    60   ~ 0
+Text Label 2500 4950 0    60   ~ 0
 GND
-Text Label 4000 2200 0    60   ~ 0
+Text Label 2500 4700 0    60   ~ 0
 GND
-Text Label 3750 2300 0    60   ~ 0
+Text Label 2500 4500 0    60   ~ 0
+VCC
+Text Label 2500 3950 0    60   ~ 0
 GND
-Text Label 3300 2000 0    60   ~ 0
-MUX5
-Text Label 3300 2100 0    60   ~ 0
-MUX6
-Text Label 3300 2200 0    60   ~ 0
-MUX7
-Text Label 3300 2300 0    60   ~ 0
-MUX8
-Text Label 5050 2000 0    60   ~ 0
-MUX5
-Text Label 5050 2100 0    60   ~ 0
-MUX6
-Text Label 5050 2200 0    60   ~ 0
-MUX7
-Text Label 5050 2300 0    60   ~ 0
-MUX8
+Text Label 2500 3850 0    60   ~ 0
+GND
+Text Label 2500 3700 0    60   ~ 0
+GND
+Text Label 2500 3500 0    60   ~ 0
+VCC
+Text Label 2500 2950 0    60   ~ 0
+GND
+Text Label 2500 2850 0    60   ~ 0
+GND
+Text Label 2500 2700 0    60   ~ 0
+GND
+Text Label 2500 2500 0    60   ~ 0
+VCC
+Text Label 2500 1950 0    60   ~ 0
+GND
+Text Label 2500 1850 0    60   ~ 0
+GND
+Text Label 2500 1700 0    60   ~ 0
+GND
+Text Label 2500 1500 0    60   ~ 0
+VCC
 $EndSCHEMATC
