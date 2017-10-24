@@ -29,7 +29,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:alpspot097
-LIBS:module_specific_board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -37,7 +36,7 @@ encoding utf-8
 Sheet 1 1
 Title "Module Specific Board"
 Date "2017-07-12"
-Rev ""
+Rev "1"
 Comp "Alexandros Drymonitis"
 Comment1 ""
 Comment2 ""
