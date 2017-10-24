@@ -29,7 +29,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:74hc165
-LIBS:module_generic_top_board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -37,7 +36,7 @@ encoding utf-8
 Sheet 1 1
 Title "Module Generic Top Board"
 Date "2017-06-30"
-Rev ""
+Rev "1"
 Comp "Alexandros Drymonitis"
 Comment1 ""
 Comment2 ""
@@ -75,17 +74,6 @@ F 1 "0.1uF" H 9075 4250 50  0000 L CNN
 F 2 "Capacitors_ThroughHole:C_Disc_D3_P2.5" H 9088 4200 50  0001 C CNN
 F 3 "" H 9050 4350 50  0000 C CNN
 	1    9050 4350
-	1    0    0    -1  
-$EndComp
-$Comp
-L RR8 RR1
-U 1 1 5944E7C4
-P 5750 2150
-F 0 "RR1" H 5800 2700 50  0000 C CNN
-F 1 "RR8" V 5780 2150 50  0000 C CNN
-F 2 "Resistors_ThroughHole:Resistor_Array_SIP8" H 5750 2150 50  0001 C CNN
-F 3 "" H 5750 2150 50  0000 C CNN
-	1    5750 2150
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -140,8 +128,6 @@ Text Label 3550 1550 0    60   ~ 0
 GND
 Text Label 3550 1450 0    60   ~ 0
 VCC
-Text Label 5050 1700 0    60   ~ 0
-GND
 Text Label 5250 2800 0    60   ~ 0
 GND
 Text Label 6100 2800 0    60   ~ 0
@@ -530,8 +516,6 @@ Wire Wire Line
 Wire Wire Line
 	4900 1800 5400 1800
 Wire Wire Line
-	5400 1700 4900 1700
-Wire Wire Line
 	7550 2900 7900 2900
 Wire Wire Line
 	7550 2800 7900 2800
@@ -542,5 +526,20 @@ Wire Wire Line
 Text Label 9100 1050 0    60   ~ 0
 GND
 Text Label 9100 1550 0    60   ~ 0
+GND
+$Comp
+L R_Network08 RN1
+U 1 1 59EF38D0
+P 5600 2200
+F 0 "RN1" V 5100 2200 50  0000 C CNN
+F 1 "10K" V 6000 2200 50  0000 C CNN
+F 2 "Resistors_THT:R_Array_SIP9" V 6075 2200 50  0001 C CNN
+F 3 "" H 5600 2200 50  0001 C CNN
+	1    5600 2200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5800 1800 5800 1250
+Text Label 5800 1500 1    60   ~ 0
 GND
 $EndSCHEMATC
