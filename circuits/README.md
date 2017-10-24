@@ -21,7 +21,7 @@ The orientation of the IDC connectors can be defined by the pin numbering. On an
 
 ### Concerning manufacturing
 
-The boards "module_generic_top_board" and "module_generic_bottom_board" are needed for every module. I would suggest to order these from a manufacturer instead of etching them your self many times. The "module_specific_board" is just an example of how you can connect your parts to the generic boards (this will be analyzed in the upcoming wiki). You can order few of these as well, since it is designed in such a way that can host many different layouts.
+The boards "module_generic_top_board" and "module_generic_bottom_board" are needed for every module. I would suggest to order these from a manufacturer instead of etching them your self many times. The "module_specific_board" and "module_specific_board"2 are just examples of how you can connect your parts to the generic boards (this will be analyzed in the upcoming wiki). There are two of those because I wanted to provide both orientations for the potentiometers, because of the knobs one can find (they are D-shaped knobs, so orientation is rather important). You can order few of these as well, since it is designed in such a way that can host many different layouts.
 
 The "power_bus", "power_distributor", and "teensy_motherboard" are designed as single-side circuit boards (with the "teensy_motherboard" using three jumpers, the "power_bus" only one, and the "power_distributor" none) so that it's easier to etch them yourself. You'll need only one per board (unless you want to build more than 16 modules, then you'll need a second "power_bus", explained in the upcoming wiki), so ordering those from a manufacturer might not work out.
 
