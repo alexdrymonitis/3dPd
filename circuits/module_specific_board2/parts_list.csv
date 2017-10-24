@@ -1,0 +1,13 @@
+Reference, Value, Footprint, Datasheet
+P6,CONN_01X02,Header Male Straight 2-pin,
+P3,CONN_01X08,Header Male Straight 8-pin,
+P4,CONN_01X08,Header Male Straight 8-pin,
+P5,CONN_01X08,Header Male Straight 8-pin,
+J1,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HTML/Potentiometer/RotaryPotentiometers/RK09L/RK09L1140A66.html
+J2,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HTML/Potentiometer/RotaryPotentiometers/RK09L/RK09L1140A66.html
+J3,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HTML/Potentiometer/RotaryPotentiometers/RK09L/RK09L1140A66.html
+J4,Pot,ALPS Rotary Potentiometer RK09L114001T,http://www.alps.com/prod/info/E/HTML/Potentiometer/RotaryPotentiometers/RK09L/RK09L1140A66.html
+R1,"10K resistor, 1/4W",Discret:R1,
+R2,"10K resistor, 1/4W",Discret:R1,
+R3,"10K resistor, 1/4W",Discret:R1,
+R4,"10K resistor, 1/4W",Discret:R1,
