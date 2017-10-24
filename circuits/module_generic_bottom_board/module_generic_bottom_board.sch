@@ -37,7 +37,7 @@ encoding utf-8
 Sheet 1 1
 Title "ModuleGeneric Bottom Board"
 Date "2017-07-11"
-Rev ""
+Rev "1"
 Comp "Alexandros Drymonitis"
 Comment1 ""
 Comment2 ""
@@ -75,28 +75,6 @@ F 1 "CONN_01X11" V 8150 4100 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Straight_1x11" H 8050 4100 50  0001 C CNN
 F 3 "" H 8050 4100 50  0000 C CNN
 	1    8050 4100
-	1    0    0    -1  
-$EndComp
-$Comp
-L SW_DIP_x4 S1
-U 1 1 59649914
-P 5950 3550
-F 0 "S1" H 5950 3300 50  0000 C CNN
-F 1 "SW_DIP_x4" H 5950 3800 50  0000 C CNN
-F 2 "Housings_DIP:DIP-8_W7.62mm_LongPads" H 5900 3550 50  0001 C CNN
-F 3 "" H 5900 3550 50  0000 C CNN
-	1    5950 3550
-	1    0    0    -1  
-$EndComp
-$Comp
-L SW_DIP_x4 S2
-U 1 1 59649981
-P 6000 4600
-F 0 "S2" H 6000 4350 50  0000 C CNN
-F 1 "SW_DIP_x4" H 6000 4850 50  0000 C CNN
-F 2 "Housings_DIP:DIP-8_W7.62mm_LongPads" H 5950 4600 50  0001 C CNN
-F 3 "" H 5950 4600 50  0000 C CNN
-	1    6000 4600
 	1    0    0    -1  
 $EndComp
 Text Label 7200 3600 0    60   ~ 0
@@ -341,4 +319,26 @@ Text Label 4250 2000 0    60   ~ 0
 GND
 Text Label 4250 2650 0    60   ~ 0
 GND
+$Comp
+L SW_DIP_x04 SW1
+U 1 1 59EEFDF4
+P 5950 3600
+F 0 "SW1" H 5950 3950 50  0000 C CNN
+F 1 "SW_DIP_x04" H 5950 3350 50  0000 C CNN
+F 2 "Buttons_Switches_THT:SW_DIP_x4_W7.62mm_Piano" H 5950 3600 50  0001 C CNN
+F 3 "" H 5950 3600 50  0001 C CNN
+	1    5950 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L SW_DIP_x04 SW2
+U 1 1 59EEFE7A
+P 6000 4650
+F 0 "SW2" H 6000 5000 50  0000 C CNN
+F 1 "SW_DIP_x04" H 6000 4400 50  0000 C CNN
+F 2 "Buttons_Switches_THT:SW_DIP_x4_W7.62mm_Piano" H 6000 4650 50  0001 C CNN
+F 3 "" H 6000 4650 50  0001 C CNN
+	1    6000 4650
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
