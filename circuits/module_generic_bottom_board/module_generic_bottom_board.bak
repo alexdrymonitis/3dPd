@@ -29,13 +29,14 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:switches
+LIBS:module_generic_bottom_board-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "ModuleGeneric Bottom Board"
-Date "2017-11-01"
+Date "2017-07-11"
 Rev "1"
 Comp "Alexandros Drymonitis"
 Comment1 ""

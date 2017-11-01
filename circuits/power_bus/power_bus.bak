@@ -29,7 +29,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:cd4067
-LIBS:power_bus-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -37,7 +36,7 @@ encoding utf-8
 Sheet 1 1
 Title "Modular Synthesizer Power Bus"
 Date "2017-11-01"
-Rev "1"
+Rev ""
 Comp "Alexandros Drymonitis"
 Comment1 ""
 Comment2 ""

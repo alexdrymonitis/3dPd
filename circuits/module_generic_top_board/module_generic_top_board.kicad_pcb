@@ -3,7 +3,7 @@
   (general
     (links 68)
     (no_connects 0)
-    (area 128.194999 87.554999 152.475001 165.175001)
+    (area 125.726667 86.097 156.205 166.479)
     (thickness 1.6)
     (drawings 5)
     (tracks 244)
@@ -15,7 +15,7 @@
   (page A4)
   (title_block
     (title "Module Generic Top Board")
-    (date 2017-06-30)
+    (date 2017-11-01)
     (rev 1)
     (company "Alexandros Drymonitis")
   )
@@ -94,7 +94,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory gerber_files/))
+      (outputdirectory ../../../../Documents/kicad/3dPd/module_generic_top_board/svg_files/))
   )
 
   (net 0 "")

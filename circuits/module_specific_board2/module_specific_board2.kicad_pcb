@@ -15,7 +15,7 @@
   (page A4)
   (title_block
     (title "Module Specific Board 2")
-    (date 2017-07-12)
+    (date 2017-11-01)
     (rev 1)
     (company "Alexandros Drymonitis")
   )
@@ -94,7 +94,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory gerber_files/))
+      (outputdirectory ../../../../Documents/kicad/3dPd/module_specific_board2/svg_files/))
   )
 
   (net 0 "")
