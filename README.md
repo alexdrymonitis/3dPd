@@ -1,4 +1,4 @@
-# modular_synthesizer
+# 3dPd
 
 This repository hosts the code, schematics, and circuit board designs made in Kicad, for a hardware digital modular synthesizer. The audio is programmed in Pure Data and the hardware control in the Arduino language.
 This synthesizer is supposed to run on a Raspberry Pi 3 and a Teensy3.2. You're welcome to use any other hardware you like, but this specific hardware is supported and explained here.
